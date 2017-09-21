@@ -1,0 +1,66 @@
+﻿@{
+    ViewData["Title"] = "Org Chart";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid">
+    <div id="listSection"></div>
+</div>
+
+@section Scripts
+{
+    @{ await Html.RenderPartialAsync("_PopupForm"); }
+    <script>
+        $(document).on('ready', function () {
+            $.ajax({
+                url: '@Url.Action("OrgChart", "Organization")',
+                type: 'GET',
+                success: function (result) {
+                    $('#listSection').html(result);
+                }
+            });
+        });
+
+        function showPopup() {
+            $('#popupResult').html(null).text(null);
+            $('.popupBtns').removeAttr('disabled');
+        }
+        function onPopupSubmit() {
+            $('#popupForm').submit();
+        }
+        function onSuccess() {
+            $('#popupResult').html('Successfully Updated.');
+            $('.popupBtns').attr('disabled', 'disabled');
+        }
+        function onFailure() {
+            $('#formResult').html('Failed to Update! Please Correct All Errors.');
+            $('.popupBtns').removeAttr('disabled');
+        }
+
+        function addOrgUnit(isSub) {
+            if (!$('#currOrgUnitIdHF').val()) {
+                alert('Please Select Parent Unit by Clicking its Box.');
+                return;
+            }
+            if ($('#currOrgUnitTypeCodeHF').val() === "SUB") {
+                alert('Error! Subordinate Cannot be Added to Parent Unit of Type Sub.');
+                return;
+            }
+            var msg = 'Add Organization Unit - Subordinate of: ';
+            if (isSub) {
+                msg = 'Add Sub Unit - Subordinate of: ';
+            }
+            $.ajax({
+                url: '@Url.Action("AddOrgUnit", "Organization")',
+                type: 'GET',
+                data: { parentId: $('#currOrgUnitIdHF').val(), isSub: isSub },
+                success: function (result) {
+                    $('#myModal-body').html(result);
+                    $('#myModal-label').html(msg + $('#parentName').val());
+                    $('#parentId').val($('#currOrgUnitIdHF').val());
+                    showPopup();
+                }
+            });
+        }
+    </script>    
+}

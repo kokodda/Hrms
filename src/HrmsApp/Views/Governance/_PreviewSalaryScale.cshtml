@@ -1,0 +1,25 @@
+﻿@model List<string>
+
+<div class="container-fluid">
+    <div style="text-align:center;color:gray">@ViewBag.salaryScaleName</div>
+    <div style="text-align:center"><a href="#" class="btn btn-xs hidden-print" onclick="printSalaryScale()" title="Print"><span class="glyphicon glyphicon-print"></span></a></div>
+    <br />
+    <table class="table table-hover table-condensed table-bordered">
+        <tbody>
+            @{ 
+                string[] x = null;
+                int cnt = Model.Count();
+                for(int i = cnt - 1; i >= 0; i--)
+                {
+                    x = Model[i].Split('|');
+                    <tr>
+                        @foreach(string c in x)
+                        {
+                            <td style="text-align:center"><small>@c</small></td>
+                        }
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>

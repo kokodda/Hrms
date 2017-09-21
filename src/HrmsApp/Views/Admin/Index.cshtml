@@ -1,0 +1,68 @@
+﻿@{
+    ViewData["Title"] = "Admin";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid">
+    <br />
+    <div class="row">
+        <div class="col-sm-3">
+            <label><small>Dictionary</small></label>
+            <ul class="list-unstyled">
+                <li><a href="javascript:getTypesList('OrgUnitType');"><small>Organization Unit Types</small></a></li>
+                <li><a href="javascript:getTypesList('EmployeeType');"><small>Employee Types</small></a></li>
+                <li><a href="javascript:getTypesList('StandardTitleType');"><small>Standard Titles</small></a></li>
+                <li><a href="javascript:getTypesList('LeaveType');"><small>Leave Types</small></a></li>
+                <li><a href="javascript:getTypesList('AllowanceType');"><small>Allowance Types</small></a></li>
+                <li><a href="javascript:getTypesList('CompetencyAreaType');"><small>Competency Areas</small></a></li>
+                <li><a href="javascript:getTypesList('SalaryScaleType');"><small>Salary Scale Types</small></a></li>
+                <li><a href="javascript:getTypesList('DocumentType');"><small>Employee Document Types</small></a></li>
+                <li><a href="javascript:getTypesList('FamilyMemberType');"><small>Employee Family Member Types</small></a></li>
+                <li><a href="javascript:getTypesList('QualificationType');"><small>Employee Qualification Types</small></a></li>
+                <li><a href="javascript:getTypesList('LanguageType');"><small>Employee Language Types</small></a></li>
+                <li><a href="javascript:getTypesList('Nationality');"><small>Employee Nationalities List</small></a></li>
+                <li><a href="javascript:getTypesList('Governorate');"><small>Governorates List</small></a></li>
+            </ul>
+            <hr />
+            
+        </div>
+        <div class="col-sm-9" id="listSection"></div>
+    </div>
+</div>
+
+@section Scripts
+{
+    @{ await Html.RenderPartialAsync("_PopupForm"); }
+    <script>
+        $(document).on('ready', function () {
+
+        });
+
+        function showPopup() {
+            $('#popupResult').html(null).text(null);
+            $('.popupBtns').removeAttr('disabled');
+        }
+        function onPopupSubmit() {
+            $('#popupForm').submit();
+        }
+        function onSuccess() {
+            $('#popupResult').html('Successfully Updated.');
+            $('.popupBtns').attr('disabled', 'disabled');
+        }
+        function onFailure() {
+            $('#formResult').html('Failed to Update! Please Correct All Errors.');
+            $('.popupBtns').removeAttr('disabled');
+        }
+
+        function getTypesList(typeName) {
+            $.ajax({
+                url: '@Url.Action("TypesList", "Admin")',
+                type: 'GET',
+                data: { typeName: typeName },
+                success: function (result) {
+                    $('#listSection').html(result);
+                }
+            });
+        }
+    </script>    
+}

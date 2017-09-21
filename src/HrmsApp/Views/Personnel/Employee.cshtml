@@ -1,0 +1,209 @@
+﻿@using HrmsModel.Models;
+@model Employee
+
+@{
+    ViewData["Title"] = "Personnel";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/lib/bootstrap-fileinput/css/fileinput.css" media="all" rel="stylesheet" type="text/css" />
+
+@{ 
+    var x = Model.EmployeePositions.FirstOrDefault(b => b.IsActive && !b.IsActing);
+    string photo;
+    if (Model.Photo != null) { photo = "data:image/png;base64," + Convert.ToBase64String(Model.Photo); }
+    else { photo = string.Format("{0}/1.jpg", "/images"); }
+}
+<div class="container-fluid" style="padding:0px">
+    <div class="row">
+        <div class="col-sm-1">
+            <a href="#" onclick="editPhoto()" data-toggle="modal" data-target="#photoModal"><img class="img-thumbnail" width="100" height="150" src="@photo" /></a>
+        </div>
+        <div class="col-sm-10">
+            <h3>@Model.FirstName&nbsp;@Model.FatherName&nbsp;@Model.FamilyName</h3>
+            @{
+                if (x != null)
+                {
+                    var y = x.OrgUnit;
+                    if (y != null)
+                    {
+                        <h5 style="color:silver;font-weight:bold">@y.PositionName : @y.Name</h5>
+                    }
+                }
+            }
+        </div>
+    </div>
+    <hr />
+    <div class="row">
+        <div class="col-sm-2">
+            <ul class="list-unstyled">
+                <li><small><a href="javascript:getPersonalInfo();">Personal Information</a></small></li>
+                <li><small><a href="#">Career</a></small></li>
+                <li><small><a href="javascript:getLeave(@Model.Id);">Leave</a></small></li>
+                <li><small><a href="#">Qualifications</a></small></li>
+                <li><small><a href="#">Languages</a></small></li>
+                <li><small><a href="#">Family</a></small></li>
+                <li><small><a href="#">Documents</a></small></li>
+            </ul>
+        </div>
+        <div class="col-sm-10">
+            <div>
+                @{
+                    string jobGrade = "NA";
+                    string salaryStep = "NA";
+                    string salaryScale = "NA";
+                    if (x.OrgUnit.JobGrade != null) { jobGrade = x.OrgUnit.JobGrade.Name; }
+                    if (x.SalaryScale != null) { salaryScale = x.SalaryScale.Name; }
+                    if (x.SalaryStep != null) { salaryStep = x.SalaryStep.Name; }
+                    <div class="row">
+                        <div class="col-sm-3"><small><label>Employee Uid: </label>&nbsp;@Model.EmpUid</small></div>
+                        <div class="col-sm-3"><small><label>Join Date: </label>&nbsp;@Model.JoinDate.Value.ToString("dd-MM-yyyy")</small></div>
+                        <div class="col-sm-4"><small><label>Date In Position: </label>&nbsp;@x.FromDate.ToString("dd-MM-yyyy")</small></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-3"><small><label>Job Grade: </label>&nbsp;@jobGrade</small></div>
+                        <div class="col-sm-3"><small><label>Salary Step: </label>&nbsp;@salaryStep</small></div>
+                        <div class="col-sm-4"><small><label>Salary Scale: </label>&nbsp;@salaryScale</small></div>
+                    </div>
+                    <div class="row">
+                        @{
+                            string attendance = x.IsAttendRequired ? "Required" : "Not Required";
+                            string overtime = x.IsOverTimeAllowed ? "Allowed" : "Not Allowed";
+                        }
+                        <div class="col-sm-3"><small><label>Attendance: </label>&nbsp;@attendance</small></div>
+                        <div class="col-sm-3"><small><label>OverTime: </label>&nbsp;@overtime</small></div>
+                        <div class="col-sm-4"><small><label>Employment Type: </label>&nbsp;@x.EmployeeType.Name</small></div>
+                    </div>
+                }
+            </div>
+            <br />
+            <div id="personalInfoSection" style="padding:0px">
+                <div class="row">
+                    <div class="col-sm-7">
+                        <table class="table table-condensed" style="border:solid thin;border-color:silver">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th><small>First</small></th>
+                                    <th><small>Family</small></th>
+                                    <th><small>Father</small></th>
+                                    <th><small>Mother</small></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><label><small>Name</small></label></td>
+                                    <td><small>@Model.FirstName</small></td>
+                                    <td><small>@Model.FamilyName</small></td>
+                                    <td><small>@Model.FatherName</small></td>
+                                    <td><small>@Model.MotherName</small></td>
+                                </tr>
+                                <tr>
+                                    <td><label><small>Translated</small></label></td>
+                                    <td><small>@Model.OthFirstName</small></td>
+                                    <td><small>@Model.OthFamilyName</small></td>
+                                    <td><small>@Model.OthFatherName</small></td>
+                                    <td><small>@Model.OthMotherName</small></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <br />
+                <div class="row">
+                    @{ 
+                        string gender = Model.IsMale ? "Male" : "Femele";
+                        string isMilitary = Model.IsMilitaryExempted ? "Exempted" : "None";
+                    }
+                    <div class="col-sm-3"><small><label>Gender: </label>&nbsp;@gender</small></div>
+                    <div class="col-sm-3"><small><label>Birth Date: </label>&nbsp;@Model.BirthDate.ToString("dd-MM-yyyy")</small></div>
+                    <div class="col-sm-4"><small><label>Nationality: </label>&nbsp;@Model.Nationality.Name</small></div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-3"><small><label>Marital Status: </label>&nbsp;@Model.MaritalStatus</small></div>
+                    <div class="col-sm-3"><small><label>Blood Group: </label>&nbsp;@Model.BloodGroup</small></div>
+                    <div class="col-sm-4"><small><label>Military Service: </label>&nbsp;@isMilitary</small></div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-8" id="listSection"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="photoModal" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" id="modalClose" data-dismiss="modal">&times;</button>
+                <div class="modal-title">Photo Upload</div>
+            </div>
+            <div class="modal-body" id="popupFormBody">
+                <label class="control-label">Select Photo</label>
+                <input type="file" name="files" accept="image/*" class="file-loading" id="inputPhotos" />
+            </div>
+            <div class="modal-footer">
+                <strong>
+                    <button type="button" class="btn btn-default btn-xs pull-right" onclick="onFileInputClearClick('inputPhotos')" data-dismiss="modal">Cancel</button> &nbsp; &nbsp;
+                    <span class="pull-right" id="popupResult"></span>
+                </strong>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script src="~/lib/bootstrap-fileinput/js/fileinput.min.js"></script>
+    <script>
+        $(document).on('ready', function () {
+            $("#inputPhotos").fileinput({
+                uploadAsync: false,
+                showUpload: true,
+                showRemove: true,
+                multiple: false,
+                previewFileType: "image",
+                browseClass: "btn btn-success",
+                browseLabel: "Browse",
+                browseIcon: "<i class=\"glyphicon glyphicon-file\"></i> ",
+                removeClass: "btn btn-danger",
+                removeLabel: "Remove",
+                removeIcon: "<i class=\"glyphicon glyphicon-trash\"></i> ",
+                uploadClass: "btn btn-info",
+                uploadLabel: "Upload",
+                uploadIcon: "<i class=\"glyphicon glyphicon-upload\"></i> ",
+                uploadUrl: '@Url.Action("PhotoUpload", "Personnel")'
+            });
+            $('#inputPhotos').on('filebatchuploadsuccess', function (event, data, previewId, index) {
+                $('#photoNameHF').val(data.filenames[0]);
+                $('#photoCtrl').attr('src', "data:image/png;base64," + data.response);
+                $('#popupResult').html('Employee Photo Successfully Uploaded.');
+            });
+
+            $('#personalInfoSection').hide();
+        })
+
+        function onFileInputClearClick(ed) {
+            $('#' + ed).fileinput('clear');
+        }
+
+        function getPersonalInfo() {
+            $('#listSection').html(null);
+            $('#personalInfoSection').show();
+        }
+        function editPhoto() {
+            $('#photoModal').show();
+        }
+        function getLeave(id) {
+            $.ajax({
+                url: '@Url.Action("LeaveBalancesList", "Personnel")',
+                type: 'GET',
+                data: { id: id },
+                success: function (result) {
+                    $('#personalInfoSection').hide();
+                    $('#listSection').html(result);
+                }
+            });
+        }
+    </script>    
+}

@@ -1,0 +1,70 @@
+﻿@using HrmsModel.Models;
+@model IEnumerable<OrgUnit>
+
+<link rel="stylesheet" href="~/css/OrgChart.css" />
+
+<div class="content">
+    <div style="text-align:center">
+        <h1>Organization Chart</h1>
+        <div>
+            <button class="btn btn-xs btn-primary" onclick="addOrgUnit(false)" data-toggle="modal" data-target="#myModal">Add Unit</button>
+            <button class="btn btn-xs btn-default" onclick="addOrgUnit(true)" data-toggle="modal" data-target="#myModal">Add Sub</button>
+        </div>
+    </div>
+    <br />
+    <figure class="org-chart cf">
+        <ul class="company">
+            <li>
+                <ul class="director">
+                    <li>
+                        @if (Model.Count() != 0)
+                        {
+                            var x = Model.Where(b => b.Code.Length == 2).First();
+                            <a href="#" id="@x.Id" data-code="@x.OrgUnitType.SysCode"><span>@x.Name</span><br /><span>@x.PositionName</span></a>
+                        }
+                        <ul class="subdirector">
+                            @foreach (var ou in Model.Where(b => b.Code.Length == 5 && b.OrgUnitType.SysCode == "SUB").OrderBy(b => b.SortOrder))
+                            {
+                                <li><a href="#" id="@ou.Id" data-code="SUB"><span>@ou.Name</span><br /><span>@ou.PositionName</span></a></li>
+                            }
+                        </ul>
+                        <ul class="departments cf">
+                            <li><a href="#"><span>Liaison Office</span><br /><span>Executive Director</span></a></li>
+                            @{
+                                string[] divStyle = new string[5];
+                                divStyle[0] = "dep-a"; divStyle[1] = "dep-b"; divStyle[2] = "dep-c"; divStyle[3] = "dep-d"; divStyle[4] = "dep-e";
+                                int idx = -1;
+                                foreach (var ou in Model.Where(b => b.Code.Length == 5 && b.OrgUnitType.SysCode != "SUB").OrderBy(b => b.SortOrder))
+                                {
+                                    idx++;
+                                    <li class="department @divStyle[idx]">
+                                        <a href="#" id="@ou.Id" data-code="@ou.OrgUnitType.SysCode"><span>@ou.Name</span><br /><span>@ou.PositionName</span></a>
+                                        <ul class="sections">
+                                            <li class="section"><a href="#"><span>Department A1</span></a></li>
+                                            <li class="section"><a href="#"><span>Department A2</span></a></li>
+                                            <li class="section"><a href="#"><span>Department A3</span></a></li>
+                                            <li class="section"><a href="#"><span>Department A4</span></a></li>
+                                            <li class="section"><a href="#"><span>Department A5</span></a></li>
+                                        </ul>
+                                    </li>
+                                }
+                            }
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </figure>
+</div>
+
+@Html.Hidden("currOrgUnitIdHF")
+@Html.Hidden("currOrgUnitTypeCodeHF")
+
+<script>
+    $(function () {
+        $('a').on('click', function () {
+            $('#currOrgUnitIdHF').val($(this).attr('id'));
+            $('#currOrgUnitTypeCodeHF').val($(this).data('code'));
+        });
+    })
+</script>

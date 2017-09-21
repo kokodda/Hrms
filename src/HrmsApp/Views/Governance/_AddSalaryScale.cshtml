@@ -1,0 +1,66 @@
+﻿@using HrmsModel.Models;
+@model SalaryScale
+
+<form role="form" id="popupForm" asp-controller="Governance" asp-action="AddSalaryScale" data-ajax="true" data-ajax-method="POST" data-ajax-update="#listSection" data-ajax-success="onSuccess" data-ajax-failure="onFailure">
+    <input type="hidden" name="level" value="@ViewBag.level" />
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="SalaryScaleTypeId"><small>Salary Scale Type</small></label>
+        <select class="form-control" asp-for="SalaryScaleTypeId" required>
+            <option value="">Select from List ...</option>
+            @foreach (SelectListItem item in new SelectList(ViewBag.salaryScaleTypesList, "Id", "Name"))
+            {
+                <option value="@item.Value">@item.Text</option>
+            }
+        </select>
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="Name"><small>Name</small></label>
+        <input type="text" asp-for="Name" class="form-control" required />
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="OthName"><small>Name Translated</small></label>
+        <input type="text" asp-for="OthName" class="form-control" required />
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="Description"><small>Description</small></label>
+        <input type="text" asp-for="Description" class="form-control" />
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="MinSalary"><small>Minimum Salary</small></label>
+        <input type="number" asp-for="MinSalary" class="form-control" required />
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="CurrencyCode"><small>Currency</small></label>
+        <select class="form-control" asp-for="CurrencyCode" required>
+            <option value="">Select from List ...</option>
+            <option value="SYP">SYP</option>
+            <option value="USD">USD</option>
+            <option value="EUR">EUR</option>
+        </select>
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="FromJobGradeId"><small>From Job Grade</small></label>
+        <select class="form-control" asp-for="FromJobGradeId" required>
+            <option value="">Select from List ...</option>
+            @foreach (SelectListItem item in new SelectList(ViewBag.jobGradesList, "Id", "Name"))
+            {
+                <option value="@item.Value">@item.Text</option>
+            }
+        </select>
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="ThruJobGradeId"><small>Through Job Grade</small></label>
+        <select class="form-control" asp-for="ThruJobGradeId" required>
+            <option value="">Select from List ...</option>
+            @foreach (SelectListItem item in new SelectList(ViewBag.jobGradesList, "Id", "Name"))
+            {
+                <option value="@item.Value">@item.Text</option>
+            }
+        </select>
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="FromDate"><small>Start Date</small></label>
+        <input type="date" asp-for="FromDate" class="form-control" required />
+    </div>
+</form>
+    

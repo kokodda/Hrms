@@ -1,0 +1,237 @@
+﻿@{
+    ViewData["Title"] = "Governance";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid">
+    <br />
+    <div class="row">
+        <div class="col-sm-3 hidden-print">
+            <label><small>Grading System</small></label>
+            <ul class="list-unstyled">
+                <li><a href="javascript:getGradeGroupsList();"><small>Job Grade Groups</small></a></li>
+                <li><a href="javascript:getJobGradesList();"><small>Job Grades</small></a></li>
+                <li><a href="javascript:getStandardTitlesList();"><small>Standard Titles</small></a></li>
+            </ul>
+            <hr />
+            <label><small>Competencies</small></label>
+            <ul class="list-unstyled">
+                <li><a href="javascript:getCompetencyCategoriesList();"><small>Categories</small></a></li>
+                <li><a href="javascript:getCompetencySubCategoriesList();"><small>Sub Categories</small></a></li>
+                <li><a href="javascript:getCompetenciesList('ORG');"><small>Organization Level Competencies</small></a></li>
+                <li><a href="javascript:getCompetenciesList('GRADE_GROUP');"><small>Grade Group Level Competencies</small></a></li>
+                <li><a href="javascript:getCompetenciesList('JOB_GRADE');"><small>Job Grade Level Competencies</small></a></li>
+            </ul>
+            <hr />
+            <label><small>Leave Policies</small></label>
+            <ul class="list-unstyled">
+                <li><a href="javascript:getLeavePoliciesList('ORG');"><small>Organization Level Policies</small></a></li>
+                <li><a href="javascript:getLeavePoliciesList('GRADE_GROUP');"><small>Grade Group Level Policies</small></a></li>
+                <li><a href="javascript:getLeavePoliciesList('JOB_GRADE');"><small>Job Grade Level Policies</small></a></li>
+            </ul>
+            <hr />
+            <label><small>Allowance Policies</small></label>
+            <ul class="list-unstyled">
+                <li><a href="javascript:getAllowancePoliciesList('ORG');"><small>Organization Level Policies</small></a></li>
+                <li><a href="javascript:getAllowancePoliciesList('GRADE_GROUP');"><small>Grade Group Level Policies</small></a></li>
+                <li><a href="javascript:getAllowancePoliciesList('JOB_GRADE');"><small>Job Grade Level Policies</small></a></li>
+            </ul>
+            <hr />
+            <label><small>Salaries</small></label>
+            <ul class="list-unstyled">
+                <li><a href="javascript:getSalaryStepsList();"><small>Salary Steps</small></a></li>
+                <li><a href="javascript:getSalaryScalesList();"><small>Salary Scales</small></a></li>
+            </ul>
+        </div>
+        <div class="col-sm-9" id="listSection"></div>
+    </div>
+</div>
+
+@section Scripts
+{
+    @{ await Html.RenderPartialAsync("_PopupForm"); }
+    <script>
+        $(document).on('ready', function () {
+
+        });
+
+        function showPopup() {
+            $('#popupResult').html(null).text(null);
+            $('.popupBtns').removeAttr('disabled');
+        }
+        function onPopupSubmit() {
+            $('#popupForm').submit();
+        }
+        function onSuccess() {
+            $('#popupResult').html('Successfully Updated.');
+            $('.popupBtns').attr('disabled', 'disabled');
+        }
+        function onFailure() {
+            $('#formResult').html('Failed to Update! Please Correct All Errors.');
+            $('.popupBtns').removeAttr('disabled');
+        }
+
+        //grades
+        function getGradeGroupsList() {
+            $.ajax({
+                url: '@Url.Action("GradeGroupsList", "Governance")',
+                type: 'GET',
+                success: function (result) {
+                    $('#listSection').html(result);
+                }
+            });
+        }
+        function getJobGradesList() {
+            $.ajax({
+                url: '@Url.Action("JobGradesList", "Governance")',
+                type: 'GET',
+                success: function (result) {
+                    $('#listSection').html(result);
+                }
+            });
+        }
+        function getStandardTitlesList() {
+            $.ajax({
+                url: '@Url.Action("StandardTitlesList", "Governance")',
+                type: 'GET',
+                success: function (result) {
+                    $('#listSection').html(result);
+                }
+            });
+        }
+
+        //competencies
+        function getCompetencyCategoriesList() {
+            $.ajax({
+                url: '@Url.Action("CompetencyCategoriesList", "Governance")',
+                type: 'GET',
+                success: function (result) {
+                    $('#listSection').html(result);
+                }
+            });
+        }
+        function getCompetencySubCategoriesList() {
+            $.ajax({
+                url: '@Url.Action("CompetencySubCategoriesList", "Governance")',
+                type: 'GET',
+                success: function (result) {
+                    $('#listSection').html(result);
+                }
+            });
+        }
+        function getCompetenciesList(level) {
+            $.ajax({
+                url: '@Url.Action("CompetenciesList", "Governance")',
+                type: 'GET',
+                data: { level: level },
+                success: function (result) {
+                    $('#listSection').html(result);
+                }
+            });
+        }
+        function addCompetency(level) {
+            $.ajax({
+                url: '@Url.Action("AddCompetency", "Governance")',
+                type: 'GET',
+                data: { level: level },
+                success: function (result) {
+                    $('#myModal-body').html(result);
+                    $('#myModal-label').html('Add New Competency');
+                    showPopup();
+                }
+            });
+        }
+
+        //leave
+        function getLeavePoliciesList(level) {
+            $.ajax({
+                url: '@Url.Action("LeavePoliciesList", "Governance")',
+                type: 'GET',
+                data: { level: level },
+                success: function (result) {
+                    $('#listSection').html(result);
+                }
+            });
+        }
+        function addLeavePolicy(level) {
+            $.ajax({
+                url: '@Url.Action("AddLeavePolicy", "Governance")',
+                type: 'GET',
+                data: { level: level },
+                success: function (result) {
+                    $('#myModal-body').html(result);
+                    $('#myModal-label').html('Add New Leave Policy');
+                    showPopup();
+                }
+            });
+        }
+
+        //allowance
+        function getAllowancePoliciesList(level) {
+            $.ajax({
+                url: '@Url.Action("AllowancePoliciesList", "Governance")',
+                type: 'GET',
+                data: { level: level },
+                success: function (result) {
+                    $('#listSection').html(result);
+                }
+            });
+        }
+        function addAllowancePolicy(level) {
+            $.ajax({
+                url: '@Url.Action("AddAllowancePolicy", "Governance")',
+                type: 'GET',
+                data: { level: level },
+                success: function (result) {
+                    $('#myModal-body').html(result);
+                    $('#myModal-label').html('Add New Allowance Policy');
+                    showPopup();
+                }
+            });
+        }
+
+        //salaries
+        function getSalaryStepsList() {
+            $.ajax({
+                url: '@Url.Action("SalaryStepsList", "Governance")',
+                type: 'GET',
+                success: function (result) {
+                    $('#listSection').html(result);
+                }
+            });
+        }
+        function getSalaryScalesList() {
+            $.ajax({
+                url: '@Url.Action("SalaryScalesList", "Governance")',
+                type: 'GET',
+                success: function (result) {
+                    $('#listSection').html(result);
+                }
+            });
+        }
+        function addSalaryScale() {
+            $.ajax({
+                url: '@Url.Action("AddSalaryScale", "Governance")',
+                type: 'GET',
+                success: function (result) {
+                    $('#myModal-body').html(result);
+                    $('#myModal-label').html('Add New Salary Scale');
+                    showPopup();
+                }
+            });
+        }
+        function previewSalaryScale(id) {
+            $.ajax({
+                url: '@Url.Action("PreviewSalaryScale", "Governance")',
+                type: 'GET',
+                data: { id: id },
+                success: function (result) {
+                    $('#listSection').html(result);
+                }
+            });
+        }
+        function printSalaryScale() {
+            window.print();
+        }
+    </script>    
+}

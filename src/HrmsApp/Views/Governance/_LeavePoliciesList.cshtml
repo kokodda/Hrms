@@ -1,0 +1,50 @@
+﻿@using HrmsModel.Models;
+@model IEnumerable<LeavePolicy>
+
+<div class="container-fluid">
+    <table class="table table-hover table-condensed">
+        <thead>
+            <tr>
+                @if (ViewBag.level == "GRADE_GROUP")
+                {
+                    <th><small>Grade Group</small></th>
+                }
+                else if (ViewBag.level == "JOB_GRADE")
+                {
+                    <th><small>Job Grade</small></th>
+                }
+                <th><small>Leave Type</small></th>
+                <th><small>Entitlement</small></th>
+                <th><small>Description</small></th>
+                <th><small>Remarks</small></th>
+                <th><small>Is Active</small></th>
+                <th>
+                    <a href="#" class="btn btn-xs" onclick="addLeavePolicy('@ViewBag.level')" data-toggle="modal" data-target="#myModal" title="Add"><span class="glyphicon glyphicon-plus"></span></a>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var item in Model)
+            {
+                <tr>
+                    @if (ViewBag.level == "GRADE_GROUP")
+                    {
+                        <td><small>@item.GradeGroup.Name</small></td>
+                    }
+                    else if (ViewBag.level == "JOB_GRADE")
+                    {
+                        <td><small>@item.JobGrade.Name</small></td>
+                    }
+                    <td><small>@item.LeaveType.Name</small></td>
+                    <td><small>@item.TotalDays</small></td>
+                    <td><small>@item.Description</small></td>
+                    <td><small>@item.Remarks</small></td>
+                    <td><input type="checkbox" asp-for="@item.IsActive" disabled readonly /></td>
+                    <td>
+                        <a href="#" class="btn btn-xs" title="Edit"><span class="glyphicon glyphicon-pencil"></span></a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

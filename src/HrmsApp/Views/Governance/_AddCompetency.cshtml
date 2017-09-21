@@ -1,0 +1,51 @@
+﻿@using HrmsModel.Models;
+@model Competency
+
+<form role="form" id="popupForm" asp-controller="Governance" asp-action="AddCompetency" data-ajax="true" data-ajax-method="POST" data-ajax-update="#listSection" data-ajax-success="onSuccess" data-ajax-failure="onFailure">
+    <input type="hidden" name="level" value="@ViewBag.level" />
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="CompetencySubCategoryId"><small>Competency</small></label>
+        <select class="form-control" asp-for="CompetencySubCategoryId" required>
+            <option value="">Select from List ...</option>
+            @foreach (SelectListItem item in new SelectList(ViewBag.competenciesList, "Id", "Name"))
+            {
+                <option value="@item.Value">@item.Text</option>
+            }
+        </select>
+    </div>
+    @if (ViewBag.level == "GRADE_GROUP")
+    {
+        <div class="form-group-sm">
+            <label class="control-label" asp-for="GradeGroupId"><small>Grade Group</small></label>
+            <select class="form-control" asp-for="GradeGroupId" required>
+                <option value="">Select from List ...</option>
+                @foreach (SelectListItem item in new SelectList(ViewBag.gradeGroupsList, "Id", "Name"))
+                {
+                    <option value="@item.Value">@item.Text</option>
+                }
+            </select>
+        </div>
+    }
+    else if (ViewBag.level == "JOB_GRADE")
+    {
+        <div class="form-group-sm">
+            <label class="control-label" asp-for="JobGradeId"><small>Job Grade</small></label>
+            <select class="form-control" asp-for="JobGradeId" required>
+                <option value="">Select from List ...</option>
+                @foreach (SelectListItem item in new SelectList(ViewBag.jobGradesList, "Id", "Name"))
+                {
+                    <option value="@item.Value">@item.Text</option>
+                }
+            </select>
+        </div>
+    }
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="Requirements"><small>Requirements</small></label>
+        <input type="text" asp-for="Requirements" class="form-control" />
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="Remarks"><small>Remarks</small></label>
+        <input type="text" asp-for="Remarks" class="form-control" />
+    </div>
+</form>
+    

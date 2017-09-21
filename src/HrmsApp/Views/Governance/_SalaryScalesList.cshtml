@@ -1,0 +1,39 @@
+﻿@using HrmsModel.Models;
+@model IEnumerable<SalaryScale>
+
+<div class="container-fluid">
+    <table class="table table-hover table-condensed">
+        <thead>
+            <tr>
+                <th><small>Type</small></th>
+                <th><small>Name</small></th>
+                <th><small>Job Grades</small></th>
+                <th><small>Min Salary</small></th>
+                <th><small>Curr</small></th>
+                <th><small>From Date</small></th>
+                <th><small>Is Active</small></th>
+                <th>
+                    <a href="#" class="btn btn-xs" onclick="addSalaryScale()" data-toggle="modal" data-target="#myModal" title="Add"><span class="glyphicon glyphicon-plus"></span></a>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var item in Model)
+            {
+                string thruDate = item.ThruDate.HasValue ? item.ThruDate.Value.ToString("dd-MM-yyyy") : null;
+                <tr>
+                    <td><small>@item.SalaryScaleType.Name</small></td>
+                    <td><small>@item.Name</small></td>
+                    <td><small>@item.FromJobGrade.Name &mdash; @item.ThruJobGrade.Name</small></td>
+                    <td><small>@item.MinSalary</small></td>
+                    <td><small>@item.CurrencyCode</small></td>
+                    <td><small>@item.FromDate.ToString("dd-MM-yyyy")</small></td>
+                    <td><input type="checkbox" asp-for="@item.IsActive" disabled readonly /></td>
+                    <td>
+                        <a href="#" onclick="previewSalaryScale(@item.Id)" class="btn btn-xs" title="Preview"><span class="glyphicon glyphicon-eye-open"></span></a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,143 @@
+﻿@{
+    ViewData["Title"] = "Job Center";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/lib/bootstrap-fileinput/css/fileinput.css" media="all" rel="stylesheet" type="text/css" />
+
+<div class="container-fluid">
+    <h3>Job Positions Index</h3>
+    <hr />
+    <div class="row">
+        <div class="col-sm-9" id="listSection"></div>
+        <div class="col-sm-3">
+            <div id="detailsSection"></div>
+            <div id="personnelSection"></div>
+            <div id="candidatesSection"></div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="filePopupForm" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" id="modalClose" data-dismiss="modal">&times;</button>
+                <div class="modal-title">File Upload</div>
+            </div>
+            <div class="modal-body" id="filePopupFormBody">
+                <label class="control-label">Select File</label>
+                <input type="file" name="files" accept="file/*" class="file-loading" id="inputFiles" />
+            </div>
+            <div class="modal-footer">
+                <strong>
+                    <button type="button" class="btn btn-default btn-xs pull-right" onclick="onFileInputClearClick('inputFiles')" data-dismiss="modal">Cancel</button> &nbsp; &nbsp;
+                    <span class="pull-right" id="filePopupResult"></span>
+                </strong>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    @{ await Html.RenderPartialAsync("_PopupForm"); }
+    <script src="~/lib/bootstrap-fileinput/js/fileinput.min.js"></script>
+    <script>
+        $(document).on('ready', function () {
+            $.ajax({
+                url: '@Url.Action("JobPositionsList", "JobPositions")',
+                type: 'GET',
+                success: function (result) {
+                    $('#listSection').html(result);
+                }
+            });
+
+            $("#inputFiles").fileinput({
+                uploadAsync: false,
+                showUpload: true,
+                showRemove: true,
+                multiple: false,
+                previewFileType: "file",
+                browseClass: "btn btn-success",
+                browseLabel: "Browse",
+                browseIcon: "<i class=\"glyphicon glyphicon-file\"></i> ",
+                removeClass: "btn btn-danger",
+                removeLabel: "Remove",
+                removeIcon: "<i class=\"glyphicon glyphicon-trash\"></i> ",
+                uploadClass: "btn btn-info",
+                uploadLabel: "Upload",
+                uploadIcon: "<i class=\"glyphicon glyphicon-upload\"></i> ",
+                uploadUrl: '@Url.Action("fileUpload", "JobPositions")'
+            });
+            $('#inputFiles').on('filebatchuploadsuccess', function (event, data, previewId, index) {
+                $('#fileUrl').val(data.filenames[0]);
+                $('#filePopupResult').html('File Successfully Uploaded.');
+            });
+        });
+
+        function onFileInputClearClick(ed) {
+            $('#' + ed).fileinput('clear');
+        }
+
+        function showPopup() {
+            $('#popupResult').html(null).text(null);
+            $('.popupBtns').removeAttr('disabled');
+        }
+        function onPopupSubmit() {
+            $('#popupForm').submit();
+        }
+        function onSuccess() {
+            $('#popupResult').html('Successfully Updated.');
+            $('.popupBtns').attr('disabled', 'disabled');
+        }
+        function onFailure() {
+            $('#formResult').html('Failed to Update! Please Correct All Errors.');
+            $('.popupBtns').removeAttr('disabled');
+        }
+
+        function edit(id) {
+            $.ajax({
+                url: '@Url.Action("Edit", "JobPositions")',
+                type: 'GET',
+                data: { id: id },
+                success: function (result) {
+                    $('#myModal-body').html(result);
+                    $('#myModal-label').html('Edit Job Position');
+                    showPopup();
+                }
+            });
+        }
+        function details(id) {
+            $.ajax({
+                url: '@Url.Action("Details", "JobPositions")',
+                type: 'GET',
+                data: { id: id },
+                success: function (result) {
+                    $('#detailsSection').html(result);
+                }
+            });
+            $.ajax({
+                url: '@Url.Action("PersonnelList", "JobPositions")',
+                type: 'GET',
+                data: { id: id },
+                success: function (result) {
+                    $('#personnelSection').html(result);
+                }
+            });
+            $.ajax({
+                url: '@Url.Action("CandidatesList", "JobPositions")',
+                type: 'GET',
+                data: { id: id },
+                success: function (result) {
+                    $('#candidatesSection').html(result);
+                }
+            });
+        }
+
+        //employee & candidate
+        function addEmployee(id) {
+            var url = '@Url.Action("AddEmployee", "JobPositions", new { ouId = "xyz" })';
+            window.location.href = url.replace("xyz", id);
+        }
+    </script>
+}

@@ -1,0 +1,55 @@
+﻿@using HrmsModel.Models;
+@model LeavePolicy
+
+<form role="form" id="popupForm" asp-controller="Governance" asp-action="AddLeavePolicy" data-ajax="true" data-ajax-method="POST" data-ajax-update="#listSection" data-ajax-success="onSuccess" data-ajax-failure="onFailure">
+    <input type="hidden" name="level" value="@ViewBag.level" />
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="LeaveTypeId"><small>Leave Type</small></label>
+        <select class="form-control" asp-for="LeaveTypeId" required>
+            <option value="">Select from List ...</option>
+            @foreach (SelectListItem item in new SelectList(ViewBag.leaveTypesList, "Id", "Name"))
+            {
+                <option value="@item.Value">@item.Text</option>
+            }
+        </select>
+    </div>
+    @if (ViewBag.level == "GRADE_GROUP")
+    {
+        <div class="form-group-sm">
+            <label class="control-label" asp-for="GradeGroupId"><small>Grade Group</small></label>
+            <select class="form-control" asp-for="GradeGroupId" required>
+                <option value="">Select from List ...</option>
+                @foreach (SelectListItem item in new SelectList(ViewBag.gradeGroupsList, "Id", "Name"))
+                {
+                    <option value="@item.Value">@item.Text</option>
+                }
+            </select>
+        </div>
+    }
+    else if (ViewBag.level == "JOB_GRADE")
+    {
+        <div class="form-group-sm">
+            <label class="control-label" asp-for="JobGradeId"><small>Job Grade</small></label>
+            <select class="form-control" asp-for="JobGradeId" required>
+                <option value="">Select from List ...</option>
+                @foreach (SelectListItem item in new SelectList(ViewBag.jobGradesList, "Id", "Name"))
+                {
+                    <option value="@item.Value">@item.Text</option>
+                }
+            </select>
+        </div>
+    }
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="TotalDays"><small>Entitlement</small></label>
+        <input type="number" asp-for="TotalDays" class="form-control" required />
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="Description"><small>Description</small></label>
+        <input type="text" asp-for="Description" class="form-control" />
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="Remarks"><small>Remarks</small></label>
+        <input type="text" asp-for="Remarks" class="form-control" />
+    </div>
+</form>
+    

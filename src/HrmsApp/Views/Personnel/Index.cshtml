@@ -1,0 +1,99 @@
+﻿@{
+    ViewData["Title"] = "Personnel";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid" style="padding:0px">
+    <br />
+    <h3>Personnel Index</h3>
+    <div class="row">
+        <div class="col-sm-10" id="listSection"></div>
+        <div class="col-sm-2">
+            <div class="form-group-sm">
+                <select class="form-control" id="filter1" onchange="filterByOrgUnitId()">
+                    <option value="">Filter By Unit ...</option>
+                    @foreach (SelectListItem item in new SelectList(ViewBag.orgUnitsList, "Id", "Name"))
+                    {
+                        <option value="@item.Value">@item.Text</option>
+                    }
+                </select>
+            </div>
+            <div class="form-group-sm">
+                <select class="form-control">
+                    <option value="">Filter By Nationality ...</option>
+                    @foreach (SelectListItem item in new SelectList(ViewBag.nationalitiesList, "Id", "Name"))
+                    {
+                        <option value="" onselect="filterByNationalityId(@item.Value)">@item.Text</option>
+                    }
+                </select>
+            </div>
+            <div class="form-group-sm">
+                <select class="form-control">
+                    <option value="">Filter By Region ...</option>
+                    @foreach (SelectListItem item in new SelectList(ViewBag.governoratesList, "Id", "Name"))
+                    {
+                        <option value="" onselect="filterByGovernorateId(@item.Value)">@item.Text</option>
+                    }
+                </select>
+            </div>
+            <hr />
+            <ul class="list-unstyled">
+                <li><small><a href="#">In Probation</a></small></li>
+                <li><small><a href="#">Acting</a></small></li>
+                <li><small><a href="#">Archive</a></small></li>
+                <li><small><a href="#">Birthday List</a></small></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+@Html.Hidden("OrgUnitIdHF")
+
+@section Scripts
+{
+    @{ await Html.RenderPartialAsync("_PopupForm"); }
+    <script>
+        $(document).on('ready', function () {
+            employeesList();
+        });
+
+        function showPopup() {
+            $('#popupResult').html(null).text(null);
+            $('.popupBtns').removeAttr('disabled');
+        }
+        function onPopupSubmit() {
+            $('#popupForm').submit();
+        }
+        function onSuccess() {
+            $('#popupResult').html('Successfully Updated.');
+            $('.popupBtns').attr('disabled', 'disabled');
+        }
+        function onFailure() {
+            $('#formResult').html('Failed to Update! Please Correct All Errors.');
+            $('.popupBtns').removeAttr('disabled');
+        }
+
+        function employeesList() {
+            $.ajax({
+                url: '@Url.Action("EmployeesList", "Personnel")',
+                type: 'GET',
+                data: { ouId: $('#OrgUnitIdHF').val() },
+                success: function (result) {
+                    $('#listSection').html(result);
+                }
+            });
+        }
+        function filterByOrgUnitId() {
+            $('#OrgUnitIdHF').val($('#filter1').val());
+            employeesList();
+
+        }
+
+        //employee
+        function getEmployee(id) {
+            var url = '@Url.Action("GetEmployee", "Personnel", new { id = "xyz" })';
+            window.location.href = url.replace("xyz", id);
+        }
+
+    </script>
+}
