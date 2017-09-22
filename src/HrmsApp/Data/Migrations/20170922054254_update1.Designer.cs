@@ -8,9 +8,10 @@ using HrmsModel.Data;
 namespace HrmsApp.Data.Migrations
 {
     [DbContext(typeof(HrmsDbContext))]
-    partial class HrmsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20170922054254_update1")]
+    partial class update1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.0.3")
@@ -564,15 +565,9 @@ namespace HrmsApp.Data.Migrations
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<DateTime?>("ActualFromDate")
-                        .HasColumnType("date");
+                    b.Property<DateTime?>("ActualFromDate");
 
-                    b.Property<DateTime?>("ActualThruDate")
-                        .HasColumnType("date");
-
-                    b.Property<string>("AppForm");
-
-                    b.Property<string>("Details");
+                    b.Property<DateTime?>("ActualThruDate");
 
                     b.Property<long>("EmployeeId");
 
@@ -580,10 +575,6 @@ namespace HrmsApp.Data.Migrations
                         .HasColumnType("date");
 
                     b.Property<bool>("IsApproved")
-                        .ValueGeneratedOnAdd()
-                        .HasDefaultValue(false);
-
-                    b.Property<bool>("IsCancelled")
                         .ValueGeneratedOnAdd()
                         .HasDefaultValue(false);
 
@@ -602,8 +593,7 @@ namespace HrmsApp.Data.Migrations
                     b.Property<DateTime>("ThruDate")
                         .HasColumnType("date");
 
-                    b.Property<string>("UpdatedBy")
-                        .IsRequired()
+                    b.Property<DateTime>("UpdatedBy")
                         .HasMaxLength(100);
 
                     b.HasKey("Id");

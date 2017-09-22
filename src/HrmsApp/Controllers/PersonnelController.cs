@@ -36,7 +36,7 @@ namespace HrmsApp.Controllers
             return PartialView("_EmployeesList", await model.ToListAsync());
         }
 
-        public async Task<IActionResult> GetEmployee(long id)
+        public async Task<IActionResult> EmployeeIndex(long id)
         {
             var model = _context.Employees.Include(b => b.EmployeePositions).ThenInclude(b => b.OrgUnit).ThenInclude(b => b.JobGrade)
                                 .Include(b => b.EmployeePositions).ThenInclude(b => b.SalaryScale)
@@ -44,13 +44,39 @@ namespace HrmsApp.Controllers
                                 .Include(b => b.EmployeePositions).ThenInclude(b => b.EmployeeType)
                                 .Include(b => b.Nationality)
                                 .SingleOrDefaultAsync(b => b.Id == id);
-            return View("Employee", await model);
+            return View("EmployeeIndex", await model);
         }
 
         public async Task<IActionResult> LeaveBalancesList(long id)
         {
-            var model = _context.EmployeeLeaves.Include(b => b.LeaveType).Where(b => b.EmployeeId == id);
+            var model = _context.EmployeeLeaveBalances.Include(b => b.LeaveType).Where(b => b.EmployeeId == id);
             return PartialView("_LeaveBalancesList", await model.ToListAsync());
+        }
+
+        public async Task<IActionResult> LeavesList(long id)
+        {
+            var model = _context.EmployeeLeaves.Include(b => b.LeaveType).Where(b => b.EmployeeId == id && b.ThruDate.Year == DateTime.Now.Year)
+                                                .OrderByDescending(b => b.FromDate);
+            ViewBag.employeeId = id;
+            return PartialView("_LeavesList", await model.ToListAsync());
+        }
+
+        public IActionResult AddLeave(long id)
+        {
+            ViewBag.leaveTypesList = _lookup.GetLookupItems<LeaveType>();
+            return PartialView("_AddLeave");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddLeave(EmployeeLeave item)
+        {
+            item.LastUpdated = DateTime.Now.Date;
+            item.UpdatedBy = "user";
+            _context.EmployeeLeaves.Add(item);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("LeavesList", item.EmployeeId);
         }
     }
 }

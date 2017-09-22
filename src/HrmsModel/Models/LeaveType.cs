@@ -16,5 +16,6 @@ namespace HrmsModel.Models
 
         public virtual ICollection<LeavePolicy> LeavePolicies { get; set; }
         public virtual ICollection<EmployeeLeave> EmployeeLeaves { get; set; }
+        public virtual ICollection<EmployeeLeaveBalance> EmployeeLeaveBalances { get; set; }
     }
 }

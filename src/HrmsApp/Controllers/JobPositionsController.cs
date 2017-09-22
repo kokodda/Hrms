@@ -111,6 +111,12 @@ namespace HrmsApp.Controllers
             ep.IsProbation = isProbation;
             _context.EmployeePositions.Add(ep);
 
+            //add leave entitlements
+            int annualTypeId = _lookup.GetLookupItems<LeaveType>().SingleOrDefault(b => b.SysCode == "ANNUAL").Id;
+            int sickTypeId = _lookup.GetLookupItems<LeaveType>().SingleOrDefault(b => b.SysCode == "SICK").Id;
+            _context.EmployeeLeaveBalances.Add(new EmployeeLeaveBalance { EmployeeId = item.Id, LeaveTypeId = annualTypeId, AnnualEntitlement = 0 });
+            _context.EmployeeLeaveBalances.Add(new EmployeeLeaveBalance { EmployeeId = item.Id, LeaveTypeId = sickTypeId, AnnualEntitlement = 0 });
+
             await _context.SaveChangesAsync();
             return Content("Employee Successfully Added.", "text/html");
         }

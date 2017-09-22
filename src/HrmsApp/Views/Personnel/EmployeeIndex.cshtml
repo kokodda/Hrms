@@ -46,7 +46,7 @@
             </ul>
         </div>
         <div class="col-sm-10">
-            <div>
+            <div class="raisedcard">
                 @{
                     string jobGrade = "NA";
                     string salaryStep = "NA";
@@ -125,7 +125,10 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-sm-8" id="listSection"></div>
+                <div class="col-sm-12">
+                    <div id="listSection"></div>
+                    <div id="subListSection"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -154,6 +157,7 @@
 
 @section Scripts
 {
+    @{ await Html.RenderPartialAsync("_PopupForm"); }
     <script src="~/lib/bootstrap-fileinput/js/fileinput.min.js"></script>
     <script>
         $(document).on('ready', function () {
@@ -186,6 +190,21 @@
         function onFileInputClearClick(ed) {
             $('#' + ed).fileinput('clear');
         }
+        function showPopup() {
+            $('#popupResult').html(null).text(null);
+            $('.popupBtns').removeAttr('disabled');
+        }
+        function onPopupSubmit() {
+            $('#popupForm').submit();
+        }
+        function onSuccess() {
+            $('#popupResult').html('Successfully Updated.');
+            $('.popupBtns').attr('disabled', 'disabled');
+        }
+        function onFailure() {
+            $('#formResult').html('Failed to Update! Please Correct All Errors.');
+            $('.popupBtns').removeAttr('disabled');
+        }
 
         function getPersonalInfo() {
             $('#listSection').html(null);
@@ -202,6 +221,28 @@
                 success: function (result) {
                     $('#personalInfoSection').hide();
                     $('#listSection').html(result);
+                }
+            });
+            $.ajax({
+                url: '@Url.Action("LeavesList", "Personnel")',
+                type: 'GET',
+                data: { id: id },
+                success: function (result) {
+                    $('#subListSection').html(result);
+                }
+            });
+        }
+
+        function addLeaveTransaction(id) {
+            $.ajax({
+                url: '@Url.Action("AddLeave", "Personnel")',
+                type: 'GET',
+                data: { id: id },
+                success: function (result) {
+                    $('#myModal-body').html(result);
+                    $('#myModal-label').html('Add New Leave Request');
+                    $('#employeeId').val(id);
+                    showPopup();
                 }
             });
         }

@@ -44,6 +44,7 @@ namespace HrmsModel.Data
         public virtual DbSet<EmployeeFamily> EmployeeFamilies { get; set; }
         public virtual DbSet<EmployeeLanguage> EmployeeLanguages { get; set; }
         public virtual DbSet<EmployeeLeave> EmployeeLeaves { get; set; }
+        public virtual DbSet<EmployeeLeaveBalance> EmployeeLeaveBalances { get; set; }
         public virtual DbSet<EmployeePosition> EmployeePositions { get; set; }
         public virtual DbSet<EmployeeQualification> EmployeeQualifications { get; set; }
         public virtual DbSet<EmployeeSalary> EmployeeSalaries { get; set; }
@@ -333,13 +334,28 @@ namespace HrmsModel.Data
             modelBuilder.Entity<EmployeeLanguage>().Property(b => b.WritingLevel).IsRequired().HasMaxLength(20);
             modelBuilder.Entity<EmployeeLanguage>().ToTable("EmployeeLanguages");
 
+            modelBuilder.Entity<EmployeeLeaveBalance>().HasKey(b => b.Id);
+            modelBuilder.Entity<EmployeeLeaveBalance>().HasOne(b => b.Employee).WithMany(b => b.EmployeeLeaveBalances).HasForeignKey(b => b.EmployeeId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<EmployeeLeaveBalance>().HasOne(b => b.LeaveType).WithMany(b => b.EmployeeLeaveBalances).HasForeignKey(b => b.LeaveTypeId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<EmployeeLeaveBalance>().Property(b => b.AnnualEntitlement).HasDefaultValue(0);
+            modelBuilder.Entity<EmployeeLeaveBalance>().Property(b => b.BalanceDays).HasDefaultValue(0);
+            modelBuilder.Entity<EmployeeLeaveBalance>().Property(b => b.BalanceHours).HasDefaultValue(0);
+            modelBuilder.Entity<EmployeeLeaveBalance>().Property(b => b.CarryForward).HasDefaultValue(0);
+            modelBuilder.Entity<EmployeeLeaveBalance>().ToTable("EmployeeLeaveBalances");
+
             modelBuilder.Entity<EmployeeLeave>().HasKey(b => b.Id);
             modelBuilder.Entity<EmployeeLeave>().HasOne(b => b.Employee).WithMany(b => b.EmployeeLeaves).HasForeignKey(b => b.EmployeeId).OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<EmployeeLeave>().HasOne(b => b.LeaveType).WithMany(b => b.EmployeeLeaves).HasForeignKey(b => b.LeaveTypeId).OnDelete(DeleteBehavior.Restrict);
-            modelBuilder.Entity<EmployeeLeave>().Property(b => b.AnnualEntitlement).HasDefaultValue(0);
-            modelBuilder.Entity<EmployeeLeave>().Property(b => b.BalanceDays).HasDefaultValue(0);
-            modelBuilder.Entity<EmployeeLeave>().Property(b => b.BalanceHours).HasDefaultValue(0);
-            modelBuilder.Entity<EmployeeLeave>().Property(b => b.CarryForward).HasDefaultValue(0);
+            modelBuilder.Entity<EmployeeLeave>().Property(b => b.FromDate).HasColumnType("date");
+            modelBuilder.Entity<EmployeeLeave>().Property(b => b.ThruDate).HasColumnType("date");
+            modelBuilder.Entity<EmployeeLeave>().Property(b => b.ActualFromDate).HasColumnType("date");
+            modelBuilder.Entity<EmployeeLeave>().Property(b => b.ActualThruDate).HasColumnType("date");
+            modelBuilder.Entity<EmployeeLeave>().Property(b => b.SubmittedDate).HasColumnType("date");
+            modelBuilder.Entity<EmployeeLeave>().Property(b => b.LastUpdated).HasColumnType("date");
+            modelBuilder.Entity<EmployeeLeave>().Property(b => b.IsApproved).HasDefaultValue(false);
+            modelBuilder.Entity<EmployeeLeave>().Property(b => b.IsEndorsed).HasDefaultValue(false);
+            modelBuilder.Entity<EmployeeLeave>().Property(b => b.IsCancelled).HasDefaultValue(false);
+            modelBuilder.Entity<EmployeeLeave>().Property(b => b.UpdatedBy).IsRequired().HasMaxLength(100);
             modelBuilder.Entity<EmployeeLeave>().ToTable("EmployeeLeaves");
 
             modelBuilder.Entity<EmployeePosition>().HasKey(b => b.Id);

@@ -43,18 +43,28 @@ namespace HrmsModel.Data
                     _context.GradeGroups.Add(x);
                 _context.SaveChanges();
             }
+
+            if(!_context.SalarySteps.Any())
+            {
+                for(int i = 0; i <= 10; i++)
+                {
+                    string s = "s" + i.ToString();
+                    _context.SalarySteps.Add(new SalaryStep { Code = s, Name = s, OthName = s, SortOrder = i + 1, SalaryIncrPctg = 100 + i * 5 });
+                }
+                _context.SaveChanges();
+            }
             
             if(!_context.JobGrades.Any())
             {
                 var jobGrades = new JobGrade[]
                 {
-                    new JobGrade { Code = "U", Name = "U", OthName = "U", GradeGroupId = 1, SortOrder = 1, IsActive = true },
-                    new JobGrade { Code = "A", Name = "A", OthName = "A", GradeGroupId = 1, SortOrder = 2, IsActive = true },
-                    new JobGrade { Code = "B", Name = "B", OthName = "B", GradeGroupId = 1, SortOrder = 3, IsActive = true },
-                    new JobGrade { Code = "C", Name = "C", OthName = "C", GradeGroupId = 1, SortOrder = 4, IsActive = true },
-                    new JobGrade { Code = "1", Name = "1", OthName = "1", GradeGroupId = 2, SortOrder = 5, IsActive = true },
-                    new JobGrade { Code = "2", Name = "2", OthName = "2", GradeGroupId = 2, SortOrder = 6, IsActive = true },
-                    new JobGrade { Code = "3", Name = "3", OthName = "3", GradeGroupId = 3, SortOrder = 7, IsActive = true }
+                    new JobGrade { Code = "U", Name = "U", OthName = "U", GradeGroupId = 1, SalaryIncrPctg = 0, SortOrder = 1, IsActive = true },
+                    new JobGrade { Code = "A", Name = "A", OthName = "A", GradeGroupId = 1, SalaryIncrPctg = 25, SortOrder = 2, IsActive = true },
+                    new JobGrade { Code = "B", Name = "B", OthName = "B", GradeGroupId = 1, SalaryIncrPctg = 35, SortOrder = 3, IsActive = true },
+                    new JobGrade { Code = "C", Name = "C", OthName = "C", GradeGroupId = 1, SalaryIncrPctg = 50, SortOrder = 4, IsActive = true },
+                    new JobGrade { Code = "1", Name = "1", OthName = "1", GradeGroupId = 2, SalaryIncrPctg = 15, SortOrder = 5, IsActive = true },
+                    new JobGrade { Code = "2", Name = "2", OthName = "2", GradeGroupId = 2, SalaryIncrPctg = 15, SortOrder = 6, IsActive = true },
+                    new JobGrade { Code = "3", Name = "3", OthName = "3", GradeGroupId = 3, SalaryIncrPctg = 0, SortOrder = 7, IsActive = true }
                 };
                 foreach (JobGrade x in jobGrades)
                     _context.JobGrades.Add(x);

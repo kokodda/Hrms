@@ -91,7 +91,7 @@
 
         //employee
         function getEmployee(id) {
-            var url = '@Url.Action("GetEmployee", "Personnel", new { id = "xyz" })';
+            var url = '@Url.Action("EmployeeIndex", "Personnel", new { id = "xyz" })';
             window.location.href = url.replace("xyz", id);
         }
 
