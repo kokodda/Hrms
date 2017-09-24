@@ -162,7 +162,8 @@ namespace HrmsModel.Data
                     new CompetencyCategory { Name = "Problem Solving", OthName = "", SortOrder = 40, IsActive = true },
                     new CompetencyCategory { Name = "Developing People", OthName = "", SortOrder = 50, IsActive = true },
                     new CompetencyCategory { Name = "Customer Orientation", OthName = "", SortOrder = 60, IsActive = true },
-                    new CompetencyCategory { Name = "Execution Excellence", OthName = "", SortOrder = 70, IsActive = true }
+                    new CompetencyCategory { Name = "Execution Excellence", OthName = "", SortOrder = 70, IsActive = true },
+                    new CompetencyCategory { Name = "Academic", OthName = "", SortOrder = 1, IsActive = true }
                 };
                 foreach (CompetencyCategory x in compCats)
                     _context.CompetencyCategories.Add(x);
@@ -208,7 +209,8 @@ namespace HrmsModel.Data
                     new CompetencySubCategory { Name = "Technology Orientation", OthName = "", CompetencyCategoryId = 7, Description = "", SortOrder = 330, IsActive = true },
                     new CompetencySubCategory { Name = "Quality Orientation", OthName = "", CompetencyCategoryId = 7, Description = "", SortOrder = 340, IsActive = true },
                     new CompetencySubCategory { Name = "Process and Cost Orientation", OthName = "", CompetencyCategoryId = 7, Description = "", SortOrder = 350, IsActive = true },
-                    new CompetencySubCategory { Name = "Time Management", OthName = "", CompetencyCategoryId = 7, Description = "", SortOrder = 360, IsActive = true }
+                    new CompetencySubCategory { Name = "Time Management", OthName = "", CompetencyCategoryId = 7, Description = "", SortOrder = 360, IsActive = true },
+                    new CompetencySubCategory { Name = "Degree", OthName = "", CompetencyCategoryId = 8, Description = "", SortOrder = 1, IsActive = true }
                 };
                 foreach (CompetencySubCategory x in compSubCats)
                     _context.CompetencySubCategories.Add(x);

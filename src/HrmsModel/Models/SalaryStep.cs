@@ -16,5 +16,6 @@ namespace HrmsModel.Models
         public bool IsActive { get; set; }
 
         public virtual ICollection<EmployeePosition> EmployeePositions { get; set; }
+        public virtual ICollection<EmployeePromotion> EmployeePromotions { get; set; }
     }
 }

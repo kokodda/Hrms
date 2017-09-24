@@ -99,17 +99,28 @@ namespace HrmsApp.Controllers
             item.UpdatedBy = "user";
             _context.Employees.Add(item);
 
-            EmployeePosition ep = new EmployeePosition();
-            ep.OrgUnitId = orgUnitId;
-            ep.EmployeeId = item.Id;
+            var ou = await _context.OrgUnits.SingleOrDefaultAsync(b => b.Id == orgUnitId);
+            EmployeePosition pos = new EmployeePosition();
+            pos.OrgUnitId = orgUnitId;
+            pos.EmployeeId = item.Id;
             if (!employeeTypeId.HasValue)
-                ep.EmployeeTypeId = _lookup.GetLookupItems<EmployeeType>().SingleOrDefault(b => b.SysCode == "FULL_TIME").Id;
-            ep.Name = positionName;
-            ep.OthName = othPositionName;
-            ep.FromDate = fromDate;
-            ep.IsActive = true;
-            ep.IsProbation = isProbation;
-            _context.EmployeePositions.Add(ep);
+                pos.EmployeeTypeId = _lookup.GetLookupItems<EmployeeType>().SingleOrDefault(b => b.SysCode == "FULL_TIME").Id;
+            pos.Name = positionName;
+            pos.OthName = othPositionName;
+            pos.JobGradeId = ou.JobGradeId;
+            pos.FromDate = fromDate;
+            pos.IsActive = true;
+            pos.IsProbation = isProbation;
+            _context.EmployeePositions.Add(pos);
+
+            EmployeePromotion prom = new EmployeePromotion();
+            prom.EmployeePositionId = pos.Id;
+            prom.JobGradeId = ou.JobGradeId;
+            prom.CreatedDate = DateTime.Now.Date;
+            prom.LastUpdated = DateTime.Now.Date;
+            prom.UpdatedBy = "user";
+            _context.EmployeePromotions.Add(prom);
+
 
             //add leave entitlements
             int annualTypeId = _lookup.GetLookupItems<LeaveType>().SingleOrDefault(b => b.SysCode == "ANNUAL").Id;

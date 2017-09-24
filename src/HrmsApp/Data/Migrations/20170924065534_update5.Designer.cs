@@ -8,9 +8,10 @@ using HrmsModel.Data;
 namespace HrmsApp.Data.Migrations
 {
     [DbContext(typeof(HrmsDbContext))]
-    partial class HrmsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20170924065534_update5")]
+    partial class update5
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.0.3")
@@ -702,7 +703,7 @@ namespace HrmsApp.Data.Migrations
                     b.Property<string>("Remarks")
                         .HasMaxLength(256);
 
-                    b.Property<int?>("SalaryScaleTypeId");
+                    b.Property<long?>("SalaryScaleTypeId");
 
                     b.Property<int?>("SalaryStepId");
 
@@ -774,7 +775,7 @@ namespace HrmsApp.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasDefaultValue(0);
 
-                    b.Property<int?>("SalaryScaleTypeId");
+                    b.Property<long?>("SalaryScaleTypeId");
 
                     b.Property<int?>("SalaryStepId");
 
@@ -1629,7 +1630,7 @@ namespace HrmsApp.Data.Migrations
                         .WithMany("EmployeePositions")
                         .HasForeignKey("OrgUnitId");
 
-                    b.HasOne("HrmsModel.Models.SalaryScaleType", "SalaryScaleType")
+                    b.HasOne("HrmsModel.Models.SalaryScale", "SalaryScale")
                         .WithMany("EmployeePositions")
                         .HasForeignKey("SalaryScaleTypeId");
 
@@ -1648,7 +1649,7 @@ namespace HrmsApp.Data.Migrations
                         .WithMany("EmployeePromotions")
                         .HasForeignKey("JobGradeId");
 
-                    b.HasOne("HrmsModel.Models.SalaryScaleType", "SalaryScaleType")
+                    b.HasOne("HrmsModel.Models.SalaryScale", "SalaryScale")
                         .WithMany("EmployeePromotions")
                         .HasForeignKey("SalaryScaleTypeId");
 

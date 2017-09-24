@@ -35,48 +35,34 @@
     <hr />
     <div class="row">
         <div class="col-sm-2">
-            <ul class="list-unstyled">
-                <li><small><a href="javascript:getPersonalInfo();">Personal Information</a></small></li>
-                <li><small><a href="#">Career</a></small></li>
-                <li><small><a href="javascript:getLeave(@Model.Id);">Leave</a></small></li>
-                <li><small><a href="#">Qualifications</a></small></li>
-                <li><small><a href="#">Languages</a></small></li>
-                <li><small><a href="#">Family</a></small></li>
-                <li><small><a href="#">Documents</a></small></li>
-            </ul>
+            @{
+                string jobGrade = "NA";
+                string salaryStep = "NA";
+                string salaryScale = "NA";
+                if (x.JobGrade != null) { jobGrade = x.JobGrade.Name; }
+                if (x.SalaryScaleTypeId.HasValue) { salaryScale = x.SalaryScaleType.Name; }
+                if (x.SalaryStep != null) { salaryStep = x.SalaryStep.Name; }
+                string attendance = x.IsAttendRequired ? "Required" : "Not Required";
+                string overtime = x.IsOverTimeAllowed ? "Allowed" : "Not Allowed";
+
+                <div><small><label>Employee Uid: </label>&nbsp;@Model.EmpUid</small></div>
+                <div><small><label>Join Date: </label>&nbsp;@Model.JoinDate.Value.ToString("dd-MM-yyyy")</small></div>
+                <div><small><label>Date In Position: </label>&nbsp;@x.FromDate.ToString("dd-MM-yyyy")</small></div>
+                <br />
+                <div><small><label>Job Grade: </label>&nbsp;@jobGrade</small></div>
+                <div><small><label>Salary Step: </label>&nbsp;@salaryStep</small></div>
+                <div><small><label>Salary Scale: </label>&nbsp;@salaryScale</small></div>
+                <br />
+                <div><small><label>Attendance: </label>&nbsp;@attendance</small></div>
+                <div><small><label>OverTime: </label>&nbsp;@overtime</small></div>
+                <div><small><label>Employment Type: </label>&nbsp;@x.EmployeeType.Name</small></div>
+            }
         </div>
-        <div class="col-sm-10">
-            <div class="raisedcard">
-                @{
-                    string jobGrade = "NA";
-                    string salaryStep = "NA";
-                    string salaryScale = "NA";
-                    if (x.OrgUnit.JobGrade != null) { jobGrade = x.OrgUnit.JobGrade.Name; }
-                    if (x.SalaryScale != null) { salaryScale = x.SalaryScale.Name; }
-                    if (x.SalaryStep != null) { salaryStep = x.SalaryStep.Name; }
-                    <div class="row">
-                        <div class="col-sm-3"><small><label>Employee Uid: </label>&nbsp;@Model.EmpUid</small></div>
-                        <div class="col-sm-3"><small><label>Join Date: </label>&nbsp;@Model.JoinDate.Value.ToString("dd-MM-yyyy")</small></div>
-                        <div class="col-sm-4"><small><label>Date In Position: </label>&nbsp;@x.FromDate.ToString("dd-MM-yyyy")</small></div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-3"><small><label>Job Grade: </label>&nbsp;@jobGrade</small></div>
-                        <div class="col-sm-3"><small><label>Salary Step: </label>&nbsp;@salaryStep</small></div>
-                        <div class="col-sm-4"><small><label>Salary Scale: </label>&nbsp;@salaryScale</small></div>
-                    </div>
-                    <div class="row">
-                        @{
-                            string attendance = x.IsAttendRequired ? "Required" : "Not Required";
-                            string overtime = x.IsOverTimeAllowed ? "Allowed" : "Not Allowed";
-                        }
-                        <div class="col-sm-3"><small><label>Attendance: </label>&nbsp;@attendance</small></div>
-                        <div class="col-sm-3"><small><label>OverTime: </label>&nbsp;@overtime</small></div>
-                        <div class="col-sm-4"><small><label>Employment Type: </label>&nbsp;@x.EmployeeType.Name</small></div>
-                    </div>
-                }
-            </div>
-            <br />
+
+        <div class="col-sm-8">
             <div id="personalInfoSection" style="padding:0px">
+                <label><small>Personal Information</small></label>
+                <hr />
                 <div class="row">
                     <div class="col-sm-7">
                         <table class="table table-condensed" style="border:solid thin;border-color:silver">
@@ -124,12 +110,37 @@
                     <div class="col-sm-4"><small><label>Military Service: </label>&nbsp;@isMilitary</small></div>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-sm-12">
-                    <div id="listSection"></div>
-                    <div id="subListSection"></div>
-                </div>
+
+            <div id="contactsSection">
+                <label><small>Contacts</small></label>
+                <hr />
+                <div><small><span class="fa fa-mobile"></span>&nbsp;@Model.Phone</small></div>
+                <div><small><span class="glyphicon glyphicon-phone-alt"></span>&nbsp;@Model.HomePhone1</small></div>
+                <div><small><span class="glyphicon glyphicon-phone-alt"></span>&nbsp;@Model.HomePhone2</small></div>
+                <div><small><span class="glyphicon glyphicon-envelope"></span>&nbsp;@Model.Email</small></div>
+                <br />
+                <label><small>Addresses</small></label>
+                <hr />
+                <div><small><label>Governorate:</label>&nbsp;@Model.Governorate.Name</small></div>
+                <div><small><label>Address:</label>&nbsp;@Model.Address</small></div>
+                <div><small><label>Permenant Address:</label>&nbsp;@Model.PermenantAddress</small></div>
             </div>
+
+            <div id="listSection"></div>
+            <div id="subListSection"></div>
+        </div>
+
+        <div class="col-sm-2">
+            <ul class="list-unstyled">
+                <li><small><a href="javascript:getPersonalInfo();">Personal Information</a></small></li>
+                <li><small><a href="javascript:getContacts();">Contacts</a></small></li>
+                <li><small><a href="javascript:getList('Career');">Career</a></small></li>
+                <li><small><a href="javascript:getLeave();">Leave</a></small></li>
+                <li><small><a href="javascript:getList('Qualifications');">Qualifications</a></small></li>
+                <li><small><a href="javascript:getList('Languages');">Languages</a></small></li>
+                <li><small><a href="javascript:getList('Family');">Family</a></small></li>
+                <li><small><a href="javascript:getList('Documents');">Documents</a></small></li>
+            </ul>
         </div>
     </div>
 </div>
@@ -157,6 +168,7 @@
 
 @section Scripts
 {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
     @{ await Html.RenderPartialAsync("_PopupForm"); }
     <script src="~/lib/bootstrap-fileinput/js/fileinput.min.js"></script>
     <script>
@@ -184,7 +196,7 @@
                 $('#popupResult').html('Employee Photo Successfully Uploaded.');
             });
 
-            $('#personalInfoSection').hide();
+            $('#contactsSection').hide();
         })
 
         function onFileInputClearClick(ed) {
@@ -205,43 +217,131 @@
             $('#formResult').html('Failed to Update! Please Correct All Errors.');
             $('.popupBtns').removeAttr('disabled');
         }
-
-        function getPersonalInfo() {
-            $('#listSection').html(null);
-            $('#personalInfoSection').show();
-        }
         function editPhoto() {
             $('#photoModal').show();
         }
-        function getLeave(id) {
+
+        function getPersonalInfo() {
+            $('#listSection').html(null);
+            $('#subListSection').html(null);
+            $('#contactsSection').hide();
+            $('#personalInfoSection').show();
+        }
+        function getContacts() {
+            $('#listSection').html(null);
+            $('#subListSection').html(null);
+            $('#contactsSection').show();
+            $('#personalInfoSection').hide();
+        }
+        function getLeave() {
             $.ajax({
                 url: '@Url.Action("LeaveBalancesList", "Personnel")',
                 type: 'GET',
-                data: { id: id },
+                data: { id: @Model.Id },
                 success: function (result) {
                     $('#personalInfoSection').hide();
+                    $('#contactsSection').hide();
                     $('#listSection').html(result);
                 }
             });
             $.ajax({
                 url: '@Url.Action("LeavesList", "Personnel")',
                 type: 'GET',
-                data: { id: id },
+                data: { id: @Model.Id },
                 success: function (result) {
                     $('#subListSection').html(result);
                 }
             });
         }
-
-        function addLeaveTransaction(id) {
+        function addLeaveTransaction() {
             $.ajax({
                 url: '@Url.Action("AddLeave", "Personnel")',
                 type: 'GET',
-                data: { id: id },
                 success: function (result) {
                     $('#myModal-body').html(result);
                     $('#myModal-label').html('Add New Leave Request');
-                    $('#employeeId').val(id);
+                    $('#employeeId').val(@Model.Id);
+                    showPopup();
+                }
+            });
+        }
+
+        function getList(lst) {
+            var url;
+            switch (lst) {
+                case 'Career':
+                    url = '@Url.Action("PromotionsList", "Personnel")';
+                    break;
+                case 'Qualifications':
+                    url = '@Url.Action("QualificationsList", "Personnel")';
+                    break;
+                case 'Languages':
+                    url = '@Url.Action("LanguagesList", "Personnel")';
+                    break;
+                case 'Family':
+                    url = '@Url.Action("FamilyList", "Personnel")';
+                    break;
+                case 'Documents':
+                    url = '@Url.Action("DocumentsList", "Personnel")';
+                    break;
+            }
+            $.ajax({
+                url: url,
+                type: 'GET',
+                data: { id: @Model.Id },
+                success: function (result) {
+                    $('#personalInfoSection').hide();
+                    $('#contactsSection').hide();
+                    $('#subListSection').html(null);
+                    $('#listSection').html(result);
+                }
+            });
+        }
+        function addToEmployee(lst) {
+            var url;
+            var popupTitle;
+            switch (lst) {
+                case 'Career':
+                    url = '@Url.Action("AddPromotion", "Personnel")';
+                    popupTitle = 'Add Career Transaction';
+                    break;
+                case 'Qualifications':
+                    url = '@Url.Action("AddQualification", "Personnel")';
+                    popupTitle = 'Add Qualification';
+                    break;
+                case 'Languages':
+                    url = '@Url.Action("AddLanguage", "Personnel")';
+                    popupTitle = 'Add Language';
+                    break;
+                case 'Family':
+                    url = '@Url.Action("AddFamilyMember", "Personnel")';
+                    popupTitle = 'Add Family Member';
+                    break;
+                case 'Documents':
+                    url = '@Url.Action("AddDocument", "Personnel")';
+                    popupTitle = 'Add Document';
+                    break;
+            }
+            $.ajax({
+                url: url,
+                type: 'GET',
+                success: function (result) {
+                    $('#myModal-body').html(result);
+                    $('#myModal-label').html(popupTitle);
+                    $('#employeeId').val(@Model.Id);
+                    showPopup();
+                }
+            });
+        }
+
+        function addPromotion(id) {
+            $.ajax({
+                url: '@Url.Action("AddPromotion", "Personnel")',
+                type: 'GET',
+                success: function (result) {
+                    $('#myModal-body').html(result);
+                    $('#myModal-label').html('Add New Promotion');
+                    $('#employeePositionId').val(id);
                     showPopup();
                 }
             });

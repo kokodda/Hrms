@@ -51,6 +51,7 @@ namespace HrmsModel.Data
         public virtual DbSet<GenericGroup> GenericGroups { get; set; }
         public virtual DbSet<GenericSubGroup> GenericSubGroups { get; set; }
         public virtual DbSet<EmployeeGroup> EmployeeGroups { get; set; }
+        public virtual DbSet<EmployeePromotion> EmployeePromotions { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -190,8 +191,8 @@ namespace HrmsModel.Data
             modelBuilder.Entity<LeavePolicy>().Property(b => b.Description).IsRequired(false);
             modelBuilder.Entity<LeavePolicy>().Property(b => b.Remarks).IsRequired(false);
             modelBuilder.Entity<LeavePolicy>().Property(b => b.IsActive).HasDefaultValue(true);
-            modelBuilder.Entity<LeavePolicy>().Property(b => b.CreatedDate).HasColumnType("Date");
-            modelBuilder.Entity<LeavePolicy>().Property(b => b.LastUpdated).HasColumnType("Date");
+            modelBuilder.Entity<LeavePolicy>().Property(b => b.CreatedDate).HasColumnType("date");
+            modelBuilder.Entity<LeavePolicy>().Property(b => b.LastUpdated).HasColumnType("date");
             modelBuilder.Entity<LeavePolicy>().Property(b => b.UpdatedBy).IsRequired().HasMaxLength(100);
             modelBuilder.Entity<LeavePolicy>().ToTable("LeavePolicies");
 
@@ -204,8 +205,8 @@ namespace HrmsModel.Data
             modelBuilder.Entity<AllowancePolicy>().Property(b => b.Description).IsRequired(false);
             modelBuilder.Entity<AllowancePolicy>().Property(b => b.Remarks).IsRequired(false);
             modelBuilder.Entity<AllowancePolicy>().Property(b => b.IsActive).HasDefaultValue(true);
-            modelBuilder.Entity<AllowancePolicy>().Property(b => b.CreatedDate).HasColumnType("Date");
-            modelBuilder.Entity<AllowancePolicy>().Property(b => b.LastUpdated).HasColumnType("Date");
+            modelBuilder.Entity<AllowancePolicy>().Property(b => b.CreatedDate).HasColumnType("date");
+            modelBuilder.Entity<AllowancePolicy>().Property(b => b.LastUpdated).HasColumnType("date");
             modelBuilder.Entity<AllowancePolicy>().Property(b => b.UpdatedBy).IsRequired().HasMaxLength(100);
             modelBuilder.Entity<AllowancePolicy>().ToTable("AllowancePolicies");
 
@@ -217,8 +218,8 @@ namespace HrmsModel.Data
             modelBuilder.Entity<Competency>().Property(b => b.Requirements).IsRequired(false);
             modelBuilder.Entity<Competency>().Property(b => b.Remarks).IsRequired(false);
             modelBuilder.Entity<Competency>().Property(b => b.IsActive).HasDefaultValue(true);
-            modelBuilder.Entity<Competency>().Property(b => b.CreatedDate).HasColumnType("Date");
-            modelBuilder.Entity<Competency>().Property(b => b.LastUpdated).HasColumnType("Date");
+            modelBuilder.Entity<Competency>().Property(b => b.CreatedDate).HasColumnType("date");
+            modelBuilder.Entity<Competency>().Property(b => b.LastUpdated).HasColumnType("date");
             modelBuilder.Entity<Competency>().Property(b => b.UpdatedBy).IsRequired().HasMaxLength(100);
             modelBuilder.Entity<Competency>().ToTable("Competencies");
 
@@ -235,8 +236,8 @@ namespace HrmsModel.Data
             modelBuilder.Entity<OrgUnit>().Property(b => b.Capacity).HasDefaultValue(1);
             modelBuilder.Entity<OrgUnit>().Property(b => b.TotalStaff).HasDefaultValue(0);
             modelBuilder.Entity<OrgUnit>().Property(b => b.TotalVacant).HasDefaultValue(1);
-            modelBuilder.Entity<OrgUnit>().Property(b => b.CreatedDate).HasColumnType("Date");
-            modelBuilder.Entity<OrgUnit>().Property(b => b.LastUpdated).HasColumnType("Date");
+            modelBuilder.Entity<OrgUnit>().Property(b => b.CreatedDate).HasColumnType("date");
+            modelBuilder.Entity<OrgUnit>().Property(b => b.LastUpdated).HasColumnType("date");
             modelBuilder.Entity<OrgUnit>().Property(b => b.UpdatedBy).IsRequired().HasMaxLength(100);
             modelBuilder.Entity<OrgUnit>().Property(b => b.IsActive).HasDefaultValue(true);
             modelBuilder.Entity<OrgUnit>().ToTable("OrgUnits");
@@ -249,8 +250,8 @@ namespace HrmsModel.Data
             modelBuilder.Entity<SalaryScale>().Property(b => b.OthName).IsRequired().HasMaxLength(100);
             modelBuilder.Entity<SalaryScale>().Property(b => b.Description).IsRequired(false).HasMaxLength(256);
             modelBuilder.Entity<SalaryScale>().Property(b => b.CurrencyCode).IsRequired().HasMaxLength(3);
-            modelBuilder.Entity<SalaryScale>().Property(b => b.FromDate).HasColumnType("Date");
-            modelBuilder.Entity<SalaryScale>().Property(b => b.ThruDate).HasColumnType("Date");
+            modelBuilder.Entity<SalaryScale>().Property(b => b.FromDate).HasColumnType("date");
+            modelBuilder.Entity<SalaryScale>().Property(b => b.ThruDate).HasColumnType("date");
             modelBuilder.Entity<SalaryScale>().Property(b => b.UpdatedBy).IsRequired().HasMaxLength(100);
             modelBuilder.Entity<SalaryScale>().Property(b => b.IsActive).HasDefaultValue(true);
             modelBuilder.Entity<SalaryScale>().ToTable("SalaryScales");
@@ -267,7 +268,7 @@ namespace HrmsModel.Data
             modelBuilder.Entity<Candidate>().Property(b => b.OthFamilyName).IsRequired(false).HasMaxLength(50);
             modelBuilder.Entity<Candidate>().Property(b => b.OthFatherName).IsRequired(false).HasMaxLength(50);
             modelBuilder.Entity<Candidate>().Property(b => b.OthMotherName).IsRequired(false).HasMaxLength(50);
-            modelBuilder.Entity<Candidate>().Property(b => b.BirthDate).HasColumnType("Date");
+            modelBuilder.Entity<Candidate>().Property(b => b.BirthDate).HasColumnType("date");
             modelBuilder.Entity<Candidate>().Property(b => b.IsMale).HasDefaultValue(true);
             modelBuilder.Entity<Candidate>().Property(b => b.MaritalStatus).IsRequired().HasMaxLength(50);
             modelBuilder.Entity<Candidate>().Property(b => b.Phone).IsRequired().HasMaxLength(50);
@@ -276,7 +277,7 @@ namespace HrmsModel.Data
             modelBuilder.Entity<Candidate>().Property(b => b.Email).IsRequired(false).HasMaxLength(50);
             modelBuilder.Entity<Candidate>().Property(b => b.Address).IsRequired(false).HasMaxLength(256);
             modelBuilder.Entity<Candidate>().Property(b => b.PermenantAddress).IsRequired(false).HasMaxLength(256);
-            modelBuilder.Entity<Candidate>().Property(b => b.LastUpdated).HasColumnType("Date");
+            modelBuilder.Entity<Candidate>().Property(b => b.LastUpdated).HasColumnType("date");
             modelBuilder.Entity<Candidate>().Property(b => b.UpdatedBy).IsRequired().HasMaxLength(100);
             modelBuilder.Entity<Candidate>().ToTable("Candidates");
 
@@ -291,7 +292,7 @@ namespace HrmsModel.Data
             modelBuilder.Entity<Employee>().Property(b => b.OthFamilyName).IsRequired(false).HasMaxLength(50);
             modelBuilder.Entity<Employee>().Property(b => b.OthFatherName).IsRequired(false).HasMaxLength(50);
             modelBuilder.Entity<Employee>().Property(b => b.OthMotherName).IsRequired(false).HasMaxLength(50);
-            modelBuilder.Entity<Employee>().Property(b => b.BirthDate).HasColumnType("Date");
+            modelBuilder.Entity<Employee>().Property(b => b.BirthDate).HasColumnType("date");
             modelBuilder.Entity<Employee>().Property(b => b.IsMale).HasDefaultValue(true);
             modelBuilder.Entity<Employee>().Property(b => b.MaritalStatus).IsRequired().HasMaxLength(50);
             modelBuilder.Entity<Employee>().Property(b => b.BloodGroup).IsRequired(false).HasMaxLength(50);
@@ -301,8 +302,8 @@ namespace HrmsModel.Data
             modelBuilder.Entity<Employee>().Property(b => b.Email).IsRequired(false).HasMaxLength(50);
             modelBuilder.Entity<Employee>().Property(b => b.Address).IsRequired(false).HasMaxLength(256);
             modelBuilder.Entity<Employee>().Property(b => b.PermenantAddress).IsRequired(false).HasMaxLength(256);
-            modelBuilder.Entity<Employee>().Property(b => b.JoinDate).HasColumnType("Date");
-            modelBuilder.Entity<Employee>().Property(b => b.LastUpdated).HasColumnType("Date");
+            modelBuilder.Entity<Employee>().Property(b => b.JoinDate).HasColumnType("date");
+            modelBuilder.Entity<Employee>().Property(b => b.LastUpdated).HasColumnType("date");
             modelBuilder.Entity<Employee>().Property(b => b.UpdatedBy).IsRequired().HasMaxLength(100);
             modelBuilder.Entity<Employee>().Property(b => b.IsActive).HasDefaultValue(false);
             modelBuilder.Entity<Employee>().ToTable("Employees");
@@ -310,9 +311,9 @@ namespace HrmsModel.Data
             modelBuilder.Entity<EmployeeDocument>().HasKey(b => b.Id);
             modelBuilder.Entity<EmployeeDocument>().HasOne(b => b.Employee).WithMany(b => b.EmployeeDocuments).HasForeignKey(b => b.EmployeeId).OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<EmployeeDocument>().HasOne(b => b.DocumentType).WithMany(b => b.EmployeeDocuments).HasForeignKey(b => b.DocumentTypeId).OnDelete(DeleteBehavior.Restrict);
-            modelBuilder.Entity<EmployeeDocument>().Property(b => b.Details).HasMaxLength(256);
-            modelBuilder.Entity<EmployeeDocument>().Property(b => b.Url).HasMaxLength(100);
-            modelBuilder.Entity<EmployeeDocument>().Property(b => b.ExpiryDate).HasColumnType("Date");
+            modelBuilder.Entity<EmployeeDocument>().Property(b => b.Details).IsRequired().HasMaxLength(256);
+            modelBuilder.Entity<EmployeeDocument>().Property(b => b.Url).HasMaxLength(450);
+            modelBuilder.Entity<EmployeeDocument>().Property(b => b.ExpiryDate).HasColumnType("date");
             modelBuilder.Entity<EmployeeDocument>().Property(b => b.IsActive).HasDefaultValue(true);
             modelBuilder.Entity<EmployeeDocument>().ToTable("EmployeeDocuments");
 
@@ -321,7 +322,7 @@ namespace HrmsModel.Data
             modelBuilder.Entity<EmployeeFamily>().HasOne(b => b.FamilyMemberType).WithMany(b => b.EmployeeFamilies).HasForeignKey(b => b.FamilyMemberTypeId).OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<EmployeeFamily>().Property(b => b.Name).IsRequired().HasMaxLength(100);
             modelBuilder.Entity<EmployeeFamily>().Property(b => b.Contacts).HasMaxLength(100);
-            modelBuilder.Entity<EmployeeFamily>().Property(b => b.BirthDate).HasColumnType("Date");
+            modelBuilder.Entity<EmployeeFamily>().Property(b => b.BirthDate).HasColumnType("date");
             modelBuilder.Entity<EmployeeFamily>().Property(b => b.IsActive).HasDefaultValue(true);
             modelBuilder.Entity<EmployeeFamily>().ToTable("EmployeeFamilies");
 
@@ -362,7 +363,8 @@ namespace HrmsModel.Data
             modelBuilder.Entity<EmployeePosition>().HasOne(b => b.Employee).WithMany(b => b.EmployeePositions).HasForeignKey(b => b.EmployeeId).OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<EmployeePosition>().HasOne(b => b.OrgUnit).WithMany(b => b.EmployeePositions).HasForeignKey(b => b.OrgUnitId).OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<EmployeePosition>().HasOne(b => b.EmployeeType).WithMany(b => b.EmployeePositions).HasForeignKey(b => b.EmployeeTypeId).OnDelete(DeleteBehavior.Restrict);
-            modelBuilder.Entity<EmployeePosition>().HasOne(b => b.SalaryScale).WithMany(b => b.EmployeePositions).HasForeignKey(b => b.SalaryScaleTypeId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<EmployeePosition>().HasOne(b => b.JobGrade).WithMany(b => b.EmployeePositions).HasForeignKey(b => b.JobGradeId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<EmployeePosition>().HasOne(b => b.SalaryScaleType).WithMany(b => b.EmployeePositions).HasForeignKey(b => b.SalaryScaleTypeId).OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<EmployeePosition>().HasOne(b => b.SalaryStep).WithMany(b => b.EmployeePositions).HasForeignKey(b => b.SalaryStepId).OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<EmployeePosition>().Property(b => b.Name).HasMaxLength(100);
             modelBuilder.Entity<EmployeePosition>().Property(b => b.OthName).HasMaxLength(100);
@@ -372,11 +374,30 @@ namespace HrmsModel.Data
             modelBuilder.Entity<EmployeePosition>().Property(b => b.IsAttendRequired).HasDefaultValue(false);
             modelBuilder.Entity<EmployeePosition>().Property(b => b.IsOverTimeAllowed).HasDefaultValue(false);
             modelBuilder.Entity<EmployeePosition>().Property(b => b.IsProbation).HasDefaultValue(false);
-            modelBuilder.Entity<EmployeePosition>().Property(b => b.TotalSalary).HasDefaultValue(0);
+            modelBuilder.Entity<EmployeePosition>().Property(b => b.BasicSalary).HasDefaultValue(0);
             modelBuilder.Entity<EmployeePosition>().Property(b => b.Details).HasMaxLength(256);
             modelBuilder.Entity<EmployeePosition>().Property(b => b.Remarks).HasMaxLength(256);
-            modelBuilder.Entity<EmployeePosition>().Property(b => b.IsActing).HasDefaultValue(false);
+            modelBuilder.Entity<EmployeePosition>().Property(b => b.IsActive).HasDefaultValue(false);
             modelBuilder.Entity<EmployeePosition>().ToTable("EmployeePositions");
+
+            modelBuilder.Entity<EmployeePromotion>().HasKey(b => b.Id);
+            modelBuilder.Entity<EmployeePromotion>().HasOne(b => b.EmployeePosition).WithMany(b => b.EmployeePromotions).HasForeignKey(b => b.EmployeePositionId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<EmployeePromotion>().HasOne(b => b.JobGrade).WithMany(b => b.EmployeePromotions).HasForeignKey(b => b.JobGradeId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<EmployeePromotion>().HasOne(b => b.SalaryScaleType).WithMany(b => b.EmployeePromotions).HasForeignKey(b => b.SalaryScaleTypeId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<EmployeePromotion>().HasOne(b => b.SalaryStep).WithMany(b => b.EmployeePromotions).HasForeignKey(b => b.SalaryStepId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<EmployeePromotion>().Property(b => b.EffectiveFromDate).HasColumnType("date");
+            modelBuilder.Entity<EmployeePromotion>().Property(b => b.IsApproved).HasDefaultValue(false);
+            modelBuilder.Entity<EmployeePromotion>().Property(b => b.IsCancelled).HasDefaultValue(false);
+            modelBuilder.Entity<EmployeePromotion>().Property(b => b.IsIncreasePercentage).HasDefaultValue(false);
+            modelBuilder.Entity<EmployeePromotion>().Property(b => b.BasicSalary).HasDefaultValue(0);
+            modelBuilder.Entity<EmployeePromotion>().Property(b => b.SalaryIncreaseValue).HasDefaultValue(0);
+            modelBuilder.Entity<EmployeePromotion>().Property(b => b.Details).HasMaxLength(256);
+            modelBuilder.Entity<EmployeePromotion>().Property(b => b.Remarks).HasMaxLength(256);
+            modelBuilder.Entity<EmployeePromotion>().Property(b => b.IsActive).HasDefaultValue(false);
+            modelBuilder.Entity<EmployeePromotion>().Property(b => b.CreatedDate).HasColumnType("date");
+            modelBuilder.Entity<EmployeePromotion>().Property(b => b.LastUpdated).HasColumnType("date");
+            modelBuilder.Entity<EmployeePromotion>().Property(b => b.UpdatedBy).IsRequired().HasMaxLength(100);
+            modelBuilder.Entity<EmployeePromotion>().ToTable("EmployeePromotions");
 
             modelBuilder.Entity<EmployeeQualification>().HasKey(b => b.Id);
             modelBuilder.Entity<EmployeeQualification>().HasOne(b => b.Employee).WithMany(b => b.EmployeeQualifications).HasForeignKey(b => b.EmployeeId).OnDelete(DeleteBehavior.Restrict);
@@ -392,9 +413,9 @@ namespace HrmsModel.Data
             modelBuilder.Entity<EmployeeSalary>().HasKey(b => b.Id);
             modelBuilder.Entity<EmployeeSalary>().HasOne(b => b.Employee).WithMany(b => b.EmployeeSalaries).HasForeignKey(b => b.EmployeeId).OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<EmployeeSalary>().Property(b => b.Details).HasMaxLength(256);
-            modelBuilder.Entity<EmployeeSalary>().Property(b => b.FromDate).HasColumnType("Date");
+            modelBuilder.Entity<EmployeeSalary>().Property(b => b.FromDate).HasColumnType("date");
             modelBuilder.Entity<EmployeeSalary>().Property(b => b.IsActive).HasDefaultValue(true);
-            modelBuilder.Entity<EmployeeSalary>().Property(b => b.LastUpdated).HasColumnType("Date");
+            modelBuilder.Entity<EmployeeSalary>().Property(b => b.LastUpdated).HasColumnType("date");
             modelBuilder.Entity<EmployeeSalary>().Property(b => b.UpdatedBy).HasMaxLength(100);
             modelBuilder.Entity<EmployeeSalary>().ToTable("EmployeeSalarys");
 

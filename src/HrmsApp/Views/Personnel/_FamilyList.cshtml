@@ -1,0 +1,35 @@
+﻿@using HrmsModel.Models;
+@model IEnumerable<EmployeeFamily>
+
+<div class="container-fluid" style="padding:0px">
+    <label><small>Family</small></label>
+    <hr />
+    <table class="table table-condensed">
+        <thead>
+            <tr>
+                <th><small>Member</small></th>
+                <th><small>Name</small></th>
+                <th><small>Date of Birth</small></th>
+                <th><small>Contacts</small></th>
+                <th>
+                    <a href="#" class="btn btn-xs" onclick="addToEmployee('Family')" data-toggle="modal" data-target="#myModal" title="Add Member"><span class="glyphicon glyphicon-plus"></span></a>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td><small>@item.FamilyMemberType.Name</small></td>
+                    <td><small>@item.Name</small></td>
+                    <td><small>@item.BirthDate.ToString("dd-MM-yyyy")</small></td>
+                    <td><small>@item.Contacts</small></td>
+                    <td>
+                        <a href="#" class="btn btn-xs" onclick="editFamilyMember(@item.Id)" title="Edit"><span class="glyphicon glyphicon-pencil"></span></a>
+                        <a href="#" class="btn btn-xs" onclick="removeFamilyMember(@item.Id)" title="Remove"><span class="glyphicon glyphicon-trash"></span></a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

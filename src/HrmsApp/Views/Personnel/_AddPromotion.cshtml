@@ -1,0 +1,63 @@
+﻿@using HrmsModel.Models;
+@model EmployeePromotion
+
+<form role="form" id="popupForm" asp-controller="Personnel" asp-action="AddPromotion" data-ajax="true" data-ajax-method="POST" data-ajax-update="#listSection" data-ajax-success="onSuccess" data-ajax-failure="onFailure">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" asp-for="EmployeePositionId" class="form-control" id="employeePositionId" />
+    <div class="form-group-sm">
+        <label asp-for="EffectiveFromDate" class="control-label"><small>Effective From Date</small></label>
+        <input type="date" asp-for="EffectiveFromDate" class="form-control" required />
+    </div>
+    <div class="form-group-sm">
+        <label asp-for="JobGradeId" class="control-label"><small>Job Grade</small></label>
+        <select asp-for="JobGradeId" class="form-control">
+            <option value="">Select from List ...</option>
+            @foreach (SelectListItem x in new SelectList(ViewBag.jobGradesList, "Id", "Code"))
+            {
+                <option value="@x.Value">@x.Text</option>
+            }
+        </select>
+    </div>
+    <div class="form-group-sm">
+        <label asp-for="SalaryStepId" class="control-label"><small>Salary Step</small></label>
+        <select asp-for="SalaryStepId" class="form-control">
+            <option value="">Select from List ...</option>
+            @foreach (SelectListItem x in new SelectList(ViewBag.salaryStepsList, "Id", "Code"))
+            {
+                <option value="@x.Value">@x.Text</option>
+            }
+        </select>
+    </div>
+    <div class="form-group-sm">
+        <label asp-for="SalaryScaleTypeId" class="control-label"><small>Salary Scale</small></label>
+        <select asp-for="SalaryScaleTypeId" class="form-control">
+            <option value="">Select from List ...</option>
+            @foreach (SelectListItem x in new SelectList(ViewBag.salaryScaleTypesList, "Id", "Name"))
+            {
+                <option value="@x.Value">@x.Text</option>
+            }
+        </select>
+    </div>
+    <div class="form-group-sm">
+        <label asp-for="BasicSalary" class="control-label"><small>Basic Salary</small></label>
+        <input type="text" asp-for="BasicSalary" class="form-control" />
+    </div>
+    <div class="form-group-sm">
+        <label asp-for="SalaryIncreaseValue" class="control-label"><small>Salary Increase</small></label>
+        <input type="text" asp-for="SalaryIncreaseValue" class="form-control" />
+    </div>
+    <div class="input-group-sm">
+        <label class="control-label" asp-for="IsIncreasePercentage">
+            <input type="checkbox" asp-for="IsIncreasePercentage" />
+            <span><small>Is Percentage?</small></span>
+        </label>
+    </div>
+    <div class="form-group-sm">
+        <label asp-for="Details" class="control-label"><small>Details</small></label>
+        <input type="text" asp-for="Details" class="form-control" />
+    </div>
+    <div class="form-group-sm">
+        <label asp-for="Remarks" class="control-label"><small>Remarks</small></label>
+        <input type="text" asp-for="Remarks" class="form-control" />
+    </div>
+</form>
