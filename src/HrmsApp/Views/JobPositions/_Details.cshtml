@@ -2,33 +2,43 @@
 @model OrgUnit
 
 <div class="container-fluid" style="padding:0px;background-color:white">
-    <label>@Model.Name</label>
+    <div style="text-align:center"><label>@Model.PositionName</label></div>
     <hr />
-    <dl class="dl-horizontal pull-left">
-        <dt><small>Job Code</small></dt>
-        <dd><small>@Model.JobCode</small></dd>
-
-        <dt><small>Capacity</small></dt>
-        <dd><small>@Model.Capacity</small></dd>
-
-        <dt><small>Current Staff</small></dt>
-        <dd><small>@Model.TotalStaff</small></dd>
-
-        <dt><small>Vacancy</small></dt>
-        <dd><small>@Model.TotalVacant</small></dd>
-    </dl>
-    <div class="input-group">
-        <label class="control-label"><small>Job Description</small></label>
-        <span class="input-group-btn">
+    <div class="row">
+        <div class="col-sm-5"><label><small>Reporting To</small></label></div>
+        <div class="col-sm-7"><small>@ViewBag.reportingTo</small></div>
+    </div>
+    <div class="row">
+        <div class="col-sm-5"><label><small>Line Manager</small></label></div>
+        <div class="col-sm-7"><small>@ViewBag.lineManager</small></div>
+    </div>
+    <div class="row">
+        <div class="col-sm-5"><label><small>Job Code</small></label></div>
+        <div class="col-sm-7"><small>@Model.JobCode</small></div>
+    </div>
+    <div class="row">
+        <div class="col-sm-5"><label><small>Capacity</small></label></div>
+        <div class="col-sm-7"><small>@Model.Capacity</small></div>
+    </div>
+    <div class="row">
+        <div class="col-sm-5"><label><small>Current Staff</small></label></div>
+        <div class="col-sm-7"><small>@Model.TotalStaff</small></div>
+    </div>
+    <div class="row">
+        <div class="col-sm-5"><label><small>Vacancy</small></label></div>
+        <div class="col-sm-7"><small>@Model.TotalVacant</small></div>
+    </div>
+    <div class="row">
+        <div class="col-sm-5" style="padding-right:0px"><label><small>Job Description</small></label></div>
+        <div class="col-sm-7">
             <button class="btn btn-xs btn-primary" type="button">Download</button>
-        </span>
-        <span class="input-group-btn">
             <button class="btn btn-xs btn-default" type="button" data-toggle="modal" data-target="#filePopupForm">Upload</button>
-        </span>
+        </div>
     </div>
     <hr />
     <div>
-        <a href="#" onclick="addEmployee(@Model.Id)"><small>Add Employee ...</small></a> &nbsp;&nbsp;
-        <a href="#" onclick="addCandidate(@Model.Id)"><small>Add Candidate ...</small></a>
+        <a href="#" onclick="addEmployee(@Model.Id)"><small>Add Employee</small></a> |
+        <a href="#" onclick="addCandidate(@Model.Id)"><small>Add Candidate</small></a> |
+        <a href="#" onclick="addCandidate(@Model.Id)"><small>Add Vacancy</small></a>
     </div>
 </div>

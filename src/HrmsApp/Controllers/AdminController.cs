@@ -25,7 +25,7 @@ namespace HrmsApp.Controllers
             return View();
         }
 
-        public IActionResult TypesList(string typeName)
+        public IActionResult Dictionary(string typeName)
         {
             ViewBag.typeName = typeName;
             List<ILookup> model = new List<ILookup>();
@@ -75,14 +75,10 @@ namespace HrmsApp.Controllers
                         model.Add(new LookupItem { Id = x.Id, Name = x.Name, OthName = x.OthName, SysCode = "", SortOrder = x.SortOrder, IsActive = x.IsActive });
                     break;
             }
-            return PartialView("_TypesList", model);
+            return PartialView("_Dictionary", model);
         }
 
 
-        public async Task<IActionResult> CompetencyAreasList()
-        {
-            var model = _context.CompetencyAreaTypes.OrderBy(b => b.SortOrder);
-            return PartialView("_CompetencyAreaTypesList", await model.ToListAsync());
-        }
+        
     }
 }

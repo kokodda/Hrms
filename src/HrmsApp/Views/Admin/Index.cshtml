@@ -9,19 +9,19 @@
         <div class="col-sm-3">
             <label><small>Dictionary</small></label>
             <ul class="list-unstyled">
-                <li><a href="javascript:getTypesList('OrgUnitType');"><small>Organization Unit Types</small></a></li>
-                <li><a href="javascript:getTypesList('EmployeeType');"><small>Employee Types</small></a></li>
-                <li><a href="javascript:getTypesList('StandardTitleType');"><small>Standard Titles</small></a></li>
-                <li><a href="javascript:getTypesList('LeaveType');"><small>Leave Types</small></a></li>
-                <li><a href="javascript:getTypesList('AllowanceType');"><small>Allowance Types</small></a></li>
-                <li><a href="javascript:getTypesList('CompetencyAreaType');"><small>Competency Areas</small></a></li>
-                <li><a href="javascript:getTypesList('SalaryScaleType');"><small>Salary Scale Types</small></a></li>
-                <li><a href="javascript:getTypesList('DocumentType');"><small>Employee Document Types</small></a></li>
-                <li><a href="javascript:getTypesList('FamilyMemberType');"><small>Employee Family Member Types</small></a></li>
-                <li><a href="javascript:getTypesList('QualificationType');"><small>Employee Qualification Types</small></a></li>
-                <li><a href="javascript:getTypesList('LanguageType');"><small>Employee Language Types</small></a></li>
-                <li><a href="javascript:getTypesList('Nationality');"><small>Employee Nationalities List</small></a></li>
-                <li><a href="javascript:getTypesList('Governorate');"><small>Governorates List</small></a></li>
+                <li><a href="javascript:getDictionary('OrgUnitType');"><small>Organization Unit Types</small></a></li>
+                <li><a href="javascript:getDictionary('EmployeeType');"><small>Employee Types</small></a></li>
+                <li><a href="javascript:getDictionary('StandardTitleType');"><small>Standard Titles</small></a></li>
+                <li><a href="javascript:getDictionary('LeaveType');"><small>Leave Types</small></a></li>
+                <li><a href="javascript:getDictionary('AllowanceType');"><small>Allowance Types</small></a></li>
+                <li><a href="javascript:getDictionary('CompetencyAreaType');"><small>Competency Areas</small></a></li>
+                <li><a href="javascript:getDictionary('SalaryScaleType');"><small>Salary Scale Types</small></a></li>
+                <li><a href="javascript:getDictionary('DocumentType');"><small>Employee Document Types</small></a></li>
+                <li><a href="javascript:getDictionary('FamilyMemberType');"><small>Employee Family Member Types</small></a></li>
+                <li><a href="javascript:getDictionary('QualificationType');"><small>Employee Qualification Types</small></a></li>
+                <li><a href="javascript:getDictionary('LanguageType');"><small>Employee Language Types</small></a></li>
+                <li><a href="javascript:getDictionary('Nationality');"><small>Employee Nationalities List</small></a></li>
+                <li><a href="javascript:getDictionary('Governorate');"><small>Governorates List</small></a></li>
             </ul>
             <hr />
             
@@ -54,9 +54,9 @@
             $('.popupBtns').removeAttr('disabled');
         }
 
-        function getTypesList(typeName) {
+        function getDictionary(typeName) {
             $.ajax({
-                url: '@Url.Action("TypesList", "Admin")',
+                url: '@Url.Action("Dictionary", "Admin")',
                 type: 'GET',
                 data: { typeName: typeName },
                 success: function (result) {

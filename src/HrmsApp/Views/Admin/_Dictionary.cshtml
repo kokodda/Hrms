@@ -1,9 +1,13 @@
 ﻿@using HrmsModel.Models;
 @model IEnumerable<ILookup>
+@{ 
+    string title1 = ViewBag.typeName;
+    title1 = title1.Replace("Type", " Types");
+}
 
 <div class="container-fluid" style="padding:0px">
-    <div style="text-align:center;color:gray"><small>@ViewBag.typeName</small></div>
-    <br />
+    <div style="color:silver">@title1</div>
+    <hr />
     <table class="table table-hover table-condensed">
         <thead>
             <tr>

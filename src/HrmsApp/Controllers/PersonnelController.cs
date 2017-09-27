@@ -203,5 +203,13 @@ namespace HrmsApp.Controllers
             var pos = await _context.EmployeePositions.SingleOrDefaultAsync(b => b.Id == item.EmployeePositionId); 
             return RedirectToAction("PromotionsList", new { id = pos.EmployeeId });
         }
+
+        //groups
+        public async Task<IActionResult> GroupsList(long id)
+        {
+            var model = _context.EmployeeGroups.Include(b => b.GenericSubGroup).ThenInclude(b => b.GenericGroup)
+                                .Where(b => b.EmployeeId == id && b.GenericSubGroup.IsActive).OrderBy(b => b.JoinDate);
+            return PartialView("_GroupsList", await model.ToListAsync());
+        }
     }
 }

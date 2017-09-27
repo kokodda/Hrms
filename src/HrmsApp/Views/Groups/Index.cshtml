@@ -1,0 +1,125 @@
+﻿@{
+    ViewData["Title"] = "Groups";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid" style="padding:0px">
+    <br />
+    <div class="row">
+        <div class="col-sm-2" id="groupsSection"></div>
+        <div class="col-sm-6" id="subGroupsSection"></div>
+        <div class="col-sm-4" id="membersSection"></div>
+    </div>
+</div>
+
+@section Scripts
+{
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+    @{ await Html.RenderPartialAsync("_PopupForm"); }
+    <script>
+        $(document).on('ready', function () {
+            groupsList();
+        });
+
+        function showPopup() {
+            $('#popupResult').html(null).text(null);
+            $('.popupBtns').removeAttr('disabled');
+        }
+        function onPopupSubmit() {
+            $('#popupForm').submit();
+        }
+        function onSuccess() {
+            $('#popupResult').html('Successfully Updated.');
+            $('.popupBtns').attr('disabled', 'disabled');
+        }
+        function onFailure() {
+            $('#formResult').html('Failed to Update! Please Correct All Errors.');
+            $('.popupBtns').removeAttr('disabled');
+        }
+
+        //groups
+        function groupsList() {
+            $.ajax({
+                url: '@Url.Action("GroupsList", "Groups")',
+                type: 'GET',
+                success: function (result) {
+                    $('#groupsSection').html(result);
+                }
+            });
+        }
+        function addGroup() {
+            $.ajax({
+                url: '@Url.Action("AddGroup", "Groups")',
+                type: 'GET',
+                success: function (result) {
+                    $('#myModal-body').html(result);
+                    $('#myModal-label').html('Add Group');
+                    showPopup();
+                }
+            });
+        }
+
+        //sub groups
+        function subGroupsList(id) {
+            $.ajax({
+                url: '@Url.Action("SubGroupsList", "Groups")',
+                type: 'GET',
+                data: { id: id },
+                success: function (result) {
+                    $('#membersSection').html(null);
+                    $('#subGroupsSection').html(result);
+                }
+            });
+        }
+        function addSubGroup(id) {
+            $.ajax({
+                url: '@Url.Action("AddSubGroup", "Groups")',
+                type: 'GET',
+                success: function (result) {
+                    $('#myModal-body').html(result);
+                    $('#myModal-label').html('Add Group');
+                    $('#groupId').val(id);
+                    showPopup();
+                }
+            });
+        }
+
+        //members
+        function membersList(id, sgName) {
+            $.ajax({
+                url: '@Url.Action("MembersList", "Groups")',
+                type: 'GET',
+                data: { id: id },
+                success: function (result) {
+                    $('#membersSection').html(result);
+                }
+            });
+        }
+        function addMember(id) {
+            $.ajax({
+                url: '@Url.Action("AddMember", "Groups")',
+                type: 'GET',
+                success: function (result) {
+                    $('#myModal-body').html(result);
+                    $('#myModal-label').html('Add Member');
+                    $('#subGroupId').val(id);
+                    showPopup();
+                }
+            });
+        }
+        function removeMember(id) {
+            if (!confirm('Please Confirm! About to Remove Member from Group?')) {
+                return;
+            }
+            var t = $('#mTitle').text();
+            $.ajax({
+                url: '@Url.Action("RemoveMember", "Groups")',
+                type: 'GET',
+                data: { id: id },
+                success: function (result) {
+                    $('#membersSection').html(result);
+                }
+            });
+        }
+    </script>
+}

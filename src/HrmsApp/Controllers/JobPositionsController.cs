@@ -63,12 +63,42 @@ namespace HrmsApp.Controllers
         public async Task<IActionResult> Details(long id)
         {
             var model = await _context.OrgUnits.SingleOrDefaultAsync(b => b.Id == id);
+            string reportingTo = "NA";
+            string lineManager = "NA";
+            if (model.Code.Length > 3)
+            {
+                string parentCode = model.Code.Substring(0, model.Code.Length - 3);
+                reportingTo = _context.OrgUnits.SingleOrDefault(b => b.Code == parentCode).PositionName;
+                if (model.LineManagerOrgUnitId.HasValue)
+                    lineManager = _context.OrgUnits.SingleOrDefault(b => b.Id == model.LineManagerOrgUnitId.Value).PositionName;
+            }
+            ViewBag.reportingTo = reportingTo;
+            ViewBag.lineManager = lineManager;
+
             return PartialView("_Details", model);
         }
 
         public async Task<IActionResult> PersonnelList(long id)
         {
-            return PartialView("_PersonnelList");
+            var ou = await _context.OrgUnits.SingleOrDefaultAsync(b => b.Id == id);
+            var pos = await _context.EmployeePositions.Include(b => b.Employee).SingleOrDefaultAsync(b => b.OrgUnitId == id && !b.IsActing && b.IsActive);
+            if (pos != null)
+                ViewBag.headedBy = pos.Employee.FirstName + " " + pos.Employee.FamilyName;
+            else
+                ViewBag.headedBy = "NA";
+
+            List<string> model = new List<string>();
+            var x = await _context.EmployeePositions.Include(b => b.OrgUnit).Include(b => b.Employee)
+                            .Where(b => b.OrgUnit.Code.StartsWith(ou.Code) && b.OrgUnit.Code.Length == ou.Code.Length + 3 && b.IsActive)
+                            .Select(b => new { pName = b.Employee.FirstName + " " + b.Employee.FamilyName + " - " + b.OrgUnit.PositionName }).Distinct().ToListAsync();
+            foreach (var x1 in x)
+                model.Add(x1.pName);
+
+            int cnt = await _context.EmployeePositions.Include(b => b.OrgUnit).Include(b => b.Employee)
+                            .Where(b => b.OrgUnit.Code.StartsWith(ou.Code) && b.OrgUnit.Code.Length > ou.Code.Length + 3 && b.IsActive)
+                            .Distinct().CountAsync();
+            ViewBag.indirectSubordinates = cnt.ToString();
+            return PartialView("_PersonnelList", model);
         }
 
         public async Task<IActionResult> CandidatesList(long id)

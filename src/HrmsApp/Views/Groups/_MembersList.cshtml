@@ -1,0 +1,30 @@
+﻿@using HrmsModel.Models;
+@model IEnumerable<EmployeeGroup>
+
+<div class="container-fluid" style="padding:0px">
+    <div style="color:silver">@ViewBag.pTitle</div>
+    <hr />
+    <table class="table table-hover table-condensed">
+        <thead>
+            <tr>
+                <th><small>Name</small></th>
+                <th><small>Position</small></th>
+                <th>
+                    <a role="button" href="#" class="btn btn-xs" onclick="addMember(@ViewBag.subGroupId)" data-toggle="modal" data-target="#myModal" title="Add Member"><span class="glyphicon glyphicon-plus"></span></a>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td><small>@item.Employee.FirstName &nbsp; @item.Employee.FamilyName</small></td>
+                    <td><small>@item.Employee.EmployeePositions.FirstOrDefault(b => !b.IsActing && b.IsActive).OrgUnit.PositionName</small></td>
+                    <td>
+                        <a role="button" href="#" class="btn btn-xs" onclick="removeMember(@item.Id)" style="color:red" title="Remove"><span class="glyphicon glyphicon-remove"></span></a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

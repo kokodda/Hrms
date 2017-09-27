@@ -140,6 +140,7 @@
                 <li><small><a href="javascript:getList('Languages');">Languages</a></small></li>
                 <li><small><a href="javascript:getList('Family');">Family</a></small></li>
                 <li><small><a href="javascript:getList('Documents');">Documents</a></small></li>
+                <li><small><a href="javascript:groupsList();">Groups</a></small></li>
             </ul>
         </div>
     </div>
@@ -343,6 +344,20 @@
                     $('#myModal-label').html('Add New Promotion');
                     $('#employeePositionId').val(id);
                     showPopup();
+                }
+            });
+        }
+
+        function groupsList() {
+            $.ajax({
+                url: '@Url.Action("GroupsList", "Personnel")',
+                type: 'GET',
+                data: { id: @Model.Id },
+                success: function (result) {
+                    $('#personalInfoSection').hide();
+                    $('#contactsSection').hide();
+                    $('#subListSection').html(null);
+                    $('#listSection').html(result);
                 }
             });
         }
