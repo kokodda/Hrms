@@ -3,68 +3,141 @@
 
 <link rel="stylesheet" href="~/css/OrgChart.css" />
 
-<div class="content">
+@{ 
+    string rootCode = null;
+    int rootCodeLength = 0;
+    if (Model.Count() != 0)
+    {
+        rootCode = Model.First().Code;
+        rootCodeLength = rootCode.Length;
+    }
+}
+
+<div class="container-fluid" style="padding:0px">
     <div style="text-align:center">
         <h1>Organization Chart</h1>
-        <div>
+        <div class="btn-group-xs">
+            <button class="btn btn-xs btn-default" id="goUp" onclick="goUp()" title="Up One Level"><span class="glyphicon glyphicon-arrow-up"></span></button>
             <button class="btn btn-xs btn-primary" onclick="addOrgUnit(false)" data-toggle="modal" data-target="#myModal">Add Unit</button>
             <button class="btn btn-xs btn-default" onclick="addOrgUnit(true)" data-toggle="modal" data-target="#myModal">Add Sub</button>
         </div>
     </div>
     <br />
-    <figure class="org-chart cf">
-        <ul class="company">
-            <li>
-                <ul class="director">
+    @if (Model.Count() != 0)
+    {
+        <div class="content">
+            <figure class="org-chart cf">
+                <ul class="company">
                     <li>
-                        @if (Model.Count() != 0)
-                        {
-                            var x = Model.Where(b => b.Code.Length == 2).First();
-                            <a href="#" id="@x.Id" data-code="@x.OrgUnitType.SysCode"><span>@x.Name</span><br /><span>@x.PositionName</span></a>
-                        }
-                        <ul class="subdirector">
-                            @foreach (var ou in Model.Where(b => b.Code.Length == 5 && b.OrgUnitType.SysCode == "SUB").OrderBy(b => b.SortOrder))
-                            {
-                                <li><a href="#" id="@ou.Id" data-code="SUB"><span>@ou.Name</span><br /><span>@ou.PositionName</span></a></li>
-                            }
-                        </ul>
-                        <ul class="departments cf">
-                            <li><a href="#"><span>Liaison Office</span><br /><span>Executive Director</span></a></li>
-                            @{
-                                string[] divStyle = new string[5];
-                                divStyle[0] = "dep-a"; divStyle[1] = "dep-b"; divStyle[2] = "dep-c"; divStyle[3] = "dep-d"; divStyle[4] = "dep-e";
-                                int idx = -1;
-                                foreach (var ou in Model.Where(b => b.Code.Length == 5 && b.OrgUnitType.SysCode != "SUB").OrderBy(b => b.SortOrder))
+                        @*<ul>
+                                @if (rootCodeLength > 2)
                                 {
-                                    idx++;
-                                    <li class="department @divStyle[idx]">
-                                        <a href="#" id="@ou.Id" data-code="@ou.OrgUnitType.SysCode"><span>@ou.Name</span><br /><span>@ou.PositionName</span></a>
-                                        <ul class="sections">
-                                            <li class="section"><a href="#"><span>Department A1</span></a></li>
-                                            <li class="section"><a href="#"><span>Department A2</span></a></li>
-                                            <li class="section"><a href="#"><span>Department A3</span></a></li>
-                                            <li class="section"><a href="#"><span>Department A4</span></a></li>
-                                            <li class="section"><a href="#"><span>Department A5</span></a></li>
+                                    string[] codes = rootCode.Split('.');
+                                    string ouCode = null;
+                                    foreach (string cd in codes)
+                                    {
+                                        if (string.IsNullOrEmpty(ouCode)) { ouCode = cd; } else { ouCode = ouCode + "." + cd; }
+                                        if (ouCode.Length < rootCodeLength)
+                                        {
+                                            var x = Model.FirstOrDefault(b => b.Code == ouCode);
+                                            <li><a href="#" id="@x.Id" data-code="@x.OrgUnitType.SysCode"><span>@x.Name</span><br /><span>@x.HeadPositionName</span></a></li>
+                                        }
+                                    }
+                                }
+                            </ul>*@
+                        <ul class="director">
+                            <li>
+                                @if (Model.Count() != 0)
+                                {
+                                    var x = Model.Where(b => b.Code.Length == rootCodeLength).First();
+                                    <a href="#" id="@x.Id" data-code="@x.OrgUnitType.SysCode"><span>@x.Name</span><br /><span>@x.HeadPositionName</span></a>
+                                }
+                                <ul class="subdirector">
+                                    @foreach (var level1 in Model.Where(b => b.Code.Length == (rootCodeLength + 3) && b.OrgUnitType.SysCode == "OFFICE"))
+                                    {
+                                        <li><a href="#" id="@level1.Id" data-code="SUB"><span>@level1.Name</span><br /><span>@level1.HeadPositionName</span></a></li>
+                                    }
+                                </ul>
+                                <ul class="departments cf">
+                                    <li>
+                                        <ul>
+                                            @foreach (var level1 in Model.Where(b => b.Code.Length == (rootCodeLength + 3) && b.OrgUnitType.SysCode == "SUB"))
+                                            {
+                                                <li><a href="#" id="@level1.Id" data-code="SUB"><span>@level1.Name</span><br /><span>@level1.HeadPositionName</span></a></li>
+                                            }
                                         </ul>
                                     </li>
-                                }
-                            }
+                                    @{
+                                        string[] divStyle = new string[5];
+                                        divStyle[0] = "dep-a"; divStyle[1] = "dep-b"; divStyle[2] = "dep-c"; divStyle[3] = "dep-d"; divStyle[4] = "dep-e";
+                                        int idx = -1;
+                                        foreach (var level2 in Model.Where(b => b.Code.Length == (rootCodeLength + 3) && b.OrgUnitType.SysCode != "SUB" && b.OrgUnitType.SysCode != "OFFICE"))
+                                        {
+                                            idx++;
+                                            <li class="department @divStyle[idx]">
+                                                <a href="#" id="@level2.Id" data-code="@level2.OrgUnitType.SysCode"><span>@level2.Name</span><br /><span>@level2.HeadPositionName</span></a>
+                                                <ul class="sections">
+                                                    @foreach (var level3 in Model.Where(b => b.Code.StartsWith(level2.Code) && b.Code.Length == (rootCodeLength + 6) && b.OrgUnitType.SysCode != "SUB" && b.OrgUnitType.SysCode != "OFFICE"))
+                                                    {
+                                                        <li class="section">
+                                                            <a href="#" id="@level3.Id" data-code="@level3.OrgUnitType.SysCode"><span>@level3.Name</span><br /><span>@level3.HeadPositionName</span></a>
+                                                        </li>
+                                                    }
+                                                </ul>
+                                            </li>
+                                        }
+                                    }
+                                </ul>
+                            </li>
                         </ul>
                     </li>
                 </ul>
-            </li>
-        </ul>
-    </figure>
+            </figure>
+        </div>
+    }
+    
 </div>
 
-@Html.Hidden("currOrgUnitIdHF")
-@Html.Hidden("currOrgUnitTypeCodeHF")
+@if(Model.Count() != 0)
+{
+    @Html.Hidden("currOrgUnitIdHF", Model.First().Id)
+    @Html.Hidden("currOrgUnitNameHF", Model.First().Name)
+    @Html.Hidden("currOrgUnitTypeCodeHF", Model.First().Code)
+}
+else
+{
+    @Html.Hidden("currOrgUnitIdHF")
+    @Html.Hidden("currOrgUnitNameHF")
+    @Html.Hidden("currOrgUnitTypeCodeHF")
+}
 
 <script>
     $(function () {
         $('a').on('click', function () {
-            $('#currOrgUnitIdHF').val($(this).attr('id'));
-            $('#currOrgUnitTypeCodeHF').val($(this).data('code'));
+            if ($(this).data('code') === 'SUB') {
+                alert('Error! Unit Type "SUB" Cannot have Subordinates.');
+                return;
+            }
+            $.ajax({
+                url: '@Url.Action("OrgChart", "Organization")',
+                type: 'GET',
+                data: { id: $(this).attr('id') },
+                success: function (result) {
+                    $('#listSection').html(result);
+                    $('#goUp').removeAttr('disabled');
+                }
+            });
         });
     })
+
+    function goUp() {
+        $.ajax({
+            url: '@Url.Action("OrgChart", "Organization")',
+            type: 'GET',
+            data: { id: $('#currOrgUnitIdHF').val(), isUp: true },
+            success: function (result) {
+                $('#listSection').html(result);
+            }
+        });
+    }
 </script>

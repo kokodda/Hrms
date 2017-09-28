@@ -10,6 +10,10 @@ namespace HrmsModel.Models
         public long Id { get; set; }
         public string AppForm { get; set; }
         public long OrgUnitId { get; set; }
+        public long? PositionId { get; set; }
+        public bool IsHead { get; set; }
+        public string JobName { get; set; }
+        public string OthJobName { get; set; }
         public string FirstName { get; set; }
         public string FamilyName { get; set; }
         public string FatherName { get; set; }
@@ -34,6 +38,7 @@ namespace HrmsModel.Models
         public string UpdatedBy { get; set; }
 
         public virtual OrgUnit OrgUnit { get; set; }
+        public virtual Position Position { get; set; }
         public virtual Nationality Nationality { get; set; }
         public virtual Governorate Governorate { get; set; }
     }

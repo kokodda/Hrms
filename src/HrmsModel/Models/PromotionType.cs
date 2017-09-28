@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace HrmsModel.Models
 {
-    public class EmployeeType : ILookup
+    public class PromotionType : ILookup
     {
         public int Id { get; set; }
         public string Name { get; set; }
@@ -14,6 +14,6 @@ namespace HrmsModel.Models
         public int SortOrder { get; set; }
         public bool IsActive { get; set; }
 
-        public virtual ICollection<EmployeePosition> EmployeePositions { get; set; }
+        public virtual ICollection<EmployeePromotion> EmployeePromotions { get; set; }
     }
 }

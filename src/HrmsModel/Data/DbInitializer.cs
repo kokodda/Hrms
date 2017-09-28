@@ -217,18 +217,31 @@ namespace HrmsModel.Data
                 _context.SaveChanges();
             }
 
-            if (!_context.EmployeeTypes.Any())
+            if (!_context.EmploymentTypes.Any())
             {
-                var employeeTypes = new EmployeeType[]
+                var employmentTypes = new EmploymentType[]
                 {
-                    new EmployeeType { Name = "Full Time Job", OthName = "Full Time Job", SysCode = "FULL_TIME", SortOrder = 10, IsActive = true },
-                    new EmployeeType { Name = "Part Time Job", OthName = "Part Time Job", SysCode = "PART_TIME", SortOrder = 20, IsActive = true },
-                    new EmployeeType { Name = "Consultant", OthName = "Consultant", SysCode = "CONSULTANT", SortOrder = 30, IsActive = true },
-                    new EmployeeType { Name = "Contractor", OthName = "Contractor", SysCode = "CONTRACTOR", SortOrder = 40, IsActive = true },
-                    new EmployeeType { Name = "Daily", OthName = "Daily", SysCode = "DAILY", SortOrder = 50, IsActive = true }
+                    new EmploymentType { Name = "Full Time Job", OthName = "Full Time Job", SysCode = "FULL_TIME", SortOrder = 10, IsActive = true },
+                    new EmploymentType { Name = "Part Time Job", OthName = "Part Time Job", SysCode = "PART_TIME", SortOrder = 20, IsActive = true },
+                    new EmploymentType { Name = "Consultant", OthName = "Consultant", SysCode = "CONSULTANT", SortOrder = 30, IsActive = true },
+                    new EmploymentType { Name = "Contractor", OthName = "Contractor", SysCode = "CONTRACTOR", SortOrder = 40, IsActive = true },
+                    new EmploymentType { Name = "Daily", OthName = "Daily", SysCode = "DAILY", SortOrder = 50, IsActive = true }
                 };
-                foreach (EmployeeType x in employeeTypes)
-                    _context.EmployeeTypes.Add(x);
+                foreach (EmploymentType x in employmentTypes)
+                    _context.EmploymentTypes.Add(x);
+                _context.SaveChanges();
+            }
+
+            if (!_context.PromotionTypes.Any())
+            {
+                var promotionTypes = new PromotionType[]
+                {
+                    new PromotionType { Name = "Promotion", OthName = "Promotion", SysCode = "PROMO", SortOrder = 10, IsActive = true },
+                    new PromotionType { Name = "Salary Increase", OthName = "Salary Increase", SysCode = "SAL_INCR", SortOrder = 20, IsActive = true },
+                    new PromotionType { Name = "Transfer", OthName = "Transfer", SysCode = "TRANS", SortOrder = 30, IsActive = true }
+                };
+                foreach (PromotionType x in promotionTypes)
+                    _context.PromotionTypes.Add(x);
                 _context.SaveChanges();
             }
 

@@ -71,8 +71,8 @@ namespace HrmsApp.Controllers
         //members
         public async Task<IActionResult> MembersList(int id)
         {
-            var model = _context.EmployeeGroups.Include(b => b.Employee).ThenInclude(b => b.EmployeePositions).ThenInclude(b => b.OrgUnit)
-                                        .Where(b => b.GenericSubGroupId == id && b.Employee.EmployeePositions.FirstOrDefault(c => !c.IsActing && c.IsActive) != null);
+            var model = _context.EmployeeGroups.Include(b => b.Employee).ThenInclude(b => b.Employments).ThenInclude(b => b.OrgUnit)
+                                        .Where(b => b.GenericSubGroupId == id && b.Employee.Employments.FirstOrDefault(c => !c.IsActing && c.IsActive) != null);
             ViewBag.subGroupId = id;
             var x = await _context.GenericSubGroups.SingleOrDefaultAsync(b => b.Id == id);
             ViewBag.pTitle = x.Name;

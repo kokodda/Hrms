@@ -18,16 +18,18 @@ namespace HrmsModel.Data
         public virtual DbSet<LeaveType> LeaveTypes { get; set; }
         public virtual DbSet<AllowanceType> AllowanceTypes { get; set; }
         public virtual DbSet<CompetencyAreaType> CompetencyAreaTypes { get; set; }
-        public virtual DbSet<EmployeeType> EmployeeTypes { get; set; }
+        public virtual DbSet<EmploymentType> EmploymentTypes { get; set; }
         public virtual DbSet<FamilyMemberType> FamilyMemberTypes { get; set; }
         public virtual DbSet<DocumentType> DocumentTypes { get; set; }
         public virtual DbSet<QualificationType> QualificationTypes { get; set; }
         public virtual DbSet<LanguageType> LanguageTypes { get; set; }
         public virtual DbSet<SalaryScaleType> SalaryScaleTypes { get; set; }
+        public virtual DbSet<PromotionType> PromotionTypes { get; set; }
         public virtual DbSet<Governorate> Governorates { get; set; }
         public virtual DbSet<Nationality> Nationalities { get; set; }
 
         public virtual DbSet<OrgUnit> OrgUnits { get; set; }
+        public virtual DbSet<Position> Positions { get; set; }
         public virtual DbSet<GradeGroup> GradeGroups { get; set; }
         public virtual DbSet<JobGrade> JobGrades { get; set; }
         public virtual DbSet<SalaryStep> SalarySteps { get; set; }
@@ -45,7 +47,7 @@ namespace HrmsModel.Data
         public virtual DbSet<EmployeeLanguage> EmployeeLanguages { get; set; }
         public virtual DbSet<EmployeeLeave> EmployeeLeaves { get; set; }
         public virtual DbSet<EmployeeLeaveBalance> EmployeeLeaveBalances { get; set; }
-        public virtual DbSet<EmployeePosition> EmployeePositions { get; set; }
+        public virtual DbSet<Employment> Employments { get; set; }
         public virtual DbSet<EmployeeQualification> EmployeeQualifications { get; set; }
         public virtual DbSet<EmployeeSalary> EmployeeSalaries { get; set; }
         public virtual DbSet<GenericGroup> GenericGroups { get; set; }
@@ -98,12 +100,12 @@ namespace HrmsModel.Data
             modelBuilder.Entity<SalaryScaleType>().Property(b => b.IsActive).HasDefaultValue(true);
             modelBuilder.Entity<SalaryScaleType>().ToTable("SalaryScaleTypes");
 
-            modelBuilder.Entity<EmployeeType>().HasKey(b => b.Id);
-            modelBuilder.Entity<EmployeeType>().HasAlternateKey(b => b.SysCode).HasName("UK_EmployeeType_SysCode");
-            modelBuilder.Entity<EmployeeType>().Property(b => b.Name).IsRequired().HasMaxLength(100);
-            modelBuilder.Entity<EmployeeType>().Property(b => b.OthName).IsRequired().HasMaxLength(100);
-            modelBuilder.Entity<EmployeeType>().Property(b => b.IsActive).HasDefaultValue(true);
-            modelBuilder.Entity<EmployeeType>().ToTable("EmployeeTypes");
+            modelBuilder.Entity<EmploymentType>().HasKey(b => b.Id);
+            modelBuilder.Entity<EmploymentType>().HasAlternateKey(b => b.SysCode).HasName("UK_EmploymentType_SysCode");
+            modelBuilder.Entity<EmploymentType>().Property(b => b.Name).IsRequired().HasMaxLength(100);
+            modelBuilder.Entity<EmploymentType>().Property(b => b.OthName).IsRequired().HasMaxLength(100);
+            modelBuilder.Entity<EmploymentType>().Property(b => b.IsActive).HasDefaultValue(true);
+            modelBuilder.Entity<EmploymentType>().ToTable("EmploymentTypes");
 
             modelBuilder.Entity<FamilyMemberType>().HasKey(b => b.Id);
             modelBuilder.Entity<FamilyMemberType>().HasAlternateKey(b => b.SysCode).HasName("UK_FamilyMemberType_SysCode");
@@ -132,6 +134,13 @@ namespace HrmsModel.Data
             modelBuilder.Entity<LanguageType>().Property(b => b.OthName).IsRequired().HasMaxLength(100);
             modelBuilder.Entity<LanguageType>().Property(b => b.IsActive).HasDefaultValue(true);
             modelBuilder.Entity<LanguageType>().ToTable("LanguageTypes");
+
+            modelBuilder.Entity<PromotionType>().HasKey(b => b.Id);
+            modelBuilder.Entity<PromotionType>().HasAlternateKey(b => b.SysCode).HasName("UK_PromotionType_SysCode");
+            modelBuilder.Entity<PromotionType>().Property(b => b.Name).IsRequired().HasMaxLength(100);
+            modelBuilder.Entity<PromotionType>().Property(b => b.OthName).IsRequired().HasMaxLength(100);
+            modelBuilder.Entity<PromotionType>().Property(b => b.IsActive).HasDefaultValue(true);
+            modelBuilder.Entity<PromotionType>().ToTable("PromotionTypes");
 
             modelBuilder.Entity<Governorate>().HasKey(b => b.Id);
             modelBuilder.Entity<Governorate>().Property(b => b.Name).IsRequired().HasMaxLength(100);
@@ -230,18 +239,33 @@ namespace HrmsModel.Data
             modelBuilder.Entity<OrgUnit>().Property(b => b.Code).IsRequired().HasMaxLength(100);
             modelBuilder.Entity<OrgUnit>().Property(b => b.Name).IsRequired().HasMaxLength(100);
             modelBuilder.Entity<OrgUnit>().Property(b => b.OthName).IsRequired().HasMaxLength(100);
-            modelBuilder.Entity<OrgUnit>().Property(b => b.PositionName).IsRequired().HasMaxLength(100);
-            modelBuilder.Entity<OrgUnit>().Property(b => b.OthPositionName).IsRequired().HasMaxLength(100);
+            modelBuilder.Entity<OrgUnit>().Property(b => b.HeadPositionName).IsRequired().HasMaxLength(100);
+            modelBuilder.Entity<OrgUnit>().Property(b => b.OthHeadPositionName).IsRequired().HasMaxLength(100);
             modelBuilder.Entity<OrgUnit>().Property(b => b.JobCode).HasMaxLength(100);
-            modelBuilder.Entity<OrgUnit>().Property(b => b.Capacity).HasDefaultValue(1);
-            modelBuilder.Entity<OrgUnit>().Property(b => b.TotalStaff).HasDefaultValue(0);
-            modelBuilder.Entity<OrgUnit>().Property(b => b.TotalVacant).HasDefaultValue(1);
+            modelBuilder.Entity<OrgUnit>().Property(b => b.IsVacant).HasDefaultValue(false);
             modelBuilder.Entity<OrgUnit>().Property(b => b.CreatedDate).HasColumnType("date");
             modelBuilder.Entity<OrgUnit>().Property(b => b.LastUpdated).HasColumnType("date");
             modelBuilder.Entity<OrgUnit>().Property(b => b.UpdatedBy).IsRequired().HasMaxLength(100);
             modelBuilder.Entity<OrgUnit>().Property(b => b.IsActive).HasDefaultValue(true);
             modelBuilder.Entity<OrgUnit>().ToTable("OrgUnits");
 
+            modelBuilder.Entity<Position>().HasKey(b => b.Id);
+            modelBuilder.Entity<Position>().HasOne(b => b.OrgUnit).WithMany(b => b.Positions).HasForeignKey(b => b.OrgUnitId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Position>().HasOne(b => b.JobGrade).WithMany(b => b.Positions).HasForeignKey(b => b.JobGradeId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Position>().HasOne(b => b.SalaryStep).WithMany(b => b.Positions).HasForeignKey(b => b.SalaryStepId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Position>().HasOne(b => b.StandardTitleType).WithMany(b => b.Positions).HasForeignKey(b => b.StandardTitleTypeId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Position>().Property(b => b.Name).HasMaxLength(100);
+            modelBuilder.Entity<Position>().Property(b => b.OthName).HasMaxLength(100);
+            modelBuilder.Entity<Position>().Property(b => b.JobCode).HasMaxLength(100);
+            modelBuilder.Entity<Position>().Property(b => b.Capacity).HasDefaultValue(1);
+            modelBuilder.Entity<Position>().Property(b => b.TotalStaff).HasDefaultValue(0);
+            modelBuilder.Entity<Position>().Property(b => b.TotalVacant).HasDefaultValue(1);
+            modelBuilder.Entity<Position>().Property(b => b.CreatedDate).HasColumnType("date");
+            modelBuilder.Entity<Position>().Property(b => b.LastUpdated).HasColumnType("date");
+            modelBuilder.Entity<Position>().Property(b => b.UpdatedBy).IsRequired().HasMaxLength(100);
+            modelBuilder.Entity<Position>().Property(b => b.IsActive).HasDefaultValue(true);
+            modelBuilder.Entity<Position>().ToTable("Positions");
+            
             modelBuilder.Entity<SalaryScale>().HasKey(b => b.Id);
             modelBuilder.Entity<SalaryScale>().HasOne(b => b.SalaryScaleType).WithMany(b => b.SalaryScales).HasForeignKey(b => b.SalaryScaleTypeId).OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<SalaryScale>().HasOne(b => b.FromJobGrade).WithMany(b => b.FromGradeSalaryScales).HasForeignKey(b => b.FromJobGradeId).OnDelete(DeleteBehavior.Restrict);
@@ -359,29 +383,31 @@ namespace HrmsModel.Data
             modelBuilder.Entity<EmployeeLeave>().Property(b => b.UpdatedBy).IsRequired().HasMaxLength(100);
             modelBuilder.Entity<EmployeeLeave>().ToTable("EmployeeLeaves");
 
-            modelBuilder.Entity<EmployeePosition>().HasKey(b => b.Id);
-            modelBuilder.Entity<EmployeePosition>().HasOne(b => b.Employee).WithMany(b => b.EmployeePositions).HasForeignKey(b => b.EmployeeId).OnDelete(DeleteBehavior.Restrict);
-            modelBuilder.Entity<EmployeePosition>().HasOne(b => b.OrgUnit).WithMany(b => b.EmployeePositions).HasForeignKey(b => b.OrgUnitId).OnDelete(DeleteBehavior.Restrict);
-            modelBuilder.Entity<EmployeePosition>().HasOne(b => b.EmployeeType).WithMany(b => b.EmployeePositions).HasForeignKey(b => b.EmployeeTypeId).OnDelete(DeleteBehavior.Restrict);
-            modelBuilder.Entity<EmployeePosition>().HasOne(b => b.JobGrade).WithMany(b => b.EmployeePositions).HasForeignKey(b => b.JobGradeId).OnDelete(DeleteBehavior.Restrict);
-            modelBuilder.Entity<EmployeePosition>().HasOne(b => b.SalaryScaleType).WithMany(b => b.EmployeePositions).HasForeignKey(b => b.SalaryScaleTypeId).OnDelete(DeleteBehavior.Restrict);
-            modelBuilder.Entity<EmployeePosition>().HasOne(b => b.SalaryStep).WithMany(b => b.EmployeePositions).HasForeignKey(b => b.SalaryStepId).OnDelete(DeleteBehavior.Restrict);
-            modelBuilder.Entity<EmployeePosition>().Property(b => b.Name).HasMaxLength(100);
-            modelBuilder.Entity<EmployeePosition>().Property(b => b.OthName).HasMaxLength(100);
-            modelBuilder.Entity<EmployeePosition>().Property(b => b.FromDate).HasColumnType("date");
-            modelBuilder.Entity<EmployeePosition>().Property(b => b.ThruDate).HasColumnType("date");
-            modelBuilder.Entity<EmployeePosition>().Property(b => b.IsActing).HasDefaultValue(false);
-            modelBuilder.Entity<EmployeePosition>().Property(b => b.IsAttendRequired).HasDefaultValue(false);
-            modelBuilder.Entity<EmployeePosition>().Property(b => b.IsOverTimeAllowed).HasDefaultValue(false);
-            modelBuilder.Entity<EmployeePosition>().Property(b => b.IsProbation).HasDefaultValue(false);
-            modelBuilder.Entity<EmployeePosition>().Property(b => b.BasicSalary).HasDefaultValue(0);
-            modelBuilder.Entity<EmployeePosition>().Property(b => b.Details).HasMaxLength(256);
-            modelBuilder.Entity<EmployeePosition>().Property(b => b.Remarks).HasMaxLength(256);
-            modelBuilder.Entity<EmployeePosition>().Property(b => b.IsActive).HasDefaultValue(false);
-            modelBuilder.Entity<EmployeePosition>().ToTable("EmployeePositions");
+            modelBuilder.Entity<Employment>().HasKey(b => b.Id);
+            modelBuilder.Entity<Employment>().HasOne(b => b.Employee).WithMany(b => b.Employments).HasForeignKey(b => b.EmployeeId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Employment>().HasOne(b => b.OrgUnit).WithMany(b => b.Employments).HasForeignKey(b => b.OrgUnitId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Employment>().HasOne(b => b.EmploymentType).WithMany(b => b.Employments).HasForeignKey(b => b.EmploymentTypeId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Employment>().HasOne(b => b.JobGrade).WithMany(b => b.Employments).HasForeignKey(b => b.JobGradeId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Employment>().HasOne(b => b.SalaryScaleType).WithMany(b => b.Employments).HasForeignKey(b => b.SalaryScaleTypeId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Employment>().HasOne(b => b.SalaryStep).WithMany(b => b.Employments).HasForeignKey(b => b.SalaryStepId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Employment>().HasOne(b => b.Position).WithMany(b => b.Employments).HasForeignKey(b => b.PositionId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Employment>().Property(b => b.JobName).HasMaxLength(100);
+            modelBuilder.Entity<Employment>().Property(b => b.OthJobName).HasMaxLength(100);
+            modelBuilder.Entity<Employment>().Property(b => b.IsHead).HasDefaultValue(false);
+            modelBuilder.Entity<Employment>().Property(b => b.FromDate).HasColumnType("date");
+            modelBuilder.Entity<Employment>().Property(b => b.ThruDate).HasColumnType("date");
+            modelBuilder.Entity<Employment>().Property(b => b.IsActing).HasDefaultValue(false);
+            modelBuilder.Entity<Employment>().Property(b => b.IsAttendRequired).HasDefaultValue(false);
+            modelBuilder.Entity<Employment>().Property(b => b.IsOverTimeAllowed).HasDefaultValue(false);
+            modelBuilder.Entity<Employment>().Property(b => b.IsProbation).HasDefaultValue(false);
+            modelBuilder.Entity<Employment>().Property(b => b.BasicSalary).HasDefaultValue(0);
+            modelBuilder.Entity<Employment>().Property(b => b.Details).HasMaxLength(256);
+            modelBuilder.Entity<Employment>().Property(b => b.Remarks).HasMaxLength(256);
+            modelBuilder.Entity<Employment>().Property(b => b.IsActive).HasDefaultValue(false);
+            modelBuilder.Entity<Employment>().ToTable("Employments");
 
             modelBuilder.Entity<EmployeePromotion>().HasKey(b => b.Id);
-            modelBuilder.Entity<EmployeePromotion>().HasOne(b => b.EmployeePosition).WithMany(b => b.EmployeePromotions).HasForeignKey(b => b.EmployeePositionId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<EmployeePromotion>().HasOne(b => b.Employment).WithMany(b => b.EmployeePromotions).HasForeignKey(b => b.EmploymentId).OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<EmployeePromotion>().HasOne(b => b.JobGrade).WithMany(b => b.EmployeePromotions).HasForeignKey(b => b.JobGradeId).OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<EmployeePromotion>().HasOne(b => b.SalaryScaleType).WithMany(b => b.EmployeePromotions).HasForeignKey(b => b.SalaryScaleTypeId).OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<EmployeePromotion>().HasOne(b => b.SalaryStep).WithMany(b => b.EmployeePromotions).HasForeignKey(b => b.SalaryStepId).OnDelete(DeleteBehavior.Restrict);

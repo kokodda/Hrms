@@ -32,18 +32,18 @@ namespace HrmsApp.Controllers
         //employee
         public async Task<IActionResult> EmployeesList(long? ouId)
         {
-            var model = _context.Employees.Include(b => b.EmployeePositions).ThenInclude(b => b.OrgUnit).Include(b => b.Governorate).Include(b => b.Nationality)
-                                .Where(b => !ouId.HasValue || b.EmployeePositions.FirstOrDefault(c => c.IsActive && !c.IsActing).OrgUnitId == ouId);
+            var model = _context.Employees.Include(b => b.Employments).ThenInclude(b => b.OrgUnit).Include(b => b.Governorate).Include(b => b.Nationality)
+                                .Where(b => !ouId.HasValue || b.Employments.FirstOrDefault(c => c.IsActive && !c.IsActing).OrgUnitId == ouId);
             return PartialView("_EmployeesList", await model.ToListAsync());
         }
 
         public async Task<IActionResult> EmployeeIndex(long id)
         {
-            var model = _context.Employees.Include(b => b.EmployeePositions).ThenInclude(b => b.OrgUnit)
-                                .Include(b => b.EmployeePositions).ThenInclude(b => b.JobGrade)
-                                .Include(b => b.EmployeePositions).ThenInclude(b => b.SalaryScaleType)
-                                .Include(b => b.EmployeePositions).ThenInclude(b => b.SalaryStep)
-                                .Include(b => b.EmployeePositions).ThenInclude(b => b.EmployeeType)
+            var model = _context.Employees.Include(b => b.Employments).ThenInclude(b => b.OrgUnit)
+                                .Include(b => b.Employments).ThenInclude(b => b.JobGrade)
+                                .Include(b => b.Employments).ThenInclude(b => b.SalaryScaleType)
+                                .Include(b => b.Employments).ThenInclude(b => b.SalaryStep)
+                                .Include(b => b.Employments).ThenInclude(b => b.EmploymentType)
                                 .Include(b => b.Nationality).Include(b => b.Governorate)
                                 .SingleOrDefaultAsync(b => b.Id == id);
             return View("EmployeeIndex", await model);
@@ -176,9 +176,9 @@ namespace HrmsApp.Controllers
         //career
         public async Task<IActionResult> PromotionsList(long id)
         {
-            var model = _context.EmployeePromotions.Include(b => b.EmployeePosition).ThenInclude(b => b.OrgUnit)
+            var model = _context.EmployeePromotions.Include(b => b.Employment).ThenInclude(b => b.OrgUnit)
                                             .Include(b => b.JobGrade).Include(b => b.SalaryStep).Include(b => b.SalaryScaleType)
-                                            .Where(b => b.EmployeePosition.EmployeeId == id && !b.IsCancelled).OrderByDescending(b => b.EffectiveFromDate);
+                                            .Where(b => b.Employment.EmployeeId == id && !b.IsCancelled).OrderByDescending(b => b.EffectiveFromDate);
             return PartialView("_PromotionsList", await model.ToListAsync());
         }
 
@@ -200,7 +200,7 @@ namespace HrmsApp.Controllers
             _context.EmployeePromotions.Add(item);
             await _context.SaveChangesAsync();
 
-            var pos = await _context.EmployeePositions.SingleOrDefaultAsync(b => b.Id == item.EmployeePositionId); 
+            var pos = await _context.Employments.SingleOrDefaultAsync(b => b.Id == item.EmploymentId); 
             return RedirectToAction("PromotionsList", new { id = pos.EmployeeId });
         }
 

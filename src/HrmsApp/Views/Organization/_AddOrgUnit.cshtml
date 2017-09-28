@@ -3,7 +3,6 @@
 
 <form role="form" id="popupForm" asp-controller="Organization" asp-action="AddOrgUnit" data-ajax="true" data-ajax-method="POST" data-ajax-update="#listSection" data-ajax-success="onSuccess" data-ajax-failure="onFailure">
     <input type="hidden" id="parentId" name="parentId" />
-    <input type="hidden" id="parentName" value="@ViewBag.parentName" />
     <div class="form-group-sm">
         <label class="control-label" asp-for="Name"><small>Name (*)</small></label>
         <input type="text" asp-for="Name" class="form-control" required />
@@ -12,16 +11,26 @@
         <label class="control-label" asp-for="OthName"><small>Name Translated (*)</small></label>
         <input type="text" asp-for="OthName" class="form-control" required />
     </div>
-    <div class="form-group-sm">
-        <label class="control-label" asp-for="OrgUnitTypeId"><small>Unit Level (*)</small></label>
-        <select class="form-control" asp-for="OrgUnitTypeId" required>
-            <option value="">Select from List ...</option>
-            @foreach (SelectListItem item in new SelectList(ViewBag.orgUnitTypesList, "Id", "Name"))
-            {
-                <option value="@item.Value">@item.Text</option>
-            }
-        </select>
-    </div>
+    @{
+        if (ViewBag.orgUnitTypeId != null)
+        {
+            <input type="hidden" asp-for="OrgUnitTypeId" value="@ViewBag.orgUnitTypeId" />
+        }
+        else
+        {
+            <div class="form-group-sm">
+                <label class="control-label" asp-for="OrgUnitTypeId"><small>Unit Level (*)</small></label>
+                <select class="form-control" asp-for="OrgUnitTypeId" required>
+                    <option value="">Select from List ...</option>
+                    @foreach (SelectListItem item in new SelectList(ViewBag.orgUnitTypesList, "Id", "Name"))
+                    {
+                        <option value="@item.Value">@item.Text</option>
+                    }
+                </select>
+            </div>
+        }
+    }
+    
     <div class="form-group-sm">
         <label class="control-label" asp-for="SortOrder"><small>Sort Order (*)</small></label>
         <input type="number" asp-for="SortOrder" class="form-control" required />
@@ -30,12 +39,12 @@
     <div><label><small>Unit Head:</small></label></div>
     <hr />
     <div class="form-group-sm">
-        <label class="control-label" asp-for="PositionName"><small>Position Name (*)</small></label>
-        <input type="text" asp-for="PositionName" class="form-control" required />
+        <label class="control-label" asp-for="HeadPositionName"><small>Position Name (*)</small></label>
+        <input type="text" asp-for="HeadPositionName" class="form-control" required />
     </div>
     <div class="form-group-sm">
-        <label class="control-label" asp-for="OthPositionName"><small>Position Name Translated (*)</small></label>
-        <input type="text" asp-for="OthPositionName" class="form-control" required />
+        <label class="control-label" asp-for="OthHeadPositionName"><small>Position Name Translated (*)</small></label>
+        <input type="text" asp-for="OthHeadPositionName" class="form-control" required />
     </div>
 </form>
     

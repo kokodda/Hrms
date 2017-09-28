@@ -34,8 +34,8 @@ namespace HrmsApp.Controllers
                 case "OrgUnitType":
                     model = _lookup.GetLookupItems<OrgUnitType>().ToList();
                     break;
-                case "EmployeeType":
-                    model = _lookup.GetLookupItems<EmployeeType>().ToList();
+                case "EmploymentType":
+                    model = _lookup.GetLookupItems<EmploymentType>().ToList();
                     break;
                 case "AllowanceType":
                     model = _lookup.GetLookupItems<AllowanceType>().ToList();
@@ -63,6 +63,9 @@ namespace HrmsApp.Controllers
                     break;
                 case "LanguageType":
                     model = _lookup.GetLookupItems<LanguageType>().ToList();
+                    break;
+                case "PromotionType":
+                    model = _lookup.GetLookupItems<PromotionType>().ToList();
                     break;
                 case "Governorate":
                     var x1 = _context.Governorates.ToList();

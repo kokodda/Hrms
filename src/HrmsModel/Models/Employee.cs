@@ -38,7 +38,7 @@ namespace HrmsModel.Models
 
         public virtual Nationality Nationality { get; set; }
         public virtual Governorate Governorate { get; set; }
-        public virtual ICollection<EmployeePosition> EmployeePositions { get; set; }
+        public virtual ICollection<Employment> Employments { get; set; }
         public virtual ICollection<EmployeeLeave> EmployeeLeaves { get; set; }
         public virtual ICollection<EmployeeLeaveBalance> EmployeeLeaveBalances { get; set; }
         public virtual ICollection<EmployeeSalary> EmployeeSalaries { get; set; }

@@ -68,9 +68,9 @@ namespace HrmsApp.Controllers
             if (model.Code.Length > 3)
             {
                 string parentCode = model.Code.Substring(0, model.Code.Length - 3);
-                reportingTo = _context.OrgUnits.SingleOrDefault(b => b.Code == parentCode).PositionName;
+                reportingTo = _context.OrgUnits.SingleOrDefault(b => b.Code == parentCode).HeadPositionName;
                 if (model.LineManagerOrgUnitId.HasValue)
-                    lineManager = _context.OrgUnits.SingleOrDefault(b => b.Id == model.LineManagerOrgUnitId.Value).PositionName;
+                    lineManager = _context.OrgUnits.SingleOrDefault(b => b.Id == model.LineManagerOrgUnitId.Value).HeadPositionName;
             }
             ViewBag.reportingTo = reportingTo;
             ViewBag.lineManager = lineManager;
@@ -81,20 +81,20 @@ namespace HrmsApp.Controllers
         public async Task<IActionResult> PersonnelList(long id)
         {
             var ou = await _context.OrgUnits.SingleOrDefaultAsync(b => b.Id == id);
-            var pos = await _context.EmployeePositions.Include(b => b.Employee).SingleOrDefaultAsync(b => b.OrgUnitId == id && !b.IsActing && b.IsActive);
+            var pos = await _context.Employments.Include(b => b.Employee).SingleOrDefaultAsync(b => b.OrgUnitId == id && !b.IsActing && b.IsActive);
             if (pos != null)
                 ViewBag.headedBy = pos.Employee.FirstName + " " + pos.Employee.FamilyName;
             else
                 ViewBag.headedBy = "NA";
 
             List<string> model = new List<string>();
-            var x = await _context.EmployeePositions.Include(b => b.OrgUnit).Include(b => b.Employee)
+            var x = await _context.Employments.Include(b => b.OrgUnit).Include(b => b.Employee)
                             .Where(b => b.OrgUnit.Code.StartsWith(ou.Code) && b.OrgUnit.Code.Length == ou.Code.Length + 3 && b.IsActive)
-                            .Select(b => new { pName = b.Employee.FirstName + " " + b.Employee.FamilyName + " - " + b.OrgUnit.PositionName }).Distinct().ToListAsync();
+                            .Select(b => new { pName = b.Employee.FirstName + " " + b.Employee.FamilyName + " - " + b.OrgUnit.HeadPositionName }).Distinct().ToListAsync();
             foreach (var x1 in x)
                 model.Add(x1.pName);
 
-            int cnt = await _context.EmployeePositions.Include(b => b.OrgUnit).Include(b => b.Employee)
+            int cnt = await _context.Employments.Include(b => b.OrgUnit).Include(b => b.Employee)
                             .Where(b => b.OrgUnit.Code.StartsWith(ou.Code) && b.OrgUnit.Code.Length > ou.Code.Length + 3 && b.IsActive)
                             .Distinct().CountAsync();
             ViewBag.indirectSubordinates = cnt.ToString();
@@ -112,17 +112,17 @@ namespace HrmsApp.Controllers
         {
             var x = await _context.OrgUnits.SingleOrDefaultAsync(b => b.Id == ouId);
             ViewBag.orgUnitName = x.Name;
-            ViewBag.positionName = x.PositionName;
+            ViewBag.positionName = x.HeadPositionName;
             ViewBag.orgUnitId = ouId;
             ViewBag.nationalitiesList = await _context.Nationalities.Where(b => b.IsActive).ToListAsync();
             ViewBag.governoratesList = await _context.Governorates.Where(b => b.IsActive).ToListAsync();
-            ViewBag.employeeTypesList = _lookup.GetLookupItems<EmployeeType>();
+            ViewBag.employeeTypesList = _lookup.GetLookupItems<EmploymentType>();
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddEmployee(Employee item, long orgUnitId, string positionName, string othPositionName, int? employeeTypeId, DateTime fromDate, bool isProbation = false)
+        public async Task<IActionResult> AddEmployee(Employee item, long orgUnitId, string jobName, string othJobName, int? employeeTypeId, DateTime fromDate, bool isProbation = false)
         {
             item.IsActive = true;
             item.LastUpdated = DateTime.Now.Date;
@@ -130,21 +130,21 @@ namespace HrmsApp.Controllers
             _context.Employees.Add(item);
 
             var ou = await _context.OrgUnits.SingleOrDefaultAsync(b => b.Id == orgUnitId);
-            EmployeePosition pos = new EmployeePosition();
+            Employment pos = new Employment();
             pos.OrgUnitId = orgUnitId;
             pos.EmployeeId = item.Id;
             if (!employeeTypeId.HasValue)
-                pos.EmployeeTypeId = _lookup.GetLookupItems<EmployeeType>().SingleOrDefault(b => b.SysCode == "FULL_TIME").Id;
-            pos.Name = positionName;
-            pos.OthName = othPositionName;
+                pos.EmploymentTypeId = _lookup.GetLookupItems<EmploymentType>().SingleOrDefault(b => b.SysCode == "FULL_TIME").Id;
+            pos.JobName = jobName;
+            pos.OthJobName = othJobName;
             pos.JobGradeId = ou.JobGradeId;
             pos.FromDate = fromDate;
             pos.IsActive = true;
             pos.IsProbation = isProbation;
-            _context.EmployeePositions.Add(pos);
+            _context.Employments.Add(pos);
 
             EmployeePromotion prom = new EmployeePromotion();
-            prom.EmployeePositionId = pos.Id;
+            prom.EmploymentId = pos.Id;
             prom.JobGradeId = ou.JobGradeId;
             prom.CreatedDate = DateTime.Now.Date;
             prom.LastUpdated = DateTime.Now.Date;

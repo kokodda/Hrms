@@ -5,17 +5,19 @@ using System.Threading.Tasks;
 
 namespace HrmsModel.Models
 {
-    public class EmployeePosition
+    public class Employment
     {
         public long Id { get; set; }
-        public string Name { get; set; }
-        public string OthName { get; set; }
         public long EmployeeId { get; set; }
-        public long? OrgUnitId { get; set; }
-        public int EmployeeTypeId { get; set; }
+        public long OrgUnitId { get; set; }
+        public int EmploymentTypeId { get; set; }
+        public bool IsHead { get; set; }
+        public bool IsActing { get; set; }
+        public long? PositionId { get; set; }
+        public string JobName { get; set; }
+        public string OthJobName { get; set; }
         public DateTime FromDate { get; set; }
         public DateTime? ThruDate { get; set; }
-        public bool IsActing { get; set; }
         public int? JobGradeId { get; set; }
         public int? SalaryStepId { get; set; }
         public int? SalaryScaleTypeId { get; set; }
@@ -29,7 +31,8 @@ namespace HrmsModel.Models
 
         public virtual OrgUnit OrgUnit { get; set; }
         public virtual Employee Employee { get; set; }
-        public virtual EmployeeType EmployeeType { get; set; }
+        public virtual Position Position { get; set; }
+        public virtual EmploymentType EmploymentType { get; set; }
         public virtual SalaryScaleType SalaryScaleType { get; set; }
         public virtual SalaryStep SalaryStep { get; set; }
         public virtual JobGrade JobGrade { get; set; }

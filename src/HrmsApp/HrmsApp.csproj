@@ -65,6 +65,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Data\Migrations\ModelContext\" />
     <Folder Include="wwwroot\files\" />
   </ItemGroup>
 

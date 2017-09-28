@@ -23,7 +23,8 @@ namespace HrmsModel.Models
         public virtual ICollection<AllowancePolicy> AllowancePolicies { get; set; }
         public virtual ICollection<SalaryScale> FromGradeSalaryScales { get; set; }
         public virtual ICollection<SalaryScale> ThruGradeSalaryScales { get; set; }
-        public virtual ICollection<EmployeePosition> EmployeePositions { get; set; }
+        public virtual ICollection<Employment> Employments { get; set; }
+        public virtual ICollection<Position> Positions { get; set; }
         public virtual ICollection<EmployeePromotion> EmployeePromotions { get; set; }
     }
 }
