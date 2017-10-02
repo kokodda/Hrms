@@ -1,0 +1,102 @@
+﻿@using HrmsModel.Models;
+@model Position
+
+<form role="form" id="popupForm" asp-controller="Positions" asp-action="AddPosition" data-ajax="true" data-ajax-method="POST" data-ajax-update="#positionsSection" data-ajax-success="onSuccess" data-ajax-failure="onFailure">
+    <input type="hidden" name="ouTypeId" id="ouTypeId" />
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="Name"><small>Name (*)</small></label>
+        <input type="text" asp-for="Name" class="form-control" required />
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="OthName"><small>Name Translated (*)</small></label>
+        <input type="text" asp-for="OthName" class="form-control" required />
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="OrgUnitId"><small>Owner Business Unit</small></label>
+        <select class="form-control" asp-for="OrgUnitId" required>
+            <option value="">Select from List ...</option>
+            @foreach (SelectListItem item in new SelectList(ViewBag.orgUnitsList, "Id", "Name"))
+            {
+                <option value="@item.Value">@item.Text</option>
+            }
+        </select>
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="ReportingToOrgUnitId"><small>Reporting To (if different from the normal flow of authority)</small></label>
+        <select class="form-control" asp-for="ReportingToOrgUnitId">
+            <option value="">Select from List ...</option>
+            @foreach (SelectListItem item in new SelectList(ViewBag.orgUnitsList, "Id", "Name"))
+            {
+                <option value="@item.Value">@item.Text</option>
+            }
+        </select>
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="LineManagerOrgUnitId"><small>Line Manager (if different from the reporting to)</small></label>
+        <select class="form-control" asp-for="LineManagerOrgUnitId">
+            <option value="">Select from List ...</option>
+            @foreach (SelectListItem item in new SelectList(ViewBag.orgUnitsList, "Id", "Name"))
+            {
+                <option value="@item.Value">@item.Text</option>
+            }
+        </select>
+    </div>
+    <div class="input-group-sm">
+        <label class="control-label" asp-for="IsAttendRequired">
+            <input type="checkbox" asp-for="IsAttendRequired" />
+            <span><small>Is Attendance Required? (*)</small></span>
+        </label>
+    </div>
+    <div class="input-group-sm">
+        <label class="control-label" asp-for="IsOverTimeAllowed">
+            <input type="checkbox" asp-for="IsOverTimeAllowed" />
+            <span><small>Is Overtime Allowed? (*)</small></span>
+        </label>
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="Capacity"><small>Capacity (total planned personnel)</small></label>
+        <input type="number" asp-for="Capacity" class="form-control" value="0" required />
+    </div>
+    <br />
+    <div><label style="color:silver"><small>Optional Position Settings:</small></label></div>
+    <hr />
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="JobCode"><small>Job Code</small></label>
+        <input type="text" asp-for="JobCode" class="form-control" />
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="JobWeight"><small>Job Weight</small></label>
+        <input type="number" asp-for="JobWeight" class="form-control" />
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="StandardTitleTypeId"><small>Standard Title</small></label>
+        <select class="form-control" asp-for="StandardTitleTypeId">
+            <option value="">Select from List ...</option>
+            @foreach (SelectListItem item in new SelectList(ViewBag.standardTitlesList, "Id", "Name"))
+            {
+                <option value="@item.Value">@item.Text</option>
+            }
+        </select>
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="JobGradeId"><small>Job Grade</small></label>
+        <select class="form-control" asp-for="JobGradeId">
+            <option value="">Select from List ...</option>
+            @foreach (SelectListItem item in new SelectList(ViewBag.jobGradesList, "Id", "Name"))
+            {
+                <option value="@item.Value">@item.Text</option>
+            }
+        </select>
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="SalaryStepId"><small>Salary Step</small></label>
+        <select class="form-control" asp-for="SalaryStepId">
+            <option value="">Select from List ...</option>
+            @foreach (SelectListItem item in new SelectList(ViewBag.salaryStepsList, "Id", "Name"))
+            {
+                <option value="@item.Value">@item.Text</option>
+            }
+        </select>
+    </div>
+</form>
+    

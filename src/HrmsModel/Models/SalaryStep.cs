@@ -17,6 +17,7 @@ namespace HrmsModel.Models
 
         public virtual ICollection<Employment> Employments { get; set; }
         public virtual ICollection<Position> Positions { get; set; }
+        public virtual ICollection<OrgUnit> OrgUnits { get; set; }
         public virtual ICollection<EmployeePromotion> EmployeePromotions { get; set; }
     }
 }

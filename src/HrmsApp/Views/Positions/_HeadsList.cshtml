@@ -1,0 +1,51 @@
+﻿@using HrmsModel.Models;
+@model IEnumerable<OrgUnit>
+
+<div class="container-fluid" style="padding:0px">
+    <label style="color:silver"><small>Heads of Business Units</small></label>
+    <table class="table table-hover table-condensed">
+        <thead>
+            <tr>
+                <th><small>Position Name</small></th>
+                <th><small>Unit</small></th>
+                <th><small>Title</small></th>
+                <th><small>Job Code</small></th>
+                <th><small>Grade</small></th>
+                <th><small>Step</small></th>
+                <th><small>JD</small></th>
+                <th><small>Vacant?</small></th>
+                <th><small>Active?</small></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td><small>@item.HeadPositionName</small></td>
+                    <td><small>@item.Name</small></td>
+                    <td><small>@string.Format("{0}", item.StandardTitleType == null ? null : item.StandardTitleType.Name)</small></td>
+                    <td><small>@item.JobCode</small></td>
+                    <td><small>@string.Format("{0}", item.JobGrade == null ? null : item.JobGrade.Code)</small></td>
+                    <td><small>@string.Format("{0}", item.SalaryStep == null ? null : item.SalaryStep.Code)</small></td>
+                    <td>
+                        @if(string.IsNullOrEmpty(item.JobDescription))
+                        {
+                            <a href="#" class="btn btn-xs" onclick="headJDUpload(@item.Id)" data-toggle="modal" data-target="#filePopupForm" title="Upload"><span class="fa fa-upload"></span></a>
+                        }
+                        else
+                        {
+                            <a href="#" class="btn btn-xs" onclick="downloadJD('@item.JobDescription')" target="_blank" title="Download"><span class="fa fa-download" style="color:forestgreen"></span></a>
+                        }
+                    </td>
+                    <td><input type="checkbox" asp-for="@item.IsVacant" readonly disabled /></td>
+                    <td><input type="checkbox" asp-for="@item.IsActive" readonly disabled /></td>
+                    <td>
+                        <a role="button" href="#" class="btn btn-xs" onclick="editHead(@item.Id)" data-toggle="modal" data-target="#myModal" title="Edit"><span class="fa fa-pencil"></span></a>
+                        <a role="button" href="#" class="btn btn-xs" onclick="headDetails(@item.Id)" title="More"><span class="fa fa-ellipsis-v"></span></a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

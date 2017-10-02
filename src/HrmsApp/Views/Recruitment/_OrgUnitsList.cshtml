@@ -1,0 +1,19 @@
+﻿@using HrmsModel.Models;
+@model IEnumerable<OrgUnit>
+
+
+<div class="container-fluid" style="padding:0px">
+    @foreach(var ouType in Model.Select(b => b.OrgUnitType).Distinct())
+    {
+        <label style="color:silver"><small>@ouType.Name</small></label>
+        @foreach (var ou in Model.Where(b => b.OrgUnitType.Id == ouType.Id))
+        {
+            <div>
+                <span>
+                    <a role="button" href="#" class="btn btn-xs" onclick="addEmployee(@ou.Id, null, false)" data-toggle="modal" data-target="#myModal" title="Add Employee"><span class="fa fa-user-plus"></span></a>
+                </span> &nbsp; <small>@ou.Name</small>
+            </div>
+        }
+        <br />
+    }
+</div>

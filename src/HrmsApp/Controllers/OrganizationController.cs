@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using HrmsModel.Models;
 using HrmsModel.Data;
 using Microsoft.EntityFrameworkCore;
+using HrmsApp.Models;
 
 namespace HrmsApp.Controllers
 {
@@ -27,12 +28,13 @@ namespace HrmsApp.Controllers
 
         public async Task<IActionResult> OrgChart(long? id, bool isUp = false)
         {
+            List<OrgUnitViewModel> model = new List<OrgUnitViewModel>();
             //check if new setup
-            if(_context.OrgUnits.Count() == 0)
-                return PartialView("_OrgChart", await _context.OrgUnits.ToListAsync());
+            if (_context.OrgUnits.Count() == 0)
+                return PartialView("_OrgChart", model);
 
             string rootCode;
-            if(id.HasValue)
+            if (id.HasValue)
             {
                 long rootId = id.Value;
                 if (isUp)
@@ -54,10 +56,31 @@ namespace HrmsApp.Controllers
             //get down to the third level under the selected node
             int maxLevelLength = rootCode.Length + 6;
 
-            var model = _context.OrgUnits.Include(b => b.OrgUnitType)
+            var x = _context.OrgUnits.Include(b => b.OrgUnitType)
                                 .Where(b => !id.HasValue || (b.Code.StartsWith(rootCode) && b.Code.Length <= maxLevelLength))
                                 .OrderBy(b => b.Code.Length).ThenBy(b => b.SortOrder);
-            return PartialView("_OrgChart", await model.ToListAsync());
+            foreach (var x1 in x)
+            {
+                OrgUnitViewModel item = new OrgUnitViewModel();
+                item.OrgUnit = x1;
+                //parent
+                if (x1.Code.Length == 2)
+                    item.ParentName = null;
+                else
+                    item.ParentName = _context.OrgUnits.SingleOrDefault(b => b.Code == x1.Code.Substring(0, x1.Code.Length - 3)).Name;
+                //headed by
+                var pos = await _context.Employments.Include(b => b.Employee).SingleOrDefaultAsync(b => b.OrgUnitId == x1.Id && b.IsActive && b.IsHead);
+                if (pos != null)
+                    item.HeadedByName = pos.Employee.FirstName + " " + pos.Employee.FamilyName;
+                else
+                    item.HeadedByName = "VACANT";
+                //totals
+                item.TotalPositions = await _context.Positions.Where(b => b.OrgUnitId == id).CountAsync() + 1;
+                item.TotalPersonnel = await _context.Employments.Where(b => b.OrgUnitId == id && b.IsActive).CountAsync();
+                item.TotalVacancy = await _context.Positions.Where(b => b.OrgUnitId == id).SumAsync(b => b.TotalVacant);
+                model.Add(item);
+            }
+            return PartialView("_OrgChart", model);
         }
 
         public IActionResult AddOrgUnit(long? parentId, bool isSub = false)
@@ -67,7 +90,7 @@ namespace HrmsApp.Controllers
                 ViewBag.orgUnitTypeId = _lookup.GetLookupItems<OrgUnitType>().SingleOrDefault(b => b.SysCode == "SUB").Id;
             else
             {
-                if(parentId.HasValue)
+                if (parentId.HasValue)
                 {
                     int sortOrder = _context.OrgUnits.Include(b => b.OrgUnitType).SingleOrDefault(b => b.Id == parentId).OrgUnitType.SortOrder;
                     ViewBag.orgUnitTypesList = _lookup.GetLookupItems<OrgUnitType>().Where(b => b.SysCode != "SUB" && b.SortOrder > sortOrder);
@@ -88,14 +111,14 @@ namespace HrmsApp.Controllers
             else
             {
                 string parentCode = _context.OrgUnits.SingleOrDefault(b => b.Id == parentId).Code;
-                int levelCodeLength = parentCode.Length + 3;
-                int ouCode = _context.OrgUnits.Where(b => b.Code.StartsWith(parentCode) && b.Code.Length == levelCodeLength).Count() + 1;
-                if (ouCode < 10)
-                    item.Code = parentCode + "." + "0" + ouCode.ToString();
+                int seq = _context.OrgUnits.Where(b => b.Code.StartsWith(parentCode) && b.Code.Length == parentCode.Length + 3).Count() + 1;
+                if (seq < 10)
+                    item.Code = parentCode + "." + "0" + seq.ToString();
                 else
-                    item.Code = parentCode + "." + ouCode.ToString();
+                    item.Code = parentCode + "." + seq.ToString();
             }
-            
+
+            item.IsVacant = true;
             item.CreatedDate = DateTime.Now.Date;
             item.LastUpdated = DateTime.Now.Date;
             item.UpdatedBy = "user";
@@ -103,7 +126,59 @@ namespace HrmsApp.Controllers
             _context.OrgUnits.Add(item);
             await _context.SaveChangesAsync();
 
-            return RedirectToAction("OrgChart", new { id = parentId});
+            return RedirectToAction("OrgChart", new { id = parentId });
         }
+
+        public async Task<IActionResult> EditOrgUnit(long id)
+        {
+            var model = await _context.OrgUnits.SingleOrDefaultAsync(b => b.Id == id);
+            var parent = await _context.OrgUnits.SingleOrDefaultAsync(b => b.Code == model.Code.Substring(0, model.Code.Length - 3));
+            if (parent != null)
+                ViewBag.parentId = parent.Id;
+            else
+                ViewBag.parentId = null;
+            ViewBag.orgUnitsList = await _context.OrgUnits.Where(b => b.Id != id && b.IsActive).ToListAsync();
+            ViewBag.orgUnitTypesList = _lookup.GetLookupItems<OrgUnitType>();
+            return PartialView("_EditOrgUnit", model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditOrgUnit(OrgUnit item, long parentId)
+        {
+            var model = await _context.OrgUnits.SingleOrDefaultAsync(b => b.Id == item.Id);
+            string oldCode = model.Code;
+            var newParent = await _context.OrgUnits.SingleOrDefaultAsync(b => b.Id == parentId);
+            await TryUpdateModelAsync(model);
+
+            if (!model.Code.StartsWith(newParent.Code)) //in case parent business unit has changed, then generate new code
+            {
+                string oldParentCode = model.Code.Substring(0, model.Code.Length - 3);
+                int seq = _context.OrgUnits.Where(b => b.Code.StartsWith(newParent.Code) && b.Code.Length == newParent.Code.Length + 3).Count() + 1;
+                if (seq < 10)
+                    model.Code = newParent.Code + "." + "0" + seq.ToString();
+                else
+                    model.Code = newParent.Code + "." + seq.ToString();
+
+                //regenerate all old parent children codes
+                var children = await _context.OrgUnits.Where(b => b.Code != oldCode && b.Code.StartsWith(oldParentCode) && b.Code.Length == oldParentCode.Length + 3)
+                                            .OrderBy(b => b.SortOrder).ToListAsync();
+                seq = 0;
+                foreach(var ou in children)
+                {
+                    seq++;
+                    if (seq < 10)
+                        ou.Code = oldParentCode + "." + "0" + seq.ToString();
+                    else
+                        ou.Code = oldParentCode + "." + seq.ToString();
+                }
+            }
+            model.LastUpdated = DateTime.Now.Date;
+            model.UpdatedBy = "user";
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction("OrgChart", new { id = parentId });
+        }
+        
     }
 }

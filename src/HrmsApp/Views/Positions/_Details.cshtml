@@ -1,0 +1,13 @@
+﻿@model List<string>
+
+<div class="container-fluid" style="padding:0px;background-color:white">
+    <label style="color:silver"><small>@ViewBag.positionName</small></label>
+    <dl>
+        @foreach(string str in Model)
+        {
+            string[] item = str.Split('|');
+            <dt><small>@item[0]</small></dt>
+            <dd><small>@item[1]</small></dd>
+        }
+    </dl>
+</div>

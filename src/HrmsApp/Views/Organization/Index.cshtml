@@ -4,8 +4,21 @@
 }
 
 <div class="container-fluid">
+    <div style="text-align:center">
+        <h1>Organization Chart</h1>
+        <div class="btn-group-xs">
+            <button class="btn btn-xs btn-default" id="goUp" onclick="goUp()" title="Up One Level"><span class="fa fa-arrow-up"></span></button>
+            <button class="btn btn-xs btn-primary" onclick="addOrgUnit(false)" data-toggle="modal" data-target="#myModal">Add Unit</button>
+            <button class="btn btn-xs btn-default" onclick="addOrgUnit(true)" data-toggle="modal" data-target="#myModal">Add Sub</button>
+            <button class="btn btn-xs btn-default" id="listBtn" onclick="toggleView()" title="List"><span class="fa fa-list"></span></button>
+            <button class="btn btn-xs btn-default" id="chartBtn" onclick="toggleView()" title="Chart"><span class="fa fa-sitemap"></span></button>
+        </div>
+    </div>
+    <br />
     <div id="listSection"></div>
 </div>
+
+@Html.Hidden("isList", false)
 
 @section Scripts
 {
@@ -18,6 +31,8 @@
                 type: 'GET',
                 success: function (result) {
                     $('#listSection').html(result);
+                    $('#listViewSection').hide();
+                    $('#chartBtn').hide();
                     $('#goUp').attr('disabled', 'disabled');
                 }
             });
@@ -33,6 +48,13 @@
         function onSuccess() {
             $('#popupResult').html('Successfully Updated.');
             $('.popupBtns').attr('disabled', 'disabled');
+            if ($('#isList').val() === 'true') {
+                $('#listViewSection').show();
+                $('#chartViewSection').hide();
+            } else {
+                $('#listViewSection').hide();
+                $('#chartViewSection').show();
+            }
         }
         function onFailure() {
             $('#formResult').html('Failed to Update! Please Correct All Errors.');
@@ -40,7 +62,6 @@
         }
 
         function addOrgUnit(isSub) {
-            alert($('#currOrgUnitIdHF').val());
             $.ajax({
                 url: '@Url.Action("AddOrgUnit", "Organization")',
                 type: 'GET',
@@ -49,6 +70,75 @@
                     $('#myModal-body').html(result);
                     $('#myModal-label').html("Add Organization Unit - Subordinate of: " + $('#currOrgUnitNameHF').val());
                     $('#parentId').val($('#currOrgUnitIdHF').val());
+                    showPopup();
+                }
+            });
+        }
+        function editOrgUnit(id) {
+            $.ajax({
+                url: '@Url.Action("EditOrgUnit", "Organization")',
+                type: 'GET',
+                data: { id: id },
+                success: function (result) {
+                    $('#myModal-body').html(result);
+                    $('#myModal-label').html("Edit Business Unit");
+                    showPopup();
+                }
+            });
+        }
+        function goUp() {
+            $.ajax({
+                url: '@Url.Action("OrgChart", "Organization")',
+                type: 'GET',
+                data: { id: $('#currOrgUnitIdHF').val(), isUp: true },
+                success: function (result) {
+                    $('#listSection').html(result);
+                    if ($('#isList').val() === 'true') {
+                        $('#listViewSection').show();
+                        $('#chartViewSection').hide();
+                    } else {
+                        $('#listViewSection').hide();
+                        $('#chartViewSection').show();
+                    }
+                }
+            });
+        }
+        function toggleView() {
+            if ($('#isList').val() === 'true') {
+                $('#isList').val(false);
+                $('#listViewSection').hide();
+                $('#chartViewSection').show();
+                $('#listBtn').show();
+                $('#chartBtn').hide();
+            } else {
+                $('#isList').val(true);
+                $('#listViewSection').show();
+                $('#chartViewSection').hide();
+                $('#listBtn').hide();
+                $('#chartBtn').show();
+            }
+        }
+
+        //positions
+        function positionsList(id) {
+            $.ajax({
+                url: '@Url.Action("PositionsList", "Organization")',
+                type: 'GET',
+                data: { id: id },
+                success: function (result) {
+                    $('#detailsSection').html(result);
+                }
+            });
+        }
+        function addPosition(id) {
+            $.ajax({
+                url: '@Url.Action("AddPosition", "Organization")',
+                type: 'GET',
+                data: { id: id },
+                success: function (result) {
+                    $('#myModal-body').html(result);
+                    $('#myModal-label').html("Add Position to Organization Unit");
+                    $('#orgUnitId').val(id);
                     showPopup();
                 }
             });

@@ -1,0 +1,20 @@
+﻿<div class="modal fade" id="filePopupForm" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" id="modalClose" data-dismiss="modal">&times;</button>
+                <div class="modal-title">Upload</div>
+            </div>
+            <div class="modal-body" id="filePopupFormBody">
+                <label class="control-label">Select File</label>
+                <input type="file" name="files" accept="file/*" class="file-loading" id="inputFiles" />
+            </div>
+            <div class="modal-footer">
+                <strong>
+                    <button type="button" class="btn btn-default btn-xs pull-right" onclick="onFileInputClearClick('inputFiles')" data-dismiss="modal">Cancel</button> &nbsp; &nbsp;
+                    <span class="pull-right" id="filePopupResult"></span>
+                </strong>
+            </div>
+        </div>
+    </div>
+</div>

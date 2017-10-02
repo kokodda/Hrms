@@ -4,10 +4,11 @@
 <div class="container-fluid" style="padding:0px">
     <label><small>Career</small></label>
     <hr />
-    @foreach(var pos in Model.Select(b => b.EmployeePosition).Distinct())
+    @foreach(var pos in Model.Select(b => b.Employment).Distinct())
     {
         <div style="text-align:center">
-            <label><small>Unit:</small></label> &nbsp; <small>@pos.OrgUnit.Name</small> &mdash; <label><small>Position:</small></label> &nbsp; <small>@pos.OrgUnit.PositionName</small>
+            <label><small>Unit:</small></label> &nbsp; <small>@pos.OrgUnit.Name</small> &mdash; <label><small>Position:</small></label> &nbsp; 
+            <small>@string.Format("{0}", pos.IsHead ? pos.OrgUnit.HeadPositionName : (pos.PositionId.HasValue ? pos.Position.Name : pos.JobName))</small>
         </div>
         <table class="table table-condensed">
             <thead>
@@ -24,7 +25,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var item in Model.Where(b => b.EmployeePosition.Id == pos.Id))
+                @foreach (var item in Model.Where(b => b.Employment.Id == pos.Id))
                 {
                     <tr>
                         <td><small>@item.EffectiveFromDate.ToString("dd-MM-yyyy")</small></td>

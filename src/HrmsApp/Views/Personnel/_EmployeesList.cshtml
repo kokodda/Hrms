@@ -10,7 +10,7 @@
                 <th><small>Name Translated</small></th>
                 <th><small>Join Date</small></th>
                 <th><small>Unit</small></th>
-                <th><small>Position</small></th>
+                <th><small>Position/Job</small></th>
                 <th><small>Date In Position</small></th>
                 <th></th>
             </tr>
@@ -18,16 +18,14 @@
         <tbody>
             @foreach(var item in Model)
             {
-                string joinDate = item.JoinDate.HasValue ? item.JoinDate.Value.ToString("dd-MM-yyyy") : null;
-                var x = item.EmployeePositions.FirstOrDefault(b => b.IsActive && !b.IsActing);
-                string unit = x == null ? null : x.OrgUnit.Name;
+                var x = item.Employments.FirstOrDefault(b => b.IsActive && !b.IsActing);
                 <tr>
                     <td><small>@item.EmpUid</small></td>
                     <td><small>@item.FirstName&nbsp;@item.FatherName&nbsp;@item.FamilyName</small></td>
                     <td><small>@item.OthFirstName&nbsp;@item.OthFatherName&nbsp;@item.OthFamilyName</small></td>
-                    <td><small>@joinDate</small></td>
-                    <td><small>@unit</small></td>
-                    <td><small>@x.OrgUnit.PositionName</small></td>
+                    <td><small>@item.JoinDate.ToString("dd-MM-yyyy")</small></td>
+                    <td><small>@x.OrgUnit.Name</small></td>
+                    <td><small>@string.Format("{0}", x.IsHead ? x.OrgUnit.HeadPositionName : (x.PositionId.HasValue ? x.Position.Name : x.JobName))</small></td>
                     <td><small>@x.FromDate.ToString("dd-MM-yyyy")</small></td>
                     <td>
                         <a role="button" href="#" class="btn btn-xs" onclick="getEmployee(@item.Id)" title="More"><span class="glyphicon glyphicon-option-horizontal"></span></a>

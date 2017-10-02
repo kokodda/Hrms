@@ -3,7 +3,7 @@
 
 <form role="form" id="popupForm" asp-controller="Personnel" asp-action="AddPromotion" data-ajax="true" data-ajax-method="POST" data-ajax-update="#listSection" data-ajax-success="onSuccess" data-ajax-failure="onFailure">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <input type="hidden" asp-for="EmployeePositionId" class="form-control" id="employeePositionId" />
+    <input type="hidden" asp-for="EmploymentId" class="form-control" id="employeePositionId" />
     <div class="form-group-sm">
         <label asp-for="EffectiveFromDate" class="control-label"><small>Effective From Date</small></label>
         <input type="date" asp-for="EffectiveFromDate" class="form-control" required />

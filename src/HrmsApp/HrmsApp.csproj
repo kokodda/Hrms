@@ -65,8 +65,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Data\Migrations\ModelContext\" />
-    <Folder Include="wwwroot\files\" />
+    <Folder Include="Data\Migrations\Model\" />
+    <Folder Include="wwwroot\files\JDs\" />
   </ItemGroup>
 
 </Project>

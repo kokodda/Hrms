@@ -235,6 +235,7 @@ namespace HrmsModel.Data
             modelBuilder.Entity<OrgUnit>().HasKey(b => b.Id);
             modelBuilder.Entity<OrgUnit>().HasOne(b => b.OrgUnitType).WithMany(b => b.OrgUnits).HasForeignKey(b => b.OrgUnitTypeId).OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<OrgUnit>().HasOne(b => b.JobGrade).WithMany(b => b.OrgUnits).HasForeignKey(b => b.JobGradeId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<OrgUnit>().HasOne(b => b.SalaryStep).WithMany(b => b.OrgUnits).HasForeignKey(b => b.SalaryStepId).OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<OrgUnit>().HasOne(b => b.StandardTitleType).WithMany(b => b.OrgUnits).HasForeignKey(b => b.StandardTitleTypeId).OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<OrgUnit>().Property(b => b.Code).IsRequired().HasMaxLength(100);
             modelBuilder.Entity<OrgUnit>().Property(b => b.Name).IsRequired().HasMaxLength(100);

@@ -10,7 +10,7 @@ namespace HrmsModel.Data
     {
         public static void Initialize(HrmsDbContext _context)
         {
-            _context.Database.EnsureCreated();
+            //_context.Database.EnsureCreated();
 
             // Look for any seeded type.
             if (!_context.OrgUnitTypes.Any())

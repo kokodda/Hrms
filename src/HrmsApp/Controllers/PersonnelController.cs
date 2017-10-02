@@ -32,7 +32,8 @@ namespace HrmsApp.Controllers
         //employee
         public async Task<IActionResult> EmployeesList(long? ouId)
         {
-            var model = _context.Employees.Include(b => b.Employments).ThenInclude(b => b.OrgUnit).Include(b => b.Governorate).Include(b => b.Nationality)
+            var model = _context.Employees.Include(b => b.Employments).ThenInclude(b => b.OrgUnit).Include(b => b.Employments).ThenInclude(b => b.Position)
+                                .Include(b => b.Governorate).Include(b => b.Nationality)
                                 .Where(b => !ouId.HasValue || b.Employments.FirstOrDefault(c => c.IsActive && !c.IsActing).OrgUnitId == ouId);
             return PartialView("_EmployeesList", await model.ToListAsync());
         }
@@ -41,6 +42,7 @@ namespace HrmsApp.Controllers
         {
             var model = _context.Employees.Include(b => b.Employments).ThenInclude(b => b.OrgUnit)
                                 .Include(b => b.Employments).ThenInclude(b => b.JobGrade)
+                                .Include(b => b.Employments).ThenInclude(b => b.Position)
                                 .Include(b => b.Employments).ThenInclude(b => b.SalaryScaleType)
                                 .Include(b => b.Employments).ThenInclude(b => b.SalaryStep)
                                 .Include(b => b.Employments).ThenInclude(b => b.EmploymentType)
@@ -177,6 +179,7 @@ namespace HrmsApp.Controllers
         public async Task<IActionResult> PromotionsList(long id)
         {
             var model = _context.EmployeePromotions.Include(b => b.Employment).ThenInclude(b => b.OrgUnit)
+                                            .Include(b => b.Employment).ThenInclude(b => b.Position)
                                             .Include(b => b.JobGrade).Include(b => b.SalaryStep).Include(b => b.SalaryScaleType)
                                             .Where(b => b.Employment.EmployeeId == id && !b.IsCancelled).OrderByDescending(b => b.EffectiveFromDate);
             return PartialView("_PromotionsList", await model.ToListAsync());

@@ -1,0 +1,229 @@
+﻿@using HrmsModel.Models;
+
+@{
+    ViewData["Title"] = "Job Center";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/lib/bootstrap-fileinput/css/fileinput.css" media="all" rel="stylesheet" type="text/css" />
+
+<div class="container-fluid" style="padding:0px">
+    <h3>Job Positions Index</h3>
+    <span class="badge alert-info" id="ouTypeName"><small>All Posistions</small></span> &nbsp;
+    <span><a href="#" onclick="addPosition()" data-toggle="modal" data-target="#myModal"><small>Add Position</small></a></span>
+    <hr />
+    <div class="row">
+        <div class="col-sm-10">
+            <div id="headsSection"></div>
+            <div id="positionsSection"></div>
+        </div>
+        <div class="col-sm-2">
+            <label><small>Filter ...</small></label>
+            <ul class="list-unstyled">
+                <li><a href="#" onclick="positionsList(null, 'All Posistions')"><small>All Positions</small></a></li>
+                @foreach (OrgUnitType item in ViewBag.orgUnitTypesList)
+                {
+                    <li><a href="#" onclick="positionsList(@item.Id, '@item.Name')"><small>@item.Name</small></a></li>
+                }
+            </ul>
+            <hr />
+            <div id="detailsSection"></div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="filePopupForm" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" id="modalClose" data-dismiss="modal">&times;</button>
+                <div class="modal-title">File Upload</div>
+            </div>
+            <div class="modal-body" id="filePopupFormBody">
+                <label class="control-label">Select File</label>
+                <input type="file" name="files" accept="file/*" class="file-loading" id="inputFiles" />
+            </div>
+            <div class="modal-footer">
+                <strong>
+                    <button type="button" class="btn btn-default btn-xs pull-right" onclick="onFileInputClearClick('inputFiles')" data-dismiss="modal">Cancel</button> &nbsp; &nbsp;
+                    <span class="pull-right" id="filePopupResult"></span>
+                </strong>
+            </div>
+        </div>
+    </div>
+</div>
+
+@Html.Hidden("orgUnitTypeIdHF")
+@Html.Hidden("JDIdHF")
+@Html.Hidden("JDTypeHF")
+
+@section Scripts
+{
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+    @{ await Html.RenderPartialAsync("_PopupForm"); }
+    @{ await Html.RenderPartialAsync("_FileUploadPopup"); }
+    <script src="~/lib/bootstrap-fileinput/js/fileinput.min.js"></script>
+    <script>
+        $(document).on('ready', function () {
+            positionsList(null);
+
+            $("#inputFiles").fileinput({
+                uploadAsync: false,
+                showUpload: true,
+                showRemove: true,
+                multiple: false,
+                previewFileType: "file",
+                browseClass: "btn btn-success",
+                browseLabel: "Browse",
+                browseIcon: "<i class=\"glyphicon glyphicon-file\"></i> ",
+                removeClass: "btn btn-danger",
+                removeLabel: "Remove",
+                removeIcon: "<i class=\"glyphicon glyphicon-trash\"></i> ",
+                uploadClass: "btn btn-info",
+                uploadLabel: "Upload",
+                uploadIcon: "<i class=\"glyphicon glyphicon-upload\"></i> ",
+                uploadUrl: '@Url.Action("fileUpload", "Positions")'
+            });
+            $('#inputFiles').on('filebatchuploadsuccess', function (event, data, previewId, index) {
+                $('#filePopupResult').html('File Successfully Uploaded.');
+                if ($('#JDTypeHF').val() === 'HEAD') {
+                    $.ajax({
+                        url: '@Url.Action("UpdateHeadJD", "Positions")',
+                        type: 'GET',
+                        data: { id: $('#JDIdHF').val(), fileName: data.filenames[0], ouTypeId: $('#orgUnitTypeIdHF').val() },
+                        success: function (result) {
+                            $('#headsSection').html(result);
+                        }
+                    });
+                } else {
+                    $.ajax({
+                        url: '@Url.Action("UpdatePositionJD", "Positions")',
+                        type: 'GET',
+                        data: { id: $('#JDIdHF').val(), fileName: data.filenames[0], ouTypeId: $('#orgUnitTypeIdHF').val() },
+                        success: function (result) {
+                            $('#positionsSection').html(result);
+                        }
+                    });
+                }
+            });
+        });
+
+        function onFileInputClearClick(ed) {
+            $('#' + ed).fileinput('clear');
+        }
+
+        function showPopup() {
+            $('#popupResult').html(null).text(null);
+            $('.popupBtns').removeAttr('disabled');
+        }
+        function onPopupSubmit() {
+            $('#popupForm').submit();
+        }
+        function onSuccess() {
+            $('#popupResult').html('Successfully Updated.');
+            $('.popupBtns').attr('disabled', 'disabled');
+        }
+        function onFailure() {
+            $('#formResult').html('Failed to Update! Please Correct All Errors.');
+            $('.popupBtns').removeAttr('disabled');
+        }
+        function onFileInputClearClick(ed) {
+            $('#' + ed).fileinput('clear');
+        }
+
+        //heads
+        function editHead(id) {
+            $.ajax({
+                url: '@Url.Action("EditHead", "Positions")',
+                type: 'GET',
+                data: { id: id },
+                success: function (result) {
+                    $('#myModal-body').html(result);
+                    $('#myModal-label').html('Edit Business Unit Head');
+                    $('#ouTypeId').val($('#orgUnitTypeIdHF').val());
+                    showPopup();
+                }
+            });
+        }
+        function headDetails(id) {
+            $.ajax({
+                url: '@Url.Action("HeadDetails", "Positions")',
+                type: 'GET',
+                data: { id: id },
+                success: function (result) {
+                    $('#detailsSection').html(result);
+                }
+            });
+        }
+        function headJDUpload(id) {
+            $('#JDIdHF').val(id);
+            $('#JDTypeHF').val('HEAD');
+        }
+        function downloadJD(fileName) {
+            var url = '/files/JDs/' + fileName;
+            window.location.href = url;
+        }
+
+        //positions
+        function positionsList(id, typeName) {
+            $('#orgUnitTypeIdHF').val(id);
+            if (id) { $('#ouTypeName').text(typeName + ' Level Positions'); }
+            else { $('#ouTypeName').text(typeName); }
+            $.ajax({
+                url: '@Url.Action("HeadsList", "Positions")',
+                type: 'GET',
+                data: { id: id },
+                success: function (result) {
+                    $('#headsSection').html(result);
+                }
+            });
+            $.ajax({
+                url: '@Url.Action("PositionsList", "Positions")',
+                type: 'GET',
+                data: { id: id },
+                success: function (result) {
+                    $('#positionsSection').html(result);
+                }
+            });
+        }
+        function addPosition() {
+            $.ajax({
+                url: '@Url.Action("AddPosition", "Positions")',
+                type: 'GET',
+                data: { id: $('#orgUnitTypeIdHF').val() },
+                success: function (result) {
+                    $('#myModal-body').html(result);
+                    $('#myModal-label').html('Add Job Position');
+                    $('#ouTypeId').val($('#orgUnitTypeIdHF').val());
+                    showPopup();
+                }
+            });
+        }
+        function editPosition(id) {
+            $.ajax({
+                url: '@Url.Action("EditPosition", "Positions")',
+                type: 'GET',
+                data: { id: id },
+                success: function (result) {
+                    $('#myModal-body').html(result);
+                    $('#myModal-label').html('Edit Job Position');
+                    $('#ouTypeId').val($('#orgUnitTypeIdHF').val());
+                    showPopup();
+                }
+            });
+        }
+        function positionDetails(id) {
+            $.ajax({
+                url: '@Url.Action("PositionDetails", "Positions")',
+                type: 'GET',
+                data: { id: id },
+                success: function (result) {
+                    $('#detailsSection').html(result);
+                }
+            });
+        }
+        function positionJDUpload(id) {
+            $('#JDIdHF').val(id);
+            $('#JDTypeHF').val('POSITION');
+        }
+    </script>
+}

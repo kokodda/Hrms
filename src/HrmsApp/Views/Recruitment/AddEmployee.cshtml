@@ -10,9 +10,11 @@
     <br />
     <h3>Add New Employee</h3>
     <div><small><label>Unit:</label>&nbsp; @ViewBag.orgUnitName &mdash; <label>Job Position:</label>&nbsp;@ViewBag.positionName</small></div>
-    <form asp-controller="JobPositions" asp-action="AddEmployee" data-ajax="true" data-ajax-method="POST" data-ajax-update="#formResult">
+    <form asp-controller="Recruitment" asp-action="AddEmployee" data-ajax="true" data-ajax-method="POST" data-ajax-update="#formResult">
         <br />
         <input type="hidden" name="orgUnitId" value="@ViewBag.orgUnitId" />
+        <input type="hidden" name="positionId" value="@ViewBag.positionId" />
+        <input type="hidden" name="isHead" value="@ViewBag.isHead" />
         <div><label style="color:silver"><small>Personnal Information</small></label></div>
         <div class="form-group-sm">
             <label class="control-label" asp-for="FirstName"><small>First Name (*)</small></label>
@@ -51,7 +53,7 @@
         <br />
         <div class="input-group-sm">
             <label class="control-label" asp-for="IsMale">
-                <input type="checkbox" asp-for="IsMale" checked required />
+                <input type="checkbox" asp-for="IsMale" checked />
                 <span><small>Is Male? (*)</small></span>
             </label>
         </div>
@@ -92,7 +94,7 @@
         </div>
         <div class="input-group-sm">
             <label class="control-label" asp-for="IsMilitaryExempted">
-                <input type="checkbox" asp-for="IsMilitaryExempted" />
+                <input type="checkbox" asp-for="IsMilitaryExempted" checked />
                 <span><small>Is Military Service Exempted? (*)</small></span>
             </label>
         </div>
@@ -141,12 +143,38 @@
             <input type="text" asp-for="EmpUid" class="form-control" />
         </div>
         <div class="form-group-sm">
-            <label class="control-label" asp-for="JoinDate"><small>Join Date</small></label>
-            <input type="date" asp-for="JoinDate" class="form-control" />
+            <label class="control-label" asp-for="JoinDate"><small>Join Date (*)</small></label>
+            <input type="date" asp-for="JoinDate" class="form-control" required />
         </div>
+        @{
+            if (ViewBag.isUnassigned)
+            {
+                <div class="form-group-sm">
+                    <label class="control-label"><small>Job Name (*)</small></label>
+                    <input type="text" name="jobName" class="form-control" required />
+                </div>
+                <div class="form-group-sm">
+                    <label class="control-label"><small>Job Name Translated (*)</small></label>
+                    <input type="text" name="othJobName" class="form-control" required />
+                </div>
+            }
+            else
+            {
+                <div class="form-group-sm">
+                    <label class="control-label"><small>Date In Position</small></label>
+                    <input type="date" name="dateInPosition" class="form-control" />
+                </div>
+            }
+        }
         <div class="form-group-sm">
-            <label class="control-label"><small>Date In Position</small></label>
-            <input type="date" name="fromDate" class="form-control" required />
+            <label class="control-label"><small>Employment Type (*)</small></label>
+            <select class="form-control" name="employmentTypeId" required>
+                <option value="">Select from List ...</option>
+                @foreach (SelectListItem item in new SelectList(ViewBag.employmentTypesList, "Id", "Name"))
+                {
+                    <option value="@item.Value">@item.Text</option>
+                }
+            </select>
         </div>
         <div class="input-group-sm">
             <label class="control-label">
@@ -154,27 +182,6 @@
                 <span><small>In Probation?</small></span>
             </label>
         </div>
-        @if (ViewBag.orgUnitId == null)
-        {
-            <div class="form-group-sm">
-                <label class="control-label"><small>Position Name (*)</small></label>
-                <input type="text" name="jobName" class="form-control" required />
-            </div>
-            <div class="form-group-sm">
-                <label class="control-label"><small>Position Name Translated (*)</small></label>
-                <input type="text" name="othJobName" class="form-control" required />
-            </div>
-            <div class="form-group-sm">
-                <label class="control-label"><small>Employment Type (*)</small></label>
-                <select class="form-control" name="employeeTypeId" required>
-                    <option value="">Select from List ...</option>
-                    @foreach (SelectListItem item in new SelectList(ViewBag.employeeTypesList, "Id", "Name"))
-                    {
-                        <option value="@item.Value">@item.Text</option>
-                    }
-                </select>
-            </div>
-        }
         <br />
         <div class="form-group-sm">
             <button type="submit" class="btn btn-sm btn-primary">Submit</button>
@@ -186,7 +193,7 @@
 
 <script>
     function back() {
-        var url = '@Url.Action("Index", "JobPositions")';
+        var url = '@Url.Action("Index", "Recruitment")';
         window.location.href = url;
     }
 </script>

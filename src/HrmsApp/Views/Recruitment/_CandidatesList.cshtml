@@ -1,0 +1,47 @@
+﻿@using HrmsModel.Models;
+@model IEnumerable<Candidate>
+
+<div class="container-fluid" style="padding:0px">
+    @if(Model.Count() == 0)
+    {
+        <label style="color:silver"><small>Candidates List is Empty</small></label>
+    }
+    else
+    {
+        <label style="color:silver"><small>Candidates</small></label>
+        <table class="table table-hover table-condensed">
+            <thead>
+                <tr>
+                    <th><small>Candidate Name</small></th>
+                    <th><small>Business Unit</small></th>
+                    <th><small>Position</small></th>
+                    <th><small>Reporting To</small></th>
+                    <th><small>Phone</small></th>
+                    <th><small>email</small></th>
+                    <th><small>Posted Date</small></th>
+                    <th><small>Approved?</small></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td><small>@item.FirstName &nbsp; @item.FatherName &nbsp; @item.FamilyName</small></td>
+                        <td><small>@item.OrgUnit.Name</small></td>
+                        <td><small>@string.Format("{0}", item.Position != null ? item.Position.Name : "Un Assigned")</small></td>
+                        <td><small></small></td>
+                        <td><small>@item.Phone</small></td>
+                        <td><small>@item.Email</small></td>
+                        <td><small></small></td>
+                        <td><small></small></td>
+                        <td>
+                            <a role="button" href="#" class="btn btn-xs" onclick="hireCandidate(@item.Id)" data-toggle="modal" data-target="#myModal" title="Hire"><span class="fa fa-user"></span></a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>
+    

@@ -1,0 +1,82 @@
+﻿@using HrmsModel.Models;
+
+@{
+    ViewData["Title"] = "Recruitment";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid" style="padding:0px">
+    <h3>Job Positions Index</h3>
+    <div class="btn-group">
+        <button class="btn btn-xs btn-primary" onclick="vacanciesList()"><small>Vacancies</small></button>
+        <button class="btn btn-xs btn-default" onclick="candidatesList()"><small>Candidates</small></button>
+        <button class="btn btn-xs btn-default" onclick="orgUnitsList()"><small>Business Units</small></button>
+    </div>
+    <hr />
+    <div id="headsSection"></div>
+    <div id="positionsSection"></div>
+    <div id="listSection"></div>
+</div>
+
+@Html.Hidden("filterHF", "VACANCY")
+@Html.Hidden("orgUnitTypeIdHF")
+
+@section Scripts
+{
+    <script>
+        $(document).on('ready', function () {
+            vacanciesList();
+        })
+
+        function vacanciesList() {
+            $('#candidatesSection').html(null);
+            $.ajax({
+                url: '@Url.Action("HeadsList", "Recruitment")',
+                type: 'GET',
+                success: function (result) {
+                    $('#headsSection').html(result);
+                }
+            });
+            $.ajax({
+                url: '@Url.Action("positionsList", "Recruitment")',
+                type: 'GET',
+                success: function (result) {
+                    $('#positionsSection').html(result);
+                }
+            });
+        }
+        function candidatesList() {
+            $.ajax({
+                url: '@Url.Action("CandidatesList", "Recruitment")',
+                type: 'GET',
+                success: function (result) {
+                    $('#headsSection').html(null);
+                    $('#positionsSection').html(null);
+                    $('#listSection').html(result);
+                }
+            });
+        }
+        function orgUnitsList() {
+            $.ajax({
+                url: '@Url.Action("OrgUnitsList", "Recruitment")',
+                type: 'GET',
+                success: function (result) {
+                    $('#headsSection').html(null);
+                    $('#positionsSection').html(null);
+                    $('#listSection').html(result);
+                }
+            });
+        }
+
+        function downloadJD(fileName) {
+            var url = '/files/JDs/' + fileName;
+            window.location.href = url;
+        }
+
+        //employee & candidate
+        function addEmployee(buId, posId, isHead) {
+            var url = '@Html.Raw(Url.Action("AddEmployee", "Recruitment", new { buId = "_buId", posId = "_posId", isHead = "_isHead" }))';
+            window.location.href = url.replace("_buId", buId).replace("_posId", posId).replace("_isHead", isHead);
+        }
+    </script>
+}

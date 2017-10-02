@@ -15,8 +15,12 @@ namespace HrmsModel.Models
         public int SortOrder { get; set; }
         public string HeadPositionName { get; set; }
         public string OthHeadPositionName { get; set; }
+        public decimal? JobWeight { get; set; }
         public int? StandardTitleTypeId { get; set; }
         public int? JobGradeId { get; set; }
+        public int? SalaryStepId { get; set; }
+        public bool IsAttendRequired { get; set; }
+        public bool IsOverTimeAllowed { get; set; }
         public long? LineManagerOrgUnitId { get; set; }
         public long? ReportingToOrgUnitId { get; set; }
         public string JobCode { get; set; }
@@ -29,6 +33,7 @@ namespace HrmsModel.Models
 
         public virtual OrgUnitType OrgUnitType { get; set; }
         public virtual JobGrade JobGrade { get; set; }
+        public virtual SalaryStep SalaryStep { get; set; }
         public virtual StandardTitleType StandardTitleType { get; set; }
         public virtual ICollection<Employment> Employments { get; set; }
         public virtual ICollection<Candidate> Candidates { get; set; }

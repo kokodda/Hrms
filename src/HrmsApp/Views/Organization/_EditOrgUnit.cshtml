@@ -1,0 +1,55 @@
+﻿@using HrmsModel.Models;
+@model OrgUnit
+
+<div style="color:silver;font-style:italic">
+    <small>Last Update: @Model.LastUpdated.ToString("dd-MM-yyyy") By: @Model.UpdatedBy</small>
+</div>
+<form role="form" id="popupForm" asp-controller="Organization" asp-action="EditOrgUnit" data-ajax="true" data-ajax-method="POST" data-ajax-update="#listSection" data-ajax-success="onSuccess" data-ajax-failure="onFailure">
+    <input type="hidden" asp-for="Id" />
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="Name"><small>Name (*)</small></label>
+        <input type="text" asp-for="Name" class="form-control" required />
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="OthName"><small>Name Translated (*)</small></label>
+        <input type="text" asp-for="OthName" class="form-control" required />
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label"><small>Parent Business Unit</small></label>
+        <select class="form-control" name="parentId">
+            <option value="">Select from List ...</option>
+            @foreach (SelectListItem item in new SelectList(ViewBag.orgUnitsList, "Id", "Name"))
+            {
+                if (long.Parse(item.Value) == ViewBag.parentId)
+                {
+                    <option value="@item.Value" selected>@item.Text</option>
+                }
+                else
+                {
+                    <option value="@item.Value">@item.Text</option>
+                }
+            }
+        </select>
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="OrgUnitTypeId"><small>Unit Level (*)</small></label>
+        <select class="form-control" asp-for="OrgUnitTypeId" required>
+            <option value="">Select from List ...</option>
+            @foreach (SelectListItem item in new SelectList(ViewBag.orgUnitTypesList, "Id", "Name"))
+                    {
+                <option value="@item.Value">@item.Text</option>
+                    }
+        </select>
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="SortOrder"><small>Sort Order (*)</small></label>
+        <input type="number" asp-for="SortOrder" class="form-control" required />
+    </div>
+    <div class="input-group-sm">
+        <label class="control-label" asp-for="IsActive">
+            <input type="checkbox" asp-for="IsActive" />
+            <span><small>Is Active?</small></span>
+        </label>
+    </div>
+</form>
+    

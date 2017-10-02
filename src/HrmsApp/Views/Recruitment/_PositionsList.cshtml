@@ -1,0 +1,51 @@
+﻿@using HrmsModel.Models;
+@model IEnumerable<Position>
+
+<div class="container-fluid" style="padding:0px">
+    <label style="color:silver"><small>Vacant Positions</small></label>
+    <table class="table table-hover table-condensed">
+        <thead>
+            <tr>
+                <th><small>Position Name</small></th>
+                <th><small>Unit</small></th>
+                <th><small>Title</small></th>
+                <th><small>Job Code</small></th>
+                <th><small>Grade</small></th>
+                <th><small>Step</small></th>
+                <th><small>JD</small></th>
+                <th><small>Occupation</small></th>
+                <th><small>Vacancy</small></th>
+                <th><small>Attendance?</small></th>
+                <th><small>Overtime?</small></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td><small>@item.Name</small></td>
+                    <td><small>@item.OrgUnit.Name</small></td>
+                    <td><small>@string.Format("{0}", item.StandardTitleType == null ? null : item.StandardTitleType.Name)</small></td>
+                    <td><small>@item.JobCode</small></td>
+                    <td><small>@string.Format("{0}", item.JobGrade == null ? null : item.JobGrade.Code)</small></td>
+                    <td><small>@string.Format("{0}", item.SalaryStep == null ? null : item.SalaryStep.Code)</small></td>
+                    <td>
+                        @if(!string.IsNullOrEmpty(item.JobDescription))
+                        {
+                            <a href="#" class="btn btn-xs" onclick="downloadJD('@item.JobDescription')" target="_blank" title="Download"><span class="fa fa-download" style="color:forestgreen"></span></a>
+                        }
+                    </td>
+                    <td><small>@item.Employments.Where(b => b.IsActive).Count() / @item.Capacity</small></td>
+                    <td><small>@item.TotalVacant</small></td>
+                    <td><input type="checkbox" asp-for="@item.IsAttendRequired" readonly disabled /></td>
+                    <td><input type="checkbox" asp-for="@item.IsOverTimeAllowed" readonly disabled /></td>
+                    <td>
+                        <a role="button" href="#" class="btn btn-xs" onclick="addEmployee(@item.OrgUnit.Id, @item.Id, false)" data-toggle="modal" data-target="#myModal" title="Add Employee"><span class="fa fa-user-plus"></span></a>
+                        <a role="button" href="#" class="btn btn-xs" onclick="addCandidate(@item.OrgUnit.Id, @item.Id, false)" title="Add Candidate"><span class="fa fa-user-o"></span></a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

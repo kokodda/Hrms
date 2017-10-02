@@ -8,7 +8,7 @@
 <link href="~/lib/bootstrap-fileinput/css/fileinput.css" media="all" rel="stylesheet" type="text/css" />
 
 @{ 
-    var x = Model.EmployeePositions.FirstOrDefault(b => b.IsActive && !b.IsActing);
+    var x = Model.Employments.FirstOrDefault(b => b.IsActive && !b.IsActing);
     string photo;
     if (Model.Photo != null) { photo = "data:image/png;base64," + Convert.ToBase64String(Model.Photo); }
     else { photo = string.Format("{0}/1.jpg", "/images"); }
@@ -20,42 +20,26 @@
         </div>
         <div class="col-sm-10">
             <h3>@Model.FirstName&nbsp;@Model.FatherName&nbsp;@Model.FamilyName</h3>
-            @{
-                if (x != null)
-                {
-                    var y = x.OrgUnit;
-                    if (y != null)
-                    {
-                        <h5 style="color:silver;font-weight:bold">@y.PositionName : @y.Name</h5>
-                    }
-                }
-            }
+            <h5 style="color:silver;font-weight:bold">
+                @string.Format("{0}", x.IsHead ? x.OrgUnit.HeadPositionName : (x.PositionId.HasValue ? x.Position.Name : x.JobName)) : @x.OrgUnit.Name
+            </h5>
         </div>
     </div>
     <hr />
     <div class="row">
         <div class="col-sm-2">
             @{
-                string jobGrade = "NA";
-                string salaryStep = "NA";
-                string salaryScale = "NA";
-                if (x.JobGrade != null) { jobGrade = x.JobGrade.Name; }
-                if (x.SalaryScaleTypeId.HasValue) { salaryScale = x.SalaryScaleType.Name; }
-                if (x.SalaryStep != null) { salaryStep = x.SalaryStep.Name; }
-                string attendance = x.IsAttendRequired ? "Required" : "Not Required";
-                string overtime = x.IsOverTimeAllowed ? "Allowed" : "Not Allowed";
-
                 <div><small><label>Employee Uid: </label>&nbsp;@Model.EmpUid</small></div>
-                <div><small><label>Join Date: </label>&nbsp;@Model.JoinDate.Value.ToString("dd-MM-yyyy")</small></div>
+                <div><small><label>Join Date: </label>&nbsp;@Model.JoinDate.ToString("dd-MM-yyyy")</small></div>
                 <div><small><label>Date In Position: </label>&nbsp;@x.FromDate.ToString("dd-MM-yyyy")</small></div>
                 <br />
-                <div><small><label>Job Grade: </label>&nbsp;@jobGrade</small></div>
-                <div><small><label>Salary Step: </label>&nbsp;@salaryStep</small></div>
-                <div><small><label>Salary Scale: </label>&nbsp;@salaryScale</small></div>
+                <div><small><label>Job Grade: </label>&nbsp;@string.Format("{0}", x.JobGrade == null ? "NA" : x.JobGrade.Name)</small></div>
+                <div><small><label>Salary Step: </label>&nbsp;@string.Format("{0}", x.SalaryStep == null ? "NA" : x.SalaryStep.Code)</small></div>
+                <div><small><label>Salary Scale: </label>&nbsp;@string.Format("{0}", x.SalaryScaleTypeId.HasValue ? x.SalaryScaleType.Name : "NA")</small></div>
                 <br />
-                <div><small><label>Attendance: </label>&nbsp;@attendance</small></div>
-                <div><small><label>OverTime: </label>&nbsp;@overtime</small></div>
-                <div><small><label>Employment Type: </label>&nbsp;@x.EmployeeType.Name</small></div>
+                <div><small><label>Attendance: </label>&nbsp;@string.Format("{0}", x.IsAttendRequired ? "Required" : "Not Required")</small></div>
+                <div><small><label>OverTime: </label>&nbsp;@string.Format("{0}", x.IsOverTimeAllowed ? "Allowed" : "Not Allowed")</small></div>
+                <div><small><label>Employment Type: </label>&nbsp;@x.EmploymentType.Name</small></div>
             }
         </div>
 
@@ -96,18 +80,14 @@
                 </div>
                 <br />
                 <div class="row">
-                    @{ 
-                        string gender = Model.IsMale ? "Male" : "Femele";
-                        string isMilitary = Model.IsMilitaryExempted ? "Exempted" : "None";
-                    }
-                    <div class="col-sm-3"><small><label>Gender: </label>&nbsp;@gender</small></div>
+                    <div class="col-sm-3"><small><label>Gender: </label>&nbsp;@string.Format("{0}", Model.IsMale ? "Male" : "Femele")</small></div>
                     <div class="col-sm-3"><small><label>Birth Date: </label>&nbsp;@Model.BirthDate.ToString("dd-MM-yyyy")</small></div>
                     <div class="col-sm-4"><small><label>Nationality: </label>&nbsp;@Model.Nationality.Name</small></div>
                 </div>
                 <div class="row">
                     <div class="col-sm-3"><small><label>Marital Status: </label>&nbsp;@Model.MaritalStatus</small></div>
                     <div class="col-sm-3"><small><label>Blood Group: </label>&nbsp;@Model.BloodGroup</small></div>
-                    <div class="col-sm-4"><small><label>Military Service: </label>&nbsp;@isMilitary</small></div>
+                    <div class="col-sm-4"><small><label>Military Service: </label>&nbsp;@string.Format("{0}", Model.IsMilitaryExempted ? "Exempted" : "None")</small></div>
                 </div>
             </div>
 
@@ -131,6 +111,8 @@
         </div>
 
         <div class="col-sm-2">
+            <div><small><a href="/Personnel/Index">Back To List ...</a></small></div>
+            <br />
             <ul class="list-unstyled">
                 <li><small><a href="javascript:getPersonalInfo();">Personal Information</a></small></li>
                 <li><small><a href="javascript:getContacts();">Contacts</a></small></li>
