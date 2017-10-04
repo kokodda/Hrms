@@ -5,7 +5,10 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using HrmsModel.Models;
 using HrmsModel.Data;
+using HrmsApp.Models;
 using Microsoft.EntityFrameworkCore;
+using System.IO;
+using Microsoft.AspNetCore.Http;
 
 namespace HrmsApp.Controllers
 {
@@ -22,33 +25,149 @@ namespace HrmsApp.Controllers
 
         public IActionResult Index()
         {
+            ViewBag.orgUnitTypesList = _lookup.GetLookupItems<OrgUnitType>();
             ViewBag.orgUnitsList = _context.OrgUnits.Include(b => b.OrgUnitType)
                         .Where(b => b.IsActive).OrderBy(b => b.OrgUnitType.SortOrder).ThenBy(b => b.SortOrder).ToList();
             ViewBag.nationalitiesList = _context.Nationalities.Where(b => b.IsActive).ToList();
             ViewBag.governoratesList = _context.Governorates.Where(b => b.IsActive).ToList();
+            ViewBag.standardTitlesList = _lookup.GetLookupItems<StandardTitleType>();
+            ViewBag.gradeGroupsList = _context.GradeGroups.Where(b => b.IsActive).ToList();
+            ViewBag.jobGradesList = _context.JobGrades.Where(b => b.IsActive).ToList();
             return View();
         }
 
         //employee
-        public async Task<IActionResult> EmployeesList(long? ouId)
+        public IActionResult EmployeesList(string filterType, long? id)
         {
-            var model = _context.Employees.Include(b => b.Employments).ThenInclude(b => b.OrgUnit).Include(b => b.Employments).ThenInclude(b => b.Position)
-                                .Include(b => b.Governorate).Include(b => b.Nationality)
-                                .Where(b => !ouId.HasValue || b.Employments.FirstOrDefault(c => c.IsActive && !c.IsActing).OrgUnitId == ouId);
-            return PartialView("_EmployeesList", await model.ToListAsync());
+            int x;
+            switch (filterType)
+            {
+                case "ouType":
+                    string tCode = _lookup.GetLookupItems<OrgUnitType>().SingleOrDefault(b => b.Id == id).SysCode;
+                    return ViewComponent("EmployeesList", new { orgUnitTypeCode = tCode });
+                case "ou":
+                    return ViewComponent("EmployeesList", new { orgUnitId = id });
+                case "nationality":
+                    x = (int)id;
+                    return ViewComponent("EmployeesList", new { nationalityId = x });
+                case "region":
+                    x = (int)id;
+                    return ViewComponent("EmployeesList", new { governorateId = x });
+                case "title":
+                    x = (int)id;
+                    return ViewComponent("EmployeesList", new { titleId = x });
+                case "gradeGroup":
+                    x = (int)id;
+                    return ViewComponent("EmployeesList", new { gradeGroupId = x });
+                case "grade":
+                    x = (int)id;
+                    return ViewComponent("EmployeesList", new { jobGradeId = x });
+                case "Probation":
+                    return ViewComponent("EmployeesList", new { isProbation = true });
+                case "Acting":
+                    return ViewComponent("EmployeesList", new { isActing = true });
+                case "Archive":
+                    return ViewComponent("EmployeesList", new { isActive = false });
+                case "Birthday":
+                    return ViewComponent("EmployeesList", new { isBirthday = true });
+                default:
+                    return ViewComponent("EmployeesList", new { isHead = true });
+            }
+        }
+
+        public IActionResult FindEmployee(string employeeUid, string employeeName)
+        {
+            return ViewComponent("EmployeesList", new { employeeUid = employeeUid, employeeName = employeeName });
         }
 
         public async Task<IActionResult> EmployeeIndex(long id)
         {
-            var model = _context.Employees.Include(b => b.Employments).ThenInclude(b => b.OrgUnit)
-                                .Include(b => b.Employments).ThenInclude(b => b.JobGrade)
-                                .Include(b => b.Employments).ThenInclude(b => b.Position)
-                                .Include(b => b.Employments).ThenInclude(b => b.SalaryScaleType)
-                                .Include(b => b.Employments).ThenInclude(b => b.SalaryStep)
-                                .Include(b => b.Employments).ThenInclude(b => b.EmploymentType)
-                                .Include(b => b.Nationality).Include(b => b.Governorate)
-                                .SingleOrDefaultAsync(b => b.Id == id);
-            return View("EmployeeIndex", await model);
+            EmployeeViewModel model = new EmployeeViewModel();
+            var emp = await _context.Employments.Include(b => b.EmploymentType).Include(b => b.Employee).ThenInclude(b => b.Nationality)
+                                        .Include(b => b.Employee).ThenInclude(b => b.Governorate)
+                                        .Include(b => b.OrgUnit).ThenInclude(b => b.OrgUnitType)
+                                        .Include(b => b.OrgUnit).ThenInclude(b => b.JobGrade).ThenInclude(b => b.GradeGroup)
+                                        .Include(b => b.OrgUnit).ThenInclude(b => b.SalaryStep)
+                                        .Include(b => b.OrgUnit).ThenInclude(b => b.StandardTitleType)
+                                        .Include(b => b.Position).ThenInclude(b => b.JobGrade).ThenInclude(b => b.GradeGroup)
+                                        .Include(b => b.Position).ThenInclude(b => b.SalaryStep)
+                                        .Include(b => b.Position).ThenInclude(b => b.StandardTitleType)
+                                        .Include(b => b.SalaryScaleType)
+                                        .SingleOrDefaultAsync(b => b.Employee.Id == id);
+            model.Employee = emp.Employee;
+            model.EmployeeName = emp.Employee.FirstName + " " + emp.Employee.FatherName + " " + emp.Employee.FamilyName;
+            model.OthEmployeeName = emp.Employee.OthFirstName + " " + emp.Employee.OthFatherName + " " + emp.Employee.OthFamilyName;
+            model.OrgUnitId = emp.OrgUnitId;
+            model.OrgUnitName = emp.OrgUnit.Name;
+            model.OrgUnitTypeCode = emp.OrgUnit.OrgUnitType.SysCode;
+            model.OrgUnitTypeName = emp.OrgUnit.OrgUnitType.Name;
+            model.EmploymentId = emp.Id;
+            model.IsHead = emp.IsHead;
+            model.DateInPosition = emp.FromDate;
+            model.EmploymentTypeCode = emp.EmploymentType.SysCode;
+            model.EmploymentTypeName = emp.EmploymentType.Name;
+            if (emp.IsHead)
+            {
+                model.PositionId = null;
+                model.PositionName = emp.OrgUnit.HeadPositionName;
+                if (emp.OrgUnit.StandardTitleTypeId.HasValue)
+                {
+                    model.StandardTitleCode = emp.OrgUnit.StandardTitleType.SysCode;
+                    model.StandardTitleName = emp.OrgUnit.StandardTitleType.Name;
+                }
+                if (emp.OrgUnit.JobGradeId.HasValue)
+                {
+                    model.GradeGroupId = emp.OrgUnit.JobGrade.GradeGroupId;
+                    model.GradeGroupCode = emp.OrgUnit.JobGrade.GradeGroup.Code;
+                    model.JobGradeId = emp.OrgUnit.JobGradeId;
+                    model.JobGradeCode = emp.OrgUnit.JobGrade.Code;
+                }
+                if (emp.OrgUnit.SalaryStepId.HasValue)
+                {
+                    model.SalaryStepId = emp.OrgUnit.SalaryStepId;
+                    model.SalaryStepCode = emp.OrgUnit.SalaryStep.Code;
+                }
+            }
+            else if (!emp.IsHead && emp.PositionId.HasValue)
+            {
+                model.PositionId = emp.Position.Id;
+                model.PositionName = emp.Position.Name;
+                if (emp.Position.StandardTitleTypeId.HasValue)
+                {
+                    model.StandardTitleCode = emp.Position.StandardTitleType.SysCode;
+                    model.StandardTitleName = emp.Position.StandardTitleType.Name;
+                }
+                if (emp.Position.JobGradeId.HasValue)
+                {
+                    model.GradeGroupId = emp.Position.JobGrade.GradeGroupId;
+                    model.GradeGroupCode = emp.Position.JobGrade.GradeGroup.Code;
+                    model.JobGradeId = emp.Position.JobGradeId;
+                    model.JobGradeCode = emp.Position.JobGrade.Code;
+                }
+                if (emp.Position.SalaryStepId.HasValue)
+                {
+                    model.SalaryStepId = emp.Position.SalaryStepId;
+                    model.SalaryStepCode = emp.Position.SalaryStep.Code;
+                }
+            }
+            else
+            {
+                model.PositionId = null;
+                model.PositionName = emp.JobName;
+            }
+            if (emp.SalaryScaleTypeId.HasValue)
+            {
+                model.SalaryScaleTypeId = emp.SalaryScaleTypeId;
+                model.SalaryScaleTypeName = emp.SalaryScaleType.Name;
+                model.BasicSalary = 0;
+            }
+            else
+                model.BasicSalary = emp.BasicSalary;
+            model.IsActing = emp.IsActing;
+            model.IsAttendRequired = emp.IsAttendRequired;
+            model.IsOverTimeAllowed = emp.IsOverTimeAllowed;
+
+            return View("EmployeeIndex", model);
         }
 
         //leave
@@ -213,6 +332,35 @@ namespace HrmsApp.Controllers
             var model = _context.EmployeeGroups.Include(b => b.GenericSubGroup).ThenInclude(b => b.GenericGroup)
                                 .Where(b => b.EmployeeId == id && b.GenericSubGroup.IsActive).OrderBy(b => b.JoinDate);
             return PartialView("_GroupsList", await model.ToListAsync());
+        }
+
+        //uploads
+        [HttpPost]
+        public async Task<IActionResult> photoUpload(ICollection<IFormFile> files, long id)
+        {
+            var model = await _context.Employees.SingleOrDefaultAsync(b => b.Id == id);
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var file = files.FirstOrDefault();
+                    string photoName = file.FileName;
+                    byte[] photoFile;
+                    using (MemoryStream str = new MemoryStream())
+                    {
+                        await file.OpenReadStream().CopyToAsync(str);
+                        photoFile = str.ToArray();
+                    }
+                    model.Photo = photoFile;
+                    await _context.SaveChangesAsync();
+                    return Json(Convert.ToBase64String(photoFile));
+                }
+                catch
+                {
+                    return Json("Failed to Upload Photo! Please try again.");
+                }
+            }
+            return Json("Failed to Upload Photo! Please try again.");
         }
     }
 }

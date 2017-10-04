@@ -335,7 +335,7 @@ namespace HrmsModel.Data
                 var nationalities = new Nationality[]
                 {
                     new Nationality { Name = "Syrian Citizen", OthName = "Syrian Citizen", SortOrder = 10, IsActive = true },
-                    new Nationality { Name = "Syrian ByLaw", OthName = "Syrian ByLaw", SortOrder = 20, IsActive = true },
+                    new Nationality { Name = "Syrian Privilleged", OthName = "Syrian Privilleged", SortOrder = 20, IsActive = true },
                     new Nationality { Name = "Arab", OthName = "Arab", SortOrder = 30, IsActive = true },
                     new Nationality { Name = "Indian", OthName = "Indian", SortOrder = 40, IsActive = true },
                     new Nationality { Name = "Western", OthName = "Western", SortOrder = 50, IsActive = true }

@@ -2,7 +2,7 @@
 @model IEnumerable<EmployeePromotion>
 
 <div class="container-fluid" style="padding:0px">
-    <label><small>Career</small></label>
+    <div><label><small>Career</small></label></div>
     <hr />
     @foreach(var pos in Model.Select(b => b.Employment).Distinct())
     {

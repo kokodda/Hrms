@@ -5,13 +5,50 @@
 
 <div class="container-fluid" style="padding:0px">
     <br />
-    <h3>Personnel Index</h3>
     <div class="row">
-        <div class="col-sm-10" id="listSection"></div>
+        <div class="col-sm-6"><h3>Personnel Index</h3></div>
+        <div class="col-sm-6" style="color:silver;">
+            <br />
+            <span class="fa fa-filter pull-right" style="color:silver"></span>&nbsp;
+            <small><label class="pull-right" id="listName">Heads of Units</label></small>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-10" id="listSection">
+            @await Component.InvokeAsync("EmployeesList", new { isHead = true })
+        </div>
         <div class="col-sm-2">
+            <ul class="list-unstyled">
+                <li><small><a href="#" onclick="filterByType()">Heads of Units</a></small></li>
+                <li><small><a href="#" onclick="filterByType('Probation')">In Probation</a></small></li>
+                <li><small><a href="#" onclick="filterByType('Acting')">Acting</a></small></li>
+                <li><small><a href="#" onclick="filterByType('Archive')">Archive</a></small></li>
+                <li><small><a href="#" onclick="filterByType('Birthday')">Birthday List</a></small></li>
+            </ul>
+            <hr />
+            <label><small>Find ...</small></label>
+            <div class="input-group input-group-sm">
+                <input id="empUid" class="form-control myfilter" placeholder="By Employee No" />
+                <span class="input-group-btn" onclick="findByUid()"><button class="btn btn-default"><span class="fa fa-filter" style="color:royalblue"></span></button></span>
+            </div>
+            <div class="input-group input-group-sm">
+                <input id="empName" class="form-control myfilter" placeholder="By Employee Name" />
+                <span class="input-group-btn" onclick="findByName()"><button class="btn btn-default"><span class="fa fa-filter" style="color:royalblue"></span></button></span>
+            </div>
+            <br />
+            <label><small>Filter ...</small></label>
             <div class="form-group-sm">
-                <select class="form-control" id="filter1" onchange="filterByOrgUnitId()">
-                    <option value="">Filter By Unit ...</option>
+                <select class="form-control myfilter" id="filter1" onchange="filterById('filter1')">
+                    <option value="" selected>By Level</option>
+                    @foreach (SelectListItem item in new SelectList(ViewBag.orgUnitTypesList, "Id", "Name"))
+                    {
+                        <option value="@item.Value">@item.Text</option>
+                    }
+                </select>
+            </div>
+            <div class="form-group-sm">
+                <select class="form-control myfilter" id="filter2" onchange="filterById('filter2')">
+                    <option value="" selected>By Unit</option>
                     @foreach (SelectListItem item in new SelectList(ViewBag.orgUnitsList, "Id", "Name"))
                     {
                         <option value="@item.Value">@item.Text</option>
@@ -19,30 +56,54 @@
                 </select>
             </div>
             <div class="form-group-sm">
-                <select class="form-control">
-                    <option value="">Filter By Nationality ...</option>
+                <select class="form-control myfilter" id="filter3" onchange="filterById('filter3')">
+                    <option value="" selected>By Nationality</option>
                     @foreach (SelectListItem item in new SelectList(ViewBag.nationalitiesList, "Id", "Name"))
                     {
-                        <option value="" onselect="filterByNationalityId(@item.Value)">@item.Text</option>
+                        <option value="@item.Value">@item.Text</option>
                     }
                 </select>
             </div>
             <div class="form-group-sm">
-                <select class="form-control">
-                    <option value="">Filter By Region ...</option>
+                <select class="form-control myfilter" id="filter4" onchange="filterById('filter4')">
+                    <option value="" selected>By Region</option>
                     @foreach (SelectListItem item in new SelectList(ViewBag.governoratesList, "Id", "Name"))
                     {
-                        <option value="" onselect="filterByGovernorateId(@item.Value)">@item.Text</option>
+                        <option value="@item.Value">@item.Text</option>
                     }
                 </select>
             </div>
-            <hr />
-            <ul class="list-unstyled">
-                <li><small><a href="#">In Probation</a></small></li>
-                <li><small><a href="#">Acting</a></small></li>
-                <li><small><a href="#">Archive</a></small></li>
-                <li><small><a href="#">Birthday List</a></small></li>
-            </ul>
+            <div class="form-group-sm">
+                <select class="form-control myfilter" id="filter5" onchange="filterById('filter5')">
+                    <option value="" selected>By Title</option>
+                    @foreach (SelectListItem item in new SelectList(ViewBag.standardTitlesList, "Id", "Name"))
+                    {
+                        <option value="@item.Value">@item.Text</option>
+                    }
+                </select>
+            </div>
+            <div class="form-group-sm">
+                <select class="form-control myfilter" id="filter6" onchange="filterById('filter6')">
+                    <option value="" selected>By Grade Group</option>
+                    @foreach (SelectListItem item in new SelectList(ViewBag.gradeGroupsList, "Id", "Name"))
+                    {
+                        <option value="@item.Value">@item.Text</option>
+                    }
+                </select>
+            </div>
+            <div class="form-group-sm">
+                <select class="form-control myfilter" id="filter7" onchange="filterById('filter7')">
+                    <option value="" selected>By Job Grade</option>
+                    @foreach (SelectListItem item in new SelectList(ViewBag.jobGradesList, "Id", "Name"))
+                    {
+                        <option value="@item.Value">@item.Text</option>
+                    }
+                </select>
+            </div>
+            <br />
+            <div>
+                <div><small><a href="#" onclick="filterByType()">Clear Filter</a></small></div>
+            </div>
         </div>
     </div>
 </div>
@@ -54,7 +115,7 @@
     @{ await Html.RenderPartialAsync("_PopupForm"); }
     <script>
         $(document).on('ready', function () {
-            employeesList();
+
         });
 
         function showPopup() {
@@ -73,23 +134,80 @@
             $('.popupBtns').removeAttr('disabled');
         }
 
-        function employeesList() {
+        //filters
+        function findByUid() {
+            if ($('#empUid').val()) {
+                $('#listName').html("Find Employee By No");
+                $('#empName').val(null);
+                findEmployee();
+            }
+        }
+        function findByName() {
+            if ($('#empName').val()) {
+                $('#listName').html("Find Employee By Name");
+                $('#empUid').val(null);
+                findEmployee();
+            }
+        }
+        function filterById(filterType) {
+            var fType;
+            switch (filterType) {
+                case "filter1":
+                    fType = "ouType";
+                    break;
+                case "filter2":
+                    fType = "ou";
+                    break;
+                case "filter3":
+                    fType = "nationality";
+                    break;
+                case "filter4":
+                    fType = "region";
+                    break;
+                case "filter5":
+                    fType = "title";
+                    break;
+                case "filter6":
+                    fType = "gradeGroup";
+                    break;
+                case "filter7":
+                    fType = "grade";
+                    break;
+            }
+            $('#listName').html($('#' + filterType).find('option:selected').text() + " Employees List");
+            employeesList(fType, $('#' + filterType).val());
+        }
+        function filterByType(filterType) {
+            if (filterType) {
+                $('#listName').html(filterType + " Employees List");
+            } else {
+                $('#listName').html("Heads of Units");
+                $('.myfilter').val(null);
+            }
+            employeesList(filterType);
+        }
+
+        //employee
+        function employeesList(filterType, id) {
             $.ajax({
                 url: '@Url.Action("EmployeesList", "Personnel")',
                 type: 'GET',
-                data: { ouId: $('#OrgUnitIdHF').val() },
+                data: { filterType: filterType, id: id },
                 success: function (result) {
                     $('#listSection').html(result);
                 }
             });
         }
-        function filterByOrgUnitId() {
-            $('#OrgUnitIdHF').val($('#filter1').val());
-            employeesList();
-
+        function findEmployee() {
+            $.ajax({
+                url: '@Url.Action("FindEmployee", "Personnel")',
+                type: 'GET',
+                data: { employeeUid: $('#empUid').val(), employeeName: $('#empName').val() },
+                success: function (result) {
+                    $('#listSection').html(result);
+                }
+            });
         }
-
-        //employee
         function getEmployee(id) {
             var url = '@Url.Action("EmployeeIndex", "Personnel", new { id = "xyz" })';
             window.location.href = url.replace("xyz", id);
