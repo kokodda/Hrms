@@ -1,0 +1,34 @@
+﻿@using HrmsModel.Models;
+@model IEnumerable<Employment>
+
+<div class="container-fluid" style="padding:0px">
+    <label><small>Current Occupation</small></label>
+    @foreach (var item in Model)
+    {
+        string isHead = item.IsHead ? "Unit Head - " : null;
+        string job = isHead + (item.IsActing ? " Acting" : " Genuin");
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <a href="#" onclick="editEmployment(@item.Id)" data-toggle="modal" data-target="#myModal" title="Edit"><span class="fa fa-pencil"></span></a>&nbsp;
+                <label><small>@string.Format("{0}", item.IsHead ? item.OrgUnit.HeadPositionName : (item.PositionId.HasValue ? item.Position.Name : item.JobName))</small></label>
+                <span class="pull-right"><small><label>Date in Position: </label>@item.FromDate.ToString("dd-MM-yyyy")</small></span>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-sm-4"><small><label>Assigned:</label>&nbsp;@job</small></div>
+                    <div class="col-sm-8"><small><label>Business Unit:</label>&nbsp;@item.OrgUnit.Name</small></div>    
+                </div>
+                <div class="row">
+                    <div class="col-sm-4"><small><label>Employment:</label>&nbsp;@item.EmploymentType.Name</small></div>
+                    <div class="col-sm-4"><small><label>Attendance:</label>&nbsp;@string.Format("{0}", item.IsAttendRequired ? "Required" : "Not Required")</small></div>
+                    <div class="col-sm-4"><small><label>Overtime:</label>&nbsp;@string.Format("{0}", item.IsOverTimeAllowed ? "Allowed" : "Not Allowed")</small></div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4"><small><label>Salary Scale:</label>&nbsp;@string.Format("{0}", item.SalaryScaleTypeId.HasValue ? item.SalaryScaleType.Name : "NA")</small></div>
+                    <div class="col-sm-4"><small><label>Salary Step:</label>&nbsp;@string.Format("{0}", item.SalaryStepId.HasValue ? item.SalaryStep.Code : null)</small></div>
+                    <div class="col-sm-4"><small><label>Salary:</label>&nbsp;@string.Format("{0}", item.IsHead ? (item.JobGradeId.HasValue ? "Grade Related" : item.BasicSalary.ToString()) : (item.Position.JobGradeId.HasValue ? "Grade Related" : item.BasicSalary.ToString()))</small></div>
+                </div>
+            </div>
+        </div>
+    }
+</div>

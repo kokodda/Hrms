@@ -44,7 +44,7 @@
 
         <div class="col-sm-8">
             <div id="personalInfoSection" style="padding:0px">
-                <label><small>Personal Information</small></label>
+                <label><small>Personal Data</small></label>
                 <hr />
                 <div class="row">
                     <div class="col-sm-7">
@@ -112,8 +112,9 @@
         <div class="col-sm-2">
             <div><small><a href="/Personnel/Index">Back To List ...</a></small></div>
             <br />
+            <label><small>Folders</small></label>
             <ul class="list-unstyled">
-                <li><small><a href="javascript:getPersonalInfo();">Personal Information</a></small></li>
+                <li><small><a href="javascript:getPersonalInfo();">Personal Data</a></small></li>
                 <li><small><a href="javascript:getContacts();">Contacts</a></small></li>
                 <li><small><a href="javascript:getList('Career');">Career</a></small></li>
                 <li><small><a href="javascript:getLeave();">Leave</a></small></li>
@@ -124,7 +125,13 @@
                 <li><small><a href="javascript:groupsList();">Groups</a></small></li>
             </ul>
             <br />
-            <div><a href="#"><small>Change Position / Transfer ...</small></a></div>
+            <label><small>Updates</small></label>
+            <ul class="list-unstyled">
+                <li><a href="#" onclick="editPersonalData()" data-toggle="modal" data-target="#myModal"><small>Edit Personal Data</small></a></li>
+                <li><a href="#" onclick="editBrief()" data-toggle="modal" data-target="#myModal"><small>Edit Career Summary</small></a></li>
+                <li><a href="#" onclick="editContacts()" data-toggle="modal" data-target="#myModal"><small>Edit Contacts</small></a></li>
+                <li><a href="#"><small>Change Position / Transfer</small></a></li>
+            </ul>
         </div>
     </div>
 </div>
@@ -143,7 +150,7 @@
             <div class="modal-footer">
                 <strong>
                     <button type="button" class="btn btn-default btn-xs pull-right" onclick="onFileInputClearClick('inputPhotos')" data-dismiss="modal">Cancel</button> &nbsp; &nbsp;
-                    <span class="pull-right" id="popupResult"></span>
+                    <span class="pull-right" id="popupResult1"></span>
                 </strong>
             </div>
         </div>
@@ -178,7 +185,7 @@
             $('#inputPhotos').on('filebatchuploadsuccess', function (event, data, previewId, index) {
                 $('#photoNameHF').val(data.filenames[0]);
                 $('#photoCtrl').attr('src', "data:image/png;base64," + data.response);
-                $('#popupResult').html('Employee Photo Successfully Uploaded.');
+                $('#popupResult1').html('Employee Photo Successfully Uploaded.');
             });
 
             $('#contactsSection').hide();
@@ -198,12 +205,27 @@
             $('#popupResult').html('Successfully Updated.');
             $('.popupBtns').attr('disabled', 'disabled');
         }
+        function onTrnSuccess() {
+            $('#popupResult').html('Successfully Updated.');
+            $('.popupBtns').attr('disabled', 'disabled');
+            showPromo();
+        }
         function onFailure() {
             $('#formResult').html('Failed to Update! Please Correct All Errors.');
             $('.popupBtns').removeAttr('disabled');
         }
         function editPhoto() {
             $('#photoModal').show();
+        }
+        function showPromo() {
+            $('#promo').removeClass('hidden');
+            $('#showCtrl').attr('hidden', 'hidden');
+            $('#hideCtrl').removeAttr('hidden');
+        }
+        function hidePromo() {
+            $('#promo').addClass('hidden');
+            $('#showCtrl').removeAttr('hidden');
+            $('#hideCtrl').attr('hidden', 'hidden');
         }
 
         function getPersonalInfo() {
@@ -255,7 +277,7 @@
             var url;
             switch (lst) {
                 case 'Career':
-                    url = '@Url.Action("PromotionsList", "Personnel")';
+                    url = '@Url.Action("EmploymentsList", "Personnel")';
                     break;
                 case 'Qualifications':
                     url = '@Url.Action("QualificationsList", "Personnel")';
@@ -277,8 +299,19 @@
                 success: function (result) {
                     $('#personalInfoSection').hide();
                     $('#contactsSection').hide();
-                    $('#subListSection').html(null);
                     $('#listSection').html(result);
+                    if (lst === 'Career') {
+                        $.ajax({
+                            url: '@Url.Action("PromotionsList", "Personnel")',
+                            type: 'GET',
+                            data: { id: @Model.Employee.Id },
+                            success: function (result) {
+                                $('#subListSection').html(result);
+                            }
+                        });
+                    } else {
+                        $('#subListSection').html(null);
+                    }
                 }
             });
         }
@@ -323,11 +356,40 @@
             $.ajax({
                 url: '@Url.Action("AddPromotion", "Personnel")',
                 type: 'GET',
+                data: { id: id },
                 success: function (result) {
                     $('#myModal-body').html(result);
                     $('#myModal-label').html('Add New Promotion');
-                    $('#employeePositionId').val(id);
+                    $('#employmentId').val(id);
                     showPopup();
+                }
+            });
+        }
+        function approvePromotion(id) {
+            if (!confirm('Please Confirm! About to Approve Transaction?')) {
+                return;
+            }
+            $.ajax({
+                url: '@Url.Action("ApprovePromotion", "Personnel")',
+                type: 'GET',
+                data: { id: id },
+                success: function (result) {
+                    $('#subListSection').html(result);
+                    showPromo();
+                }
+            });
+        }
+        function cancelPromotion(id) {
+            if (!confirm('Please Confirm! About to Cancel Transaction. It will be Permenantly Removed from List?')) {
+                return;
+            }
+            $.ajax({
+                url: '@Url.Action("CancelPromotion", "Personnel")',
+                type: 'GET',
+                data: { id: id },
+                success: function (result) {
+                    $('#subListSection').html(result);
+                    showPromo();
                 }
             });
         }
@@ -342,6 +404,56 @@
                     $('#contactsSection').hide();
                     $('#subListSection').html(null);
                     $('#listSection').html(result);
+                }
+            });
+        }
+
+        //updates
+        function editPersonalData() {
+            $.ajax({
+                url: '@Url.Action("EditPersonalData", "Personnel")',
+                type: 'GET',
+                data: { id: @Model.Employee.Id },
+                success: function (result) {
+                    $('#myModal-body').html(result);
+                    $('#myModal-label').html('Edit Personal Data');
+                    showPopup();
+                }
+            });
+        }
+        function editContacts() {
+            $.ajax({
+                url: '@Url.Action("EditContacts", "Personnel")',
+                type: 'GET',
+                data: { id: @Model.Employee.Id },
+                success: function (result) {
+                    $('#myModal-body').html(result);
+                    $('#myModal-label').html('Edit Contacts');
+                    showPopup();
+                }
+            });
+        }
+        function editBrief() {
+            $.ajax({
+                url: '@Url.Action("EditBrief", "Personnel")',
+                type: 'GET',
+                data: { id: @Model.Employee.Id },
+                success: function (result) {
+                    $('#myModal-body').html(result);
+                    $('#myModal-label').html('Edit Career Summary');
+                    showPopup();
+                }
+            });
+        }
+        function editEmployment(id) {
+            $.ajax({
+                url: '@Url.Action("EditEmployment", "Personnel")',
+                type: 'GET',
+                data: { id: id },
+                success: function (result) {
+                    $('#myModal-body').html(result);
+                    $('#myModal-label').html('Edit Employment');
+                    showPopup();
                 }
             });
         }

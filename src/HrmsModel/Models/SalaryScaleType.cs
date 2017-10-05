@@ -16,6 +16,5 @@ namespace HrmsModel.Models
 
         public virtual ICollection<SalaryScale> SalaryScales { get; set; }
         public virtual ICollection<Employment> Employments { get; set; }
-        public virtual ICollection<EmployeePromotion> EmployeePromotions { get; set; }
     }
 }

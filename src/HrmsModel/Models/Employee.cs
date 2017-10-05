@@ -31,6 +31,8 @@ namespace HrmsModel.Models
         public string Address { get; set; }
         public string PermenantAddress { get; set; }
         public byte[] Photo { get; set; }
+        public string Brief { get; set; }
+        public string OthBrief { get; set; }
         public DateTime JoinDate { get; set; }
         public bool IsActive { get; set; }
         public DateTime LastUpdated { get; set; }

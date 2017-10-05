@@ -1,0 +1,98 @@
+﻿@using HrmsModel.Models;
+@model Employee
+
+
+<form role="form" id="popupForm" asp-controller="Personnel" asp-action="EditEmployee" data-ajax="true" data-ajax-method="POST" data-ajax-success="onSuccess">
+    <input type="hidden" asp-for="Id" />
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="EmpUid"><small>Employee No</small></label>
+        <input type="text" asp-for="EmpUid" class="form-control" />
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="JoinDate"><small>Join Date (*)</small></label>
+        <input type="date" asp-for="JoinDate" class="form-control" required />
+    </div>
+    <hr />
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="FirstName"><small>First Name (*)</small></label>
+        <input type="text" asp-for="FirstName" class="form-control" required />
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="FatherName"><small>Father (Middle) Name (*)</small></label>
+        <input type="text" asp-for="FatherName" class="form-control" required />
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="FamilyName"><small>Family Name (*)</small></label>
+        <input type="text" asp-for="FamilyName" class="form-control" required />
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="MotherName"><small>Mother Name</small></label>
+        <input type="text" asp-for="MotherName" class="form-control" />
+    </div>
+    <br />
+    <div><label style="color:silver"><small>Names Translation</small></label></div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="OthFirstName"><small>First Name (*)</small></label>
+        <input type="text" asp-for="OthFirstName" class="form-control" required />
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="OthFatherName"><small>Father (Middle) Name (*)</small></label>
+        <input type="text" asp-for="OthFatherName" class="form-control" required />
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="OthFamilyName"><small>Family Name (*)</small></label>
+        <input type="text" asp-for="OthFamilyName" class="form-control" required />
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="OthMotherName"><small>Mother Name</small></label>
+        <input type="text" asp-for="OthMotherName" class="form-control" />
+    </div>
+    <br />
+    <div class="input-group-sm">
+        <label class="control-label" asp-for="IsMale">
+            <input type="checkbox" asp-for="IsMale" checked />
+            <span><small>Is Male? (*)</small></span>
+        </label>
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="BirthDate"><small>Date Of Birth (*)</small></label>
+        <input type="date" asp-for="BirthDate" class="form-control" required />
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="NationalityId"><small>Nationality (*)</small></label>
+        <select class="form-control" asp-for="NationalityId">
+            <option value="">Select from List ...</option>
+            @foreach (SelectListItem item in new SelectList(ViewBag.nationalitiesList, "Id", "Name"))
+            {
+                <option value="@item.Value">@item.Text</option>
+            }
+        </select>
+    </div>
+    <br />
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="MaritalStatus"><small>Marital Status (*)</small></label>
+        <select class="form-control" asp-for="MaritalStatus">
+            <option value="">Select from List ...</option>
+            <option value="SINGLE">Single</option>
+            <option value="MARRIED">Married</option>
+            <option value="DIVORCED">Divorced</option>
+            <option value="WIDOW">Widow</option>
+        </select>
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="BloodGroup"><small>Blood Group</small></label>
+        <select class="form-control" asp-for="BloodGroup">
+            <option value="">Select from List ...</option>
+            <option value="O+">O+</option>
+            <option value="O-">O-</option>
+            <option value="AB+">AB+</option>
+            <option value="AB-">AB-</option>
+        </select>
+    </div>
+    <div class="input-group-sm">
+        <label class="control-label" asp-for="IsMilitaryExempted">
+            <input type="checkbox" asp-for="IsMilitaryExempted" checked />
+            <span><small>Is Military Service Exempted? (*)</small></span>
+        </label>
+    </div>
+</form>

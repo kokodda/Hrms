@@ -8,9 +8,10 @@ using HrmsModel.Data;
 namespace HrmsApp.Data.Migrations.Model
 {
     [DbContext(typeof(HrmsDbContext))]
-    partial class HrmsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20171005025817_update3")]
+    partial class update3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.0.3")
@@ -714,6 +715,8 @@ namespace HrmsApp.Data.Migrations.Model
                         .ValueGeneratedOnAdd()
                         .HasDefaultValue(0);
 
+                    b.Property<int?>("SalaryScaleTypeId");
+
                     b.Property<int?>("SalaryStepId");
 
                     b.Property<string>("UpdatedBy")
@@ -727,6 +730,8 @@ namespace HrmsApp.Data.Migrations.Model
                     b.HasIndex("JobGradeId");
 
                     b.HasIndex("PromotionTypeId");
+
+                    b.HasIndex("SalaryScaleTypeId");
 
                     b.HasIndex("SalaryStepId");
 
@@ -1758,6 +1763,10 @@ namespace HrmsApp.Data.Migrations.Model
                         .WithMany("EmployeePromotions")
                         .HasForeignKey("PromotionTypeId")
                         .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("HrmsModel.Models.SalaryScaleType", "SalaryScaleType")
+                        .WithMany("EmployeePromotions")
+                        .HasForeignKey("SalaryScaleTypeId");
 
                     b.HasOne("HrmsModel.Models.SalaryStep", "SalaryStep")
                         .WithMany("EmployeePromotions")

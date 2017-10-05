@@ -12,7 +12,6 @@ namespace HrmsModel.Models
         public long EmploymentId { get; set; }
         public int? JobGradeId { get; set; }
         public int? SalaryStepId { get; set; }
-        public int? SalaryScaleTypeId { get; set; }
         public int BasicSalary { get; set; }
         public int SalaryIncreaseValue { get; set; }
         public bool IsIncreasePercentage { get; set; }
@@ -27,7 +26,6 @@ namespace HrmsModel.Models
         public string UpdatedBy { get; set; }
 
         public virtual Employment Employment { get; set; }
-        public virtual SalaryScaleType SalaryScaleType { get; set; }
         public virtual SalaryStep SalaryStep { get; set; }
         public virtual JobGrade JobGrade { get; set; }
         public virtual PromotionType PromotionType { get; set; }

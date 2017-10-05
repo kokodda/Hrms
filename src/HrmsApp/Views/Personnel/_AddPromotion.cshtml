@@ -1,9 +1,9 @@
 ﻿@using HrmsModel.Models;
 @model EmployeePromotion
 
-<form role="form" id="popupForm" asp-controller="Personnel" asp-action="AddPromotion" data-ajax="true" data-ajax-method="POST" data-ajax-update="#listSection" data-ajax-success="onSuccess" data-ajax-failure="onFailure">
+<form role="form" id="popupForm" asp-controller="Personnel" asp-action="AddPromotion" data-ajax="true" data-ajax-method="POST" data-ajax-update="#subListSection" data-ajax-success="onTrnSuccess" data-ajax-failure="onFailure">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <input type="hidden" asp-for="EmploymentId" class="form-control" id="employeePositionId" />
+    <input type="hidden" asp-for="EmploymentId" class="form-control" id="employmentId" />
     <div class="form-group-sm">
         <label asp-for="EffectiveFromDate" class="control-label"><small>Effective From Date</small></label>
         <input type="date" asp-for="EffectiveFromDate" class="form-control" required />
@@ -29,18 +29,8 @@
         </select>
     </div>
     <div class="form-group-sm">
-        <label asp-for="SalaryScaleTypeId" class="control-label"><small>Salary Scale</small></label>
-        <select asp-for="SalaryScaleTypeId" class="form-control">
-            <option value="">Select from List ...</option>
-            @foreach (SelectListItem x in new SelectList(ViewBag.salaryScaleTypesList, "Id", "Name"))
-            {
-                <option value="@x.Value">@x.Text</option>
-            }
-        </select>
-    </div>
-    <div class="form-group-sm">
         <label asp-for="BasicSalary" class="control-label"><small>Basic Salary</small></label>
-        <input type="text" asp-for="BasicSalary" class="form-control" />
+        <input type="text" asp-for="BasicSalary" class="form-control" value="@ViewBag.basicSalary" disabled readonly />
     </div>
     <div class="form-group-sm">
         <label asp-for="SalaryIncreaseValue" class="control-label"><small>Salary Increase</small></label>
@@ -54,10 +44,10 @@
     </div>
     <div class="form-group-sm">
         <label asp-for="Details" class="control-label"><small>Details</small></label>
-        <input type="text" asp-for="Details" class="form-control" />
+        <input type="text" asp-for="Details" class="form-control fullwidth" />
     </div>
     <div class="form-group-sm">
         <label asp-for="Remarks" class="control-label"><small>Remarks</small></label>
-        <input type="text" asp-for="Remarks" class="form-control" />
+        <input type="text" asp-for="Remarks" class="form-control fullwidth" />
     </div>
 </form>

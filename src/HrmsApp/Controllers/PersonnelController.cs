@@ -170,6 +170,39 @@ namespace HrmsApp.Controllers
             return View("EmployeeIndex", model);
         }
 
+        public async Task<IActionResult> EditPersonalData(long id)
+        {
+            var model = await _context.Employees.SingleOrDefaultAsync(b => b.Id == id);
+            ViewBag.nationalitiesList = await _context.Nationalities.Where(b => b.IsActive).ToListAsync();
+            return PartialView("_EditPersonalData", model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditEmployee(Employee item)
+        {
+            var model = await _context.Employees.SingleOrDefaultAsync(b => b.Id == item.Id);
+            item.LastUpdated = DateTime.Now.Date;
+            item.UpdatedBy = "user";
+            await TryUpdateModelAsync(model);
+
+            await _context.SaveChangesAsync();
+            return Content("Success", "text/html");
+        }
+
+        public async Task<IActionResult> EditContacts(long id)
+        {
+            var model = await _context.Employees.SingleOrDefaultAsync(b => b.Id == id);
+            ViewBag.governoratesList = await _context.Governorates.Where(b => b.IsActive).ToListAsync();
+            return PartialView("_EditContacts", model);
+        }
+
+        public async Task<IActionResult> EditBrief(long id)
+        {
+            var model = await _context.Employees.SingleOrDefaultAsync(b => b.Id == id);
+            return PartialView("_EditBrief", model);
+        }
+
         //leave
         public async Task<IActionResult> LeaveBalancesList(long id)
         {
@@ -295,20 +328,49 @@ namespace HrmsApp.Controllers
         }
 
         //career
+        public async Task<IActionResult> EmploymentsList(long id)
+        {
+            var model = _context.Employments.Include(b => b.OrgUnit).Include(b => b.Position).Include(b => b.EmploymentType)
+                                .Include(b => b.SalaryScaleType).Include(b => b.SalaryStep)
+                                .Where(b => b.EmployeeId == id && b.IsActive);
+            return PartialView("_EmploymentsList", await model.ToListAsync());
+        }
+
+        public async Task<IActionResult> EditEmployment(long id)
+        {
+            var model = await _context.Employments.SingleOrDefaultAsync(b => b.Id == id);
+            ViewBag.salaryScaleTypesList = _lookup.GetLookupItems<SalaryScaleType>();
+            ViewBag.employmentTypesList = _lookup.GetLookupItems<EmploymentType>();
+            ViewBag.positionsList = await _context.Positions.Where(b => b.OrgUnitId == model.OrgUnitId).ToListAsync();
+            return PartialView("_EditEmployment", model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditEmployment(Employment item)
+        {
+            var model = await _context.Employments.SingleOrDefaultAsync(b => b.Id == item.Id);
+            await TryUpdateModelAsync(model);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("EmploymentsList", new { id = model.EmployeeId });
+        }
+
         public async Task<IActionResult> PromotionsList(long id)
         {
-            var model = _context.EmployeePromotions.Include(b => b.Employment).ThenInclude(b => b.OrgUnit)
+            var model = _context.EmployeePromotions.Include(b => b.PromotionType).Include(b => b.Employment).ThenInclude(b => b.OrgUnit)
                                             .Include(b => b.Employment).ThenInclude(b => b.Position)
-                                            .Include(b => b.JobGrade).Include(b => b.SalaryStep).Include(b => b.SalaryScaleType)
+                                            .Include(b => b.JobGrade).Include(b => b.SalaryStep)
                                             .Where(b => b.Employment.EmployeeId == id && !b.IsCancelled).OrderByDescending(b => b.EffectiveFromDate);
             return PartialView("_PromotionsList", await model.ToListAsync());
         }
 
-        public async Task<IActionResult> AddPromotion()
+        public async Task<IActionResult> AddPromotion(long id)
         {
+            var model = await _context.Employments.SingleOrDefaultAsync(b => b.Id == id);
+            ViewBag.basicSalary = model.BasicSalary;
             ViewBag.jobGradesList = await _context.JobGrades.Where(b => b.IsActive).ToListAsync();
             ViewBag.salaryStepsList = await _context.SalarySteps.Where(b => b.IsActive).ToListAsync();
-            ViewBag.salaryScaleTypesList = _lookup.GetLookupItems<SalaryScaleType>();
             return PartialView("_AddPromotion");
         }
 
@@ -316,14 +378,43 @@ namespace HrmsApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddPromotion(EmployeePromotion item)
         {
+            var model = await _context.Employments.SingleOrDefaultAsync(b => b.Id == item.EmploymentId);
+            
+            if (item.JobGradeId != model.JobGradeId)
+                item.PromotionTypeId = _lookup.GetLookupItems<PromotionType>().SingleOrDefault(b => b.SysCode == "PROMO").Id;
+            else
+                item.PromotionTypeId = _lookup.GetLookupItems<PromotionType>().SingleOrDefault(b => b.SysCode == "SAL_INCR").Id;
+            if (item.SalaryIncreaseValue != 0)
+                item.BasicSalary = model.BasicSalary + (item.IsIncreasePercentage ? item.BasicSalary * item.SalaryIncreaseValue / 100 : item.SalaryIncreaseValue);
             item.CreatedDate = DateTime.Now.Date;
             item.LastUpdated = DateTime.Now.Date;
             item.UpdatedBy = "user";
             _context.EmployeePromotions.Add(item);
             await _context.SaveChangesAsync();
 
-            var pos = await _context.Employments.SingleOrDefaultAsync(b => b.Id == item.EmploymentId); 
-            return RedirectToAction("PromotionsList", new { id = pos.EmployeeId });
+            return RedirectToAction("PromotionsList", new { id = model.EmployeeId });
+        }
+
+        public async Task<IActionResult> ApprovePromotion(long id)
+        {
+            var model = await _context.EmployeePromotions.Include(b => b.Employment).SingleOrDefaultAsync(b => b.Id == id);
+            model.IsApproved = true;
+            model.Employment.JobGradeId = model.JobGradeId;
+            model.Employment.SalaryStepId = model.SalaryStepId;
+            model.Employment.BasicSalary = model.BasicSalary;
+
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("PromotionsList", new { id = model.Employment.EmployeeId });
+        }
+
+        public async Task<IActionResult> CancelPromotion(long id)
+        {
+            var model = await _context.EmployeePromotions.Include(b => b.Employment).SingleOrDefaultAsync(b => b.Id == id);
+            model.IsCancelled = true;
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("PromotionsList", new { id = model.Employment.EmployeeId });
         }
 
         //groups

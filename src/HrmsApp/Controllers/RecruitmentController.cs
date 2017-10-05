@@ -119,10 +119,11 @@ namespace HrmsApp.Controllers
 
             EmployeePromotion prom = new EmployeePromotion();
             prom.EmploymentId = pos.Id;
-            prom.PromotionTypeId = _lookup.GetLookupItems<PromotionType>().SingleOrDefault(b => b.SysCode == "JOIN").Id;
+            prom.PromotionTypeId = _lookup.GetLookupItems<PromotionType>().SingleOrDefault(b => b.SysCode == "INIT").Id;
             prom.JobGradeId = ou.JobGradeId;
             prom.CreatedDate = DateTime.Now.Date;
             prom.EffectiveFromDate = dateInPosition.HasValue ? dateInPosition.Value : DateTime.Now.Date;
+            prom.IsApproved = true;
             prom.LastUpdated = DateTime.Now.Date;
             prom.UpdatedBy = "user";
             _context.EmployeePromotions.Add(prom);

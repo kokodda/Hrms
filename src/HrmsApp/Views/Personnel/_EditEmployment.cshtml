@@ -1,0 +1,85 @@
+﻿@using HrmsModel.Models;
+@model Employment
+
+
+<form role="form" id="popupForm" asp-controller="Personnel" asp-action="EditEmployment" data-ajax="true" data-ajax-method="POST" data-ajax-update="#listSection" data-ajax-success="onSuccess" data-ajax-failure="onFailure">
+    <input type="hidden" asp-for="Id" />
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="EmploymentTypeId"><small>Employment Type</small></label>
+        <select class="form-control" asp-for="EmploymentTypeId">
+            <option value="">Select from List ...</option>
+            @foreach (SelectListItem item in new SelectList(ViewBag.employmentTypesList, "Id", "Name"))
+            {
+                <option value="@item.Value">@item.Text</option>
+            }
+        </select>
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="PositionId"><small>Job Position</small></label>
+        <select class="form-control" asp-for="PositionId">
+            <option value="">Select from List ...</option>
+            @foreach (SelectListItem item in new SelectList(ViewBag.positionsList, "Id", "Name"))
+            {
+                <option value="@item.Value">@item.Text</option>
+            }
+        </select>
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="JobName"><small>Job Name (for Unpositioned)</small></label>
+        <input type="text" asp-for="JobName" class="form-control" />
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="OthJobName"><small>Job Name Translated</small></label>
+        <input type="text" asp-for="OthJobName" class="form-control" />
+    </div>
+    <div class="input-group-sm">
+        <label class="control-label" asp-for="IsHead">
+            <input type="checkbox" asp-for="IsHead" />
+            <span><small>Is Unit Head?</small></span>
+        </label>
+    </div>
+    <div class="input-group-sm">
+        <label class="control-label" asp-for="IsActing">
+            <input type="checkbox" asp-for="IsActing" />
+            <span><small>Is Acting?</small></span>
+        </label>
+    </div>
+    <div class="input-group-sm">
+        <label class="control-label" asp-for="IsProbation">
+            <input type="checkbox" asp-for="IsProbation" />
+            <span><small>Is in Probation?</small></span>
+        </label>
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="SalaryScaleTypeId"><small>Salary Scale Type</small></label>
+        <select class="form-control" asp-for="SalaryScaleTypeId">
+            <option value="">Select from List ...</option>
+            @foreach (SelectListItem item in new SelectList(ViewBag.salaryScaleTypesList, "Id", "Name"))
+            {
+                <option value="@item.Value">@item.Text</option>
+            }
+        </select>
+    </div>
+    <hr />
+    <div class="input-group-sm">
+        <label class="control-label" asp-for="IsAttendRequired">
+            <input type="checkbox" asp-for="IsAttendRequired" />
+            <span><small>Is Attendance Required?</small></span>
+        </label>
+    </div>
+    <div class="input-group-sm">
+        <label class="control-label" asp-for="IsOverTimeAllowed">
+            <input type="checkbox" asp-for="IsOverTimeAllowed" />
+            <span><small>Is Overtime Allowed?</small></span>
+        </label>
+    </div>
+    <hr />
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="Details"><small>Job Details</small></label>
+        <input type="text" asp-for="Details" class="form-control fullwidth" />
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="Remarks"><small>Remarks</small></label>
+        <input type="text" asp-for="Remarks" class="form-control fullwidth" />
+    </div>
+</form>

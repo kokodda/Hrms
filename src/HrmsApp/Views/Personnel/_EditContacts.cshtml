@@ -1,0 +1,43 @@
+﻿@using HrmsModel.Models;
+@model Employee
+
+
+<form role="form" id="popupForm" asp-controller="Personnel" asp-action="EditEmployee" data-ajax="true" data-ajax-method="POST" data-ajax-success="onSuccess">
+    <input type="hidden" asp-for="Id" />
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="Phone"><small>Phone (*)</small></label>
+        <input type="text" asp-for="Phone" class="form-control" required />
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="HomePhone1"><small>Home Phone 1 (*)</small></label>
+        <input type="text" asp-for="HomePhone1" class="form-control" required />
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="HomePhone2"><small>Home Phone 2</small></label>
+        <input type="text" asp-for="HomePhone2" class="form-control" />
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="Email"><small>email</small></label>
+        <input type="email" asp-for="Email" class="form-control" />
+    </div>
+    <br />
+    <div><label style="color:silver"><small>Addresses</small></label></div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="GovernorateId"><small>Governorate (*)</small></label>
+        <select class="form-control" asp-for="GovernorateId" required>
+            <option value="">Select from List ...</option>
+            @foreach (SelectListItem item in new SelectList(ViewBag.governoratesList, "Id", "Name"))
+            {
+                <option value="@item.Value">@item.Text</option>
+            }
+        </select>
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="Address"><small>Address</small></label>
+        <input type="text" asp-for="Address" class="form-control" />
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="PermenantAddress"><small>Permenant Address</small></label>
+        <input type="text" asp-for="PermenantAddress" class="form-control" />
+    </div>
+</form>

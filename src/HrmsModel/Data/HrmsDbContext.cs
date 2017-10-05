@@ -410,7 +410,6 @@ namespace HrmsModel.Data
             modelBuilder.Entity<EmployeePromotion>().HasKey(b => b.Id);
             modelBuilder.Entity<EmployeePromotion>().HasOne(b => b.Employment).WithMany(b => b.EmployeePromotions).HasForeignKey(b => b.EmploymentId).OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<EmployeePromotion>().HasOne(b => b.JobGrade).WithMany(b => b.EmployeePromotions).HasForeignKey(b => b.JobGradeId).OnDelete(DeleteBehavior.Restrict);
-            modelBuilder.Entity<EmployeePromotion>().HasOne(b => b.SalaryScaleType).WithMany(b => b.EmployeePromotions).HasForeignKey(b => b.SalaryScaleTypeId).OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<EmployeePromotion>().HasOne(b => b.SalaryStep).WithMany(b => b.EmployeePromotions).HasForeignKey(b => b.SalaryStepId).OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<EmployeePromotion>().Property(b => b.EffectiveFromDate).HasColumnType("date");
             modelBuilder.Entity<EmployeePromotion>().Property(b => b.IsApproved).HasDefaultValue(false);

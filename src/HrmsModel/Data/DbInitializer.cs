@@ -236,9 +236,10 @@ namespace HrmsModel.Data
             {
                 var promotionTypes = new PromotionType[]
                 {
-                    new PromotionType { Name = "Promotion", OthName = "Promotion", SysCode = "PROMO", SortOrder = 10, IsActive = true },
-                    new PromotionType { Name = "Salary Increase", OthName = "Salary Increase", SysCode = "SAL_INCR", SortOrder = 20, IsActive = true },
-                    new PromotionType { Name = "Transfer", OthName = "Transfer", SysCode = "TRANS", SortOrder = 30, IsActive = true }
+                    new PromotionType { Name = "Initial", OthName = "Initial", SysCode = "INIT", SortOrder = 10, IsActive = true },
+                    new PromotionType { Name = "Promotion", OthName = "Promotion", SysCode = "PROMO", SortOrder = 20, IsActive = true },
+                    new PromotionType { Name = "Salary Increase", OthName = "Salary Increase", SysCode = "SAL_INCR", SortOrder = 30, IsActive = true },
+                    new PromotionType { Name = "Transfer", OthName = "Transfer", SysCode = "TRANS", SortOrder = 40, IsActive = true }
                 };
                 foreach (PromotionType x in promotionTypes)
                     _context.PromotionTypes.Add(x);
