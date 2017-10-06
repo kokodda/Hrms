@@ -29,11 +29,8 @@
                     <td><small>@string.Format("{0}", item.JobGrade == null ? null : item.JobGrade.Code)</small></td>
                     <td><small>@string.Format("{0}", item.SalaryStep == null ? null : item.SalaryStep.Code)</small></td>
                     <td>
-                        @if(string.IsNullOrEmpty(item.JobDescription))
-                        {
-                            <a href="#" class="btn btn-xs" onclick="headJDUpload(@item.Id)" data-toggle="modal" data-target="#filePopupForm" title="Upload"><span class="fa fa-upload"></span></a>
-                        }
-                        else
+                        <a href="#" class="btn btn-xs" onclick="headJDUpload(@item.Id)" data-toggle="modal" data-target="#filePopupForm" title="Upload"><span class="fa fa-upload"></span></a>
+                        @if(!string.IsNullOrEmpty(item.JobDescription))
                         {
                             <a href="#" class="btn btn-xs" onclick="downloadJD('@item.JobDescription')" target="_blank" title="Download"><span class="fa fa-download" style="color:forestgreen"></span></a>
                         }
