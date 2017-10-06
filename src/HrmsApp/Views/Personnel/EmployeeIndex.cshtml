@@ -93,10 +93,10 @@
             <div id="contactsSection">
                 <label><small>Contacts</small></label>
                 <hr />
-                <div><small><span class="fa fa-mobile"></span>&nbsp;@Model.Employee.Phone</small></div>
-                <div><small><span class="glyphicon glyphicon-phone-alt"></span>&nbsp;@Model.Employee.HomePhone1</small></div>
-                <div><small><span class="glyphicon glyphicon-phone-alt"></span>&nbsp;@Model.Employee.HomePhone2</small></div>
-                <div><small><span class="glyphicon glyphicon-envelope"></span>&nbsp;@Model.Employee.Email</small></div>
+                <div><span class="fa fa-mobile-phone" style="font-size:24px"></span>&nbsp;&nbsp;<small>@Model.Employee.Phone</small></div>
+                <div><span class="glyphicon glyphicon-phone-alt"></span>&nbsp;&nbsp;<small>@Model.Employee.HomePhone1</small></div>
+                <div><span class="glyphicon glyphicon-phone-alt"></span>&nbsp;&nbsp;<small>@Model.Employee.HomePhone2</small></div>
+                <div><span class="glyphicon glyphicon-envelope"></span>&nbsp;&nbsp;<small>@Model.Employee.Email</small></div>
                 <br />
                 <label><small>Addresses</small></label>
                 <hr />
@@ -130,7 +130,6 @@
                 <li><a href="#" onclick="editPersonalData()" data-toggle="modal" data-target="#myModal"><small>Edit Personal Data</small></a></li>
                 <li><a href="#" onclick="editBrief()" data-toggle="modal" data-target="#myModal"><small>Edit Career Summary</small></a></li>
                 <li><a href="#" onclick="editContacts()" data-toggle="modal" data-target="#myModal"><small>Edit Contacts</small></a></li>
-                <li><a href="#"><small>Change Position / Transfer</small></a></li>
             </ul>
         </div>
     </div>
@@ -157,10 +156,14 @@
     </div>
 </div>
 
+@Html.Hidden("docIdHF")
+@Html.Hidden("docTypeIdHF")
+
 @section Scripts
 {
     @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
     @{ await Html.RenderPartialAsync("_PopupForm"); }
+    @{ await Html.RenderPartialAsync("_FileUploadPopup"); }
     <script src="~/lib/bootstrap-fileinput/js/fileinput.min.js"></script>
     <script>
         $(document).on('ready', function () {
@@ -186,6 +189,36 @@
                 $('#photoNameHF').val(data.filenames[0]);
                 $('#photoCtrl').attr('src', "data:image/png;base64," + data.response);
                 $('#popupResult1').html('Employee Photo Successfully Uploaded.');
+            });
+
+            url = '@Url.Action("FileUpload", "Personnel", new { id = "id1", docTypeId = "typeId1" })';
+            $("#inputFiles").fileinput({
+                uploadAsync: false,
+                showUpload: true,
+                showRemove: true,
+                multiple: false,
+                previewFileType: "file",
+                browseClass: "btn btn-success",
+                browseLabel: "Browse",
+                browseIcon: "<i class=\"glyphicon glyphicon-file\"></i> ",
+                removeClass: "btn btn-danger",
+                removeLabel: "Remove",
+                removeIcon: "<i class=\"glyphicon glyphicon-trash\"></i> ",
+                uploadClass: "btn btn-info",
+                uploadLabel: "Upload",
+                uploadIcon: "<i class=\"glyphicon glyphicon-upload\"></i> ",
+                uploadUrl: url.replace('id1', $('#docIdHF').val()).replace('typeId1', $('#docTypeIdHF').val())
+            });
+            $('#inputFiles').on('filebatchuploadsuccess', function (event, data, previewId, index) {
+                $('#filePopupResult').html('File Successfully Uploaded.');
+                $.ajax({
+                    url: '@Url.Action("DocumentsList", "Positions")',
+                    type: 'GET',
+                    data: { id: @Model.Employee.Id },
+                    success: function (result) {
+                        $('#listSection').html(result);
+                    }
+                });
             });
 
             $('#contactsSection').hide();
@@ -272,6 +305,14 @@
                 }
             });
         }
+        function uploadDocument(id, typeId) {
+            $('#docIdHF').val(id);
+            $('#docTypeIdHF').val(typeId);
+        }
+        function downloadDocument(fileName) {
+            var url = '/files/Personnel/' + fileName;
+            window.location.href = url;
+        }
 
         function getList(lst) {
             var url;
@@ -351,7 +392,19 @@
                 }
             });
         }
-
+        function addEmployment(id) {
+            $.ajax({
+                url: '@Url.Action("AddEmployment", "Personnel")',
+                type: 'GET',
+                data: { id: id },
+                success: function (result) {
+                    $('#myModal-body').html(result);
+                    $('#myModal-label').html('Change Position Assignment / Transfer');
+                    $('#employmentId').val();
+                    showPopup();
+                }
+            });
+        }
         function addPromotion(id) {
             $.ajax({
                 url: '@Url.Action("AddPromotion", "Personnel")',

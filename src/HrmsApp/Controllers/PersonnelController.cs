@@ -9,6 +9,7 @@ using HrmsApp.Models;
 using Microsoft.EntityFrameworkCore;
 using System.IO;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Hosting;
 
 namespace HrmsApp.Controllers
 {
@@ -16,11 +17,13 @@ namespace HrmsApp.Controllers
     {
         private readonly HrmsDbContext _context;
         private readonly ILookupServices _lookup;
+        private readonly IHostingEnvironment _environment;
 
-        public PersonnelController(HrmsDbContext context, ILookupServices lookup)
+        public PersonnelController(HrmsDbContext context, ILookupServices lookup, IHostingEnvironment environment)
         {
             _context = context;
             _lookup = lookup;
+            _environment = environment;
         }
 
         public IActionResult Index()
@@ -336,12 +339,59 @@ namespace HrmsApp.Controllers
             return PartialView("_EmploymentsList", await model.ToListAsync());
         }
 
+        public async Task<IActionResult> AddEmployment(long id)
+        {
+            //id is the selected-current employment id
+            ViewBag.employeeId = _context.Employments.SingleOrDefault(b => b.Id == id).EmployeeId;
+            var vacancies = await _context.Positions.Where(b => b.TotalVacant != 0).ToListAsync();
+            List<long> ouIds = vacancies.Select(b => b.Id).ToList();
+            ViewBag.orgUnitsList = await _context.OrgUnits.Where(b => ouIds.Contains(b.Id)).ToListAsync();
+            ViewBag.salaryScaleTypesList = _lookup.GetLookupItems<SalaryScaleType>();
+            ViewBag.employmentTypesList = _lookup.GetLookupItems<EmploymentType>();
+            ViewBag.positionsList = vacancies;
+            ViewBag.jobGradesList = await _context.JobGrades.Where(b => b.IsActive).ToListAsync();
+            ViewBag.salaryStepsList = await _context.SalarySteps.Where(b => b.IsActive).ToListAsync();
+            return PartialView("_AddEmployment");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddEmployment(Employment item, long oldEmploymentId)
+        {
+            item.IsActive = true;
+            _context.Employments.Add(item);
+
+            //deactivate old employment
+            _context.Employments.SingleOrDefault(b => b.Id == oldEmploymentId).IsActive = false;
+
+            //add transfer type promotion
+            EmployeePromotion promo = new EmployeePromotion();
+            promo.EmploymentId = item.Id;
+            promo.PromotionTypeId = _lookup.GetLookupItems<PromotionType>().SingleOrDefault(b => b.SysCode == "TRANS").Id;
+            promo.BasicSalary = item.BasicSalary;
+            promo.CreatedDate = DateTime.Now.Date;
+            promo.Details = item.Details;
+            promo.EffectiveFromDate = item.FromDate;
+            promo.IsActive = true;
+            promo.IsApproved = true;
+            promo.JobGradeId = item.JobGradeId;
+            promo.LastUpdated = DateTime.Now.Date;
+            promo.SalaryStepId = item.SalaryStepId;
+            promo.UpdatedBy = "user";
+            _context.EmployeePromotions.Add(promo);
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction("EmploymentsList", new { id = item.EmployeeId });
+        }
+
         public async Task<IActionResult> EditEmployment(long id)
         {
             var model = await _context.Employments.SingleOrDefaultAsync(b => b.Id == id);
             ViewBag.salaryScaleTypesList = _lookup.GetLookupItems<SalaryScaleType>();
             ViewBag.employmentTypesList = _lookup.GetLookupItems<EmploymentType>();
             ViewBag.positionsList = await _context.Positions.Where(b => b.OrgUnitId == model.OrgUnitId).ToListAsync();
+            ViewBag.jobGradesList = await _context.JobGrades.Where(b => b.IsActive).ToListAsync();
+            ViewBag.salaryStepsList = await _context.SalarySteps.Where(b => b.IsActive).ToListAsync();
             return PartialView("_EditEmployment", model);
         }
 
@@ -452,6 +502,42 @@ namespace HrmsApp.Controllers
                 }
             }
             return Json("Failed to Upload Photo! Please try again.");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> FileUpload(ICollection<IFormFile> files, long id, int docTypeId)
+        {
+            //id is the employee document id
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    string fileName;
+                    string docType = _lookup.GetLookupItems<DocumentType>().SingleOrDefault(b => b.Id == docTypeId).SysCode;
+                    foreach (var file in files)
+                    {
+                        if (file.Length > 0)
+                        {
+                            var uploadsFolder = Path.Combine(_environment.ContentRootPath, @"wwwroot\files\Personnel");
+                            DirectoryInfo di = new DirectoryInfo(Path.GetFullPath(uploadsFolder));
+                            fileName = docType + "__" + file.FileName;
+                            using (var fileStream = new FileStream(Path.Combine(uploadsFolder, fileName), FileMode.Create))
+                            {
+                                await file.CopyToAsync(fileStream);
+                            }
+                            //update document with file name
+                            _context.EmployeeDocuments.SingleOrDefault(b => b.Id == id).Url = fileName;
+                            await _context.SaveChangesAsync();
+                        }
+                    }
+                    return Json("Successfull");
+                }
+                catch
+                {
+                    return Json("Upload Failed! Please Try Again Later.");
+                }
+            }
+            return Json("Upload Failed! Please Try Again Later.");
         }
     }
 }

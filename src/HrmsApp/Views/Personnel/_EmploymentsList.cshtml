@@ -9,9 +9,17 @@
         string job = isHead + (item.IsActing ? " Acting" : " Genuin");
         <div class="panel panel-default">
             <div class="panel-heading">
-                <a href="#" onclick="editEmployment(@item.Id)" data-toggle="modal" data-target="#myModal" title="Edit"><span class="fa fa-pencil"></span></a>&nbsp;
-                <label><small>@string.Format("{0}", item.IsHead ? item.OrgUnit.HeadPositionName : (item.PositionId.HasValue ? item.Position.Name : item.JobName))</small></label>
-                <span class="pull-right"><small><label>Date in Position: </label>@item.FromDate.ToString("dd-MM-yyyy")</small></span>
+                <div class="row">
+                    <div class="col-sm-10">
+                        <label><small>@string.Format("{0}", item.IsHead ? item.OrgUnit.HeadPositionName : (item.PositionId.HasValue ? item.Position.Name : item.JobName))</small></label>
+                        <span class="pull-right"><small><label>Date in Position: </label>@item.FromDate.ToString("dd-MM-yyyy")</small></span>
+                    </div>
+                    <div class="col-sm-2">
+                        <a href="#" class="btn btn-xs pull-right" onclick="addEmployment(@item.Id)" data-toggle="modal" data-target="#myModal" title="Change Position Assignment"><span class="glyphicon glyphicon-log-out"></span></a>
+                        <a href="#" class="btn btn-xs pull-right" onclick="addPromotion(@item.Id)" data-toggle="modal" data-target="#myModal" title="Add Promotion"><span class="fa fa-line-chart"></span></a>
+                        <a href="#" class="btn btn-xs pull-right" onclick="editEmployment(@item.Id)" data-toggle="modal" data-target="#myModal" title="Edit Position"><span class="fa fa-pencil"></span></a>
+                    </div>
+                </div>
             </div>
             <div class="panel-body">
                 <div class="row">
@@ -26,7 +34,7 @@
                 <div class="row">
                     <div class="col-sm-4"><small><label>Salary Scale:</label>&nbsp;@string.Format("{0}", item.SalaryScaleTypeId.HasValue ? item.SalaryScaleType.Name : "NA")</small></div>
                     <div class="col-sm-4"><small><label>Salary Step:</label>&nbsp;@string.Format("{0}", item.SalaryStepId.HasValue ? item.SalaryStep.Code : null)</small></div>
-                    <div class="col-sm-4"><small><label>Salary:</label>&nbsp;@string.Format("{0}", item.IsHead ? (item.JobGradeId.HasValue ? "Grade Related" : item.BasicSalary.ToString()) : (item.Position.JobGradeId.HasValue ? "Grade Related" : item.BasicSalary.ToString()))</small></div>
+                    <div class="col-sm-4"><small><label>Salary:</label>&nbsp;@string.Format("{0}", item.IsHead ? (item.JobGradeId.HasValue ? "Grade Related" : item.BasicSalary.ToString()) : (item.PositionId.HasValue ? (item.Position.JobGradeId.HasValue ? "Grade Related" : item.BasicSalary.ToString()) : item.BasicSalary.ToString()))</small></div>
                 </div>
             </div>
         </div>

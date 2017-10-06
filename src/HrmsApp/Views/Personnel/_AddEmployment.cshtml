@@ -1,27 +1,27 @@
 ﻿@using HrmsModel.Models;
 @model Employment
-@{ 
-    string jobDisabled = (Model.PositionId.HasValue || Model.IsHead) ? "disabled" : null;
-    string gradeDisabled = Model.JobGradeId.HasValue ? "disabled" : null;
-    string stepDisabled = Model.PositionId.HasValue ? "disabled" : null;
-    string salaryDisabled = (Model.BasicSalary != 0 || (Model.JobGradeId.HasValue && Model.SalaryStepId.HasValue)) ? "disabled" : null;
-}
 
-<form role="form" id="popupForm" asp-controller="Personnel" asp-action="EditEmployment" data-ajax="true" data-ajax-method="POST" data-ajax-update="#listSection" data-ajax-success="onSuccess" data-ajax-failure="onFailure">
-    <input type="hidden" asp-for="Id" />
+<form role="form" id="popupForm" asp-controller="Personnel" asp-action="AddEmployment" data-ajax="true" data-ajax-method="POST" data-ajax-update="#subListSection" data-ajax-success="onTrnSuccess" data-ajax-failure="onFailure">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" asp-for="EmployeeId" class="form-control" value="@ViewBag.employeeId" />
+    <input type="hidden" name="oldEmploymentId" class="form-control" id="employmentId" />
     <div class="form-group-sm">
-        <label class="control-label" asp-for="EmploymentTypeId"><small>Employment Type</small></label>
-        <select class="form-control" asp-for="EmploymentTypeId">
+        <label asp-for="FromDate" class="control-label"><small>Effective From Date (*)</small></label>
+        <input type="date" asp-for="FromDate" class="form-control" required />
+    </div>
+    <div class="form-group-sm">
+        <label asp-for="OrgUnitId" class="control-label"><small>New Business Unit (with Vacancy)</small></label>
+        <select asp-for="OrgUnitId" class="form-control">
             <option value="">Select from List ...</option>
-            @foreach (SelectListItem item in new SelectList(ViewBag.employmentTypesList, "Id", "Name"))
+            @foreach (SelectListItem x in new SelectList(ViewBag.orgUnitsList, "Id", "Name"))
             {
-                <option value="@item.Value">@item.Text</option>
+                <option value="@x.Value">@x.Text</option>
             }
         </select>
     </div>
     <div class="form-group-sm">
-        <label class="control-label" asp-for="PositionId"><small>Job Position</small></label>
-        <select class="form-control" asp-for="PositionId" disabled="@jobDisabled">
+        <label class="control-label" asp-for="PositionId"><small>Job Position (Vacant)</small></label>
+        <select class="form-control" asp-for="PositionId">
             <option value="">Select from List ...</option>
             @foreach (SelectListItem item in new SelectList(ViewBag.positionsList, "Id", "Name"))
             {
@@ -31,11 +31,21 @@
     </div>
     <div class="form-group-sm">
         <label class="control-label" asp-for="JobName"><small>Job Name (for Unpositioned)</small></label>
-        <input type="text" asp-for="JobName" class="form-control" disabled="@jobDisabled" />
+        <input type="text" asp-for="JobName" class="form-control" />
     </div>
     <div class="form-group-sm">
         <label class="control-label" asp-for="OthJobName"><small>Job Name Translated</small></label>
-        <input type="text" asp-for="OthJobName" class="form-control" disabled="@jobDisabled" />
+        <input type="text" asp-for="OthJobName" class="form-control" />
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="EmploymentTypeId"><small>Employment Type</small></label>
+        <select class="form-control" asp-for="EmploymentTypeId">
+            <option value="">Select from List ...</option>
+            @foreach (SelectListItem item in new SelectList(ViewBag.employmentTypesList, "Id", "Name"))
+            {
+                <option value="@item.Value">@item.Text</option>
+            }
+        </select>
     </div>
     <div class="input-group-sm">
         <label class="control-label" asp-for="IsHead">
@@ -47,12 +57,6 @@
         <label class="control-label" asp-for="IsActing">
             <input type="checkbox" asp-for="IsActing" />
             <span><small>Is Acting?</small></span>
-        </label>
-    </div>
-    <div class="input-group-sm">
-        <label class="control-label" asp-for="IsProbation">
-            <input type="checkbox" asp-for="IsProbation" />
-            <span><small>Is in Probation?</small></span>
         </label>
     </div>
     <hr />
@@ -68,7 +72,7 @@
     </div>
     <div class="form-group-sm">
         <label asp-for="JobGradeId" class="control-label"><small>Job Grade</small></label>
-        <select asp-for="JobGradeId" class="form-control" disabled="@gradeDisabled">
+        <select asp-for="JobGradeId" class="form-control">
             <option value="">Select from List ...</option>
             @foreach (SelectListItem x in new SelectList(ViewBag.jobGradesList, "Id", "Code"))
             {
@@ -78,7 +82,7 @@
     </div>
     <div class="form-group-sm">
         <label asp-for="SalaryStepId" class="control-label"><small>Salary Step</small></label>
-        <select asp-for="SalaryStepId" class="form-control" disabled="@stepDisabled">
+        <select asp-for="SalaryStepId" class="form-control">
             <option value="">Select from List ...</option>
             @foreach (SelectListItem x in new SelectList(ViewBag.salaryStepsList, "Id", "Code"))
             {
@@ -87,8 +91,8 @@
         </select>
     </div>
     <div class="form-group-sm">
-        <label asp-for="BasicSalary" class="control-label"><small>Basic Salary (Will be Overridden by Job Grade and Salary Step)</small></label>
-        <input type="number" asp-for="BasicSalary" class="form-control" disabled="@salaryDisabled" />
+        <label asp-for="BasicSalary" class="control-label"><small>Basic Salary</small></label>
+        <input type="number" asp-for="BasicSalary" class="form-control" />
     </div>
     <hr />
     <div class="input-group-sm">
@@ -111,11 +115,5 @@
     <div class="form-group-sm">
         <label class="control-label" asp-for="Remarks"><small>Remarks</small></label>
         <input type="text" asp-for="Remarks" class="form-control fullwidth" />
-    </div>
-    <div class="input-group-sm">
-        <label class="control-label" asp-for="IsActive">
-            <input type="checkbox" asp-for="IsActive" />
-            <span><small>Deactivate?</small></span>
-        </label>
     </div>
 </form>

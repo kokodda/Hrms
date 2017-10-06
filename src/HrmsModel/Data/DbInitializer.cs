@@ -252,8 +252,8 @@ namespace HrmsModel.Data
                 {
                     new DocumentType { Name = "National Id", OthName = "National Id", SysCode = "NID", SortOrder = 10, IsActive = true },
                     new DocumentType { Name = "Passport", OthName = "Passport", SysCode = "PASSPORT", SortOrder = 20, IsActive = true },
-                    new DocumentType { Name = "Driving Licence", OthName = "Driving Licence", SysCode = "DRIVE", SortOrder = 30, IsActive = true },
-                    new DocumentType { Name = "Work Permit", OthName = "Work Permit", SysCode = "WORK", SortOrder = 40, IsActive = true }
+                    new DocumentType { Name = "Driving Licence", OthName = "Driving Licence", SysCode = "DRIVING_LICENCE", SortOrder = 30, IsActive = true },
+                    new DocumentType { Name = "Work Permit", OthName = "Work Permit", SysCode = "WORK_PERMIT", SortOrder = 40, IsActive = true }
                 };
                 foreach (DocumentType x in documentTypes)
                     _context.DocumentTypes.Add(x);

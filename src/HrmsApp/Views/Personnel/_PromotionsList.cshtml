@@ -7,50 +7,51 @@
         <span></span><a href="#" onclick="showPromo()" id="showCtrl" title="Show"><span class="fa fa-chevron-down"></span></a>
         <span></span><a href="#"  id="hideCtrl" hidden onclick="hidePromo()" title="Hide"><span class="fa fa-chevron-up"></span></a>
     </div>
-    <hr />
+    <br />
     <div id="promo" class="hidden">
         @foreach (var pos in Model.Select(b => b.Employment).Distinct())
         {
-            <div style="text-align:center">
-                <label><small>Unit:</small></label> &nbsp; <small>@pos.OrgUnit.Name</small> &mdash; <label><small>Position:</small></label> &nbsp;
-                <small>@string.Format("{0}", pos.IsHead ? pos.OrgUnit.HeadPositionName : (pos.PositionId.HasValue ? pos.Position.Name : pos.JobName))</small>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <label><small>Unit:</small></label> &nbsp; <small>@pos.OrgUnit.Name</small> &mdash; <label><small>Position:</small></label> &nbsp;
+                    <small>@string.Format("{0}", pos.IsHead ? pos.OrgUnit.HeadPositionName : (pos.PositionId.HasValue ? pos.Position.Name : pos.JobName))</small>
+                </div>
+                <div class="panel-body">
+                    <table class="table table-condensed">
+                        <thead>
+                            <tr>
+                                <th><small>Transaction</small></th>
+                                <th><small>Effective</small></th>
+                                <th><small>Job Grade</small></th>
+                                <th><small>Salary Step</small></th>
+                                <th><small>Basic Salary</small></th>
+                                <th><small>Salary Increase</small></th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.Where(b => b.Employment.Id == pos.Id))
+                            {
+                                <tr>
+                                    <td><small>@item.PromotionType.Name</small></td>
+                                    <td><small>@item.EffectiveFromDate.ToString("dd-MM-yyyy")</small></td>
+                                    <td><small>@string.Format("{0}", item.JobGrade != null ? item.JobGrade.Name : null)</small></td>
+                                    <td><small>@string.Format("{0}", item.SalaryStep != null ? item.SalaryStep.Name : null)</small></td>
+                                    <td><small>@item.BasicSalary</small></td>
+                                    <td><small>@item.SalaryIncreaseValue @string.Format("{0}", item.IsIncreasePercentage ? "%" : null)</small></td>
+                                    <td>
+                                        @if (!item.IsApproved)
+                                        {
+                                            <a href="#" class="btn btn-xs" onclick="approvePromotion(@item.Id)" title="Approve"><span class="fa fa-check"></span></a>
+                                            <a href="#" class="btn btn-xs" onclick="cancelPromotion(@item.Id)" title="Cancel"><span class="glyphicon glyphicon-trash"></span></a>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
             </div>
-            <table class="table table-condensed">
-                <thead>
-                    <tr>
-                        <th><small>Transaction</small></th>
-                        <th><small>Effective</small></th>
-                        <th><small>Job Grade</small></th>
-                        <th><small>Salary Step</small></th>
-                        <th><small>Basic Salary</small></th>
-                        <th><small>Salary Increase</small></th>
-                        <th>
-                            <a href="#" class="btn btn-xs" onclick="addPromotion(@pos.Id)" data-toggle="modal" data-target="#myModal" title="Add Promotion"><span class="glyphicon glyphicon-plus"></span></a>
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in Model.Where(b => b.Employment.Id == pos.Id))
-                    {
-                        <tr>
-                            <td><small>@item.PromotionType.Name</small></td>
-                            <td><small>@item.EffectiveFromDate.ToString("dd-MM-yyyy")</small></td>
-                            <td><small>@string.Format("{0}", item.JobGrade != null ? item.JobGrade.Name : null)</small></td>
-                            <td><small>@string.Format("{0}", item.SalaryStep != null ? item.SalaryStep.Name : null)</small></td>
-                            <td><small>@item.BasicSalary</small></td>
-                            <td><small>@item.SalaryIncreaseValue @string.Format("{0}", item.IsIncreasePercentage ? "%" : null)</small></td>
-                            <td>
-                                @if (!item.IsApproved)
-                                {
-                                    <a href="#" class="btn btn-xs" onclick="approvePromotion(@item.Id)" title="Approve"><span class="fa fa-check"></span></a>
-                                    <a href="#" class="btn btn-xs" onclick="cancelPromotion(@item.Id)" title="Cancel"><span class="glyphicon glyphicon-trash"></span></a>
-                                }
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-            <br />
         }
     </div>
 </div>
