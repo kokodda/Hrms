@@ -259,7 +259,6 @@ namespace HrmsModel.Data
             modelBuilder.Entity<Position>().Property(b => b.OthName).HasMaxLength(100);
             modelBuilder.Entity<Position>().Property(b => b.JobCode).HasMaxLength(100);
             modelBuilder.Entity<Position>().Property(b => b.Capacity).HasDefaultValue(1);
-            modelBuilder.Entity<Position>().Property(b => b.TotalStaff).HasDefaultValue(0);
             modelBuilder.Entity<Position>().Property(b => b.TotalVacant).HasDefaultValue(1);
             modelBuilder.Entity<Position>().Property(b => b.CreatedDate).HasColumnType("date");
             modelBuilder.Entity<Position>().Property(b => b.LastUpdated).HasColumnType("date");

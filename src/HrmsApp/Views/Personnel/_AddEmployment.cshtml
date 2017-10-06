@@ -10,7 +10,7 @@
         <input type="date" asp-for="FromDate" class="form-control" required />
     </div>
     <div class="form-group-sm">
-        <label asp-for="OrgUnitId" class="control-label"><small>New Business Unit (with Vacancy)</small></label>
+        <label asp-for="OrgUnitId" class="control-label"><small>Destination Business Unit</small></label>
         <select asp-for="OrgUnitId" class="form-control">
             <option value="">Select from List ...</option>
             @foreach (SelectListItem x in new SelectList(ViewBag.orgUnitsList, "Id", "Name"))
@@ -20,9 +20,9 @@
         </select>
     </div>
     <div class="form-group-sm">
-        <label class="control-label" asp-for="PositionId"><small>Job Position (Vacant)</small></label>
+        <label class="control-label" asp-for="PositionId"><small>Destination Job Position</small></label>
         <select class="form-control" asp-for="PositionId">
-            <option value="">Select from List ...</option>
+            <option value="">Select from Vacancies ...</option>
             @foreach (SelectListItem item in new SelectList(ViewBag.positionsList, "Id", "Name"))
             {
                 <option value="@item.Value">@item.Text</option>

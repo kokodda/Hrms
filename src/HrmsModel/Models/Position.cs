@@ -22,7 +22,6 @@ namespace HrmsModel.Models
         public bool IsAttendRequired { get; set; }
         public bool IsOverTimeAllowed { get; set; }
         public int Capacity { get; set; }
-        public int TotalStaff { get; set; }
         public int TotalVacant { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime LastUpdated { get; set; }

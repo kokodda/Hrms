@@ -8,9 +8,10 @@ using HrmsModel.Data;
 namespace HrmsApp.Data.Migrations.Model
 {
     [DbContext(typeof(HrmsDbContext))]
-    partial class HrmsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20171006113029_update5")]
+    partial class update5
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.0.3")

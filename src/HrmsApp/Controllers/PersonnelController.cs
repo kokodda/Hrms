@@ -343,12 +343,10 @@ namespace HrmsApp.Controllers
         {
             //id is the selected-current employment id
             ViewBag.employeeId = _context.Employments.SingleOrDefault(b => b.Id == id).EmployeeId;
-            var vacancies = await _context.Positions.Where(b => b.TotalVacant != 0).ToListAsync();
-            List<long> ouIds = vacancies.Select(b => b.Id).ToList();
-            ViewBag.orgUnitsList = await _context.OrgUnits.Where(b => ouIds.Contains(b.Id)).ToListAsync();
+            ViewBag.orgUnitsList = await _context.OrgUnits.Where(b => b.IsActive).ToListAsync();
             ViewBag.salaryScaleTypesList = _lookup.GetLookupItems<SalaryScaleType>();
             ViewBag.employmentTypesList = _lookup.GetLookupItems<EmploymentType>();
-            ViewBag.positionsList = vacancies;
+            ViewBag.positionsList = await _context.Positions.Where(b => b.TotalVacant != 0).ToListAsync();
             ViewBag.jobGradesList = await _context.JobGrades.Where(b => b.IsActive).ToListAsync();
             ViewBag.salaryStepsList = await _context.SalarySteps.Where(b => b.IsActive).ToListAsync();
             return PartialView("_AddEmployment");
