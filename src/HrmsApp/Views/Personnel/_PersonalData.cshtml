@@ -1,0 +1,56 @@
+﻿@using HrmsApp.Models;
+@model EmployeeViewModel
+
+<div class="container-fluid" style="padding:0px">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <label><small>Personal Data</small></label>
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-sm-2"></div>
+                <div class="col-sm-2" style="border-bottom:solid thin;border-bottom-color:silver"><label><small>First</small></label></div>
+                <div class="col-sm-2" style="border-bottom:solid thin;border-bottom-color:silver"><label><small>Family</small></label></div>
+                <div class="col-sm-2" style="border-bottom:solid thin;border-bottom-color:silver"><label><small>Father</small></label></div>
+                <div class="col-sm-2" style="border-bottom:solid thin;border-bottom-color:silver"><label><small>Mother</small></label></div>
+            </div>
+            <div class="row">
+                <div class="col-sm-2"><small>Name</small></div>
+                <div class="col-sm-2"><label><small>@Model.Employee.FirstName</small></label></div>
+                <div class="col-sm-2"><label><small>@Model.Employee.FamilyName</small></label></div>
+                <div class="col-sm-2"><small>@Model.Employee.FatherName</small></div>
+                <div class="col-sm-2"><small>@Model.Employee.MotherName</small></div>
+            </div>
+            <div class="row">
+                <div class="col-sm-2"><small>Translation</small></div>
+                <div class="col-sm-2"><label><small>@Model.Employee.OthFirstName</small></label></div>
+                <div class="col-sm-2"><label><small>@Model.Employee.OthFamilyName</small></label></div>
+                <div class="col-sm-2"><small>@Model.Employee.OthFatherName</small></div>
+                <div class="col-sm-2"><small>@Model.Employee.OthMotherName</small></div>
+            </div>
+            <hr />
+            <div class="row">
+                <div class="col-sm-3"><small><label>Gender: </label>&nbsp;@string.Format("{0}", Model.Employee.IsMale ? "Male" : "Femele")</small></div>
+                <div class="col-sm-3"><small><label>Birth Date: </label>&nbsp;@Model.Employee.BirthDate.ToString("dd-MM-yyyy")</small></div>
+                <div class="col-sm-4"><small><label>Nationality: </label>&nbsp;@Model.Employee.Nationality.Name</small></div>
+            </div>
+            <div class="row">
+                <div class="col-sm-3"><small><label>Marital Status: </label>&nbsp;@Model.Employee.MaritalStatus</small></div>
+                <div class="col-sm-3"><small><label>Blood Group: </label>&nbsp;@Model.Employee.BloodGroup</small></div>
+                <div class="col-sm-4"><small><label>Military Service: </label>&nbsp;@string.Format("{0}", Model.Employee.IsMilitaryExempted ? "Exempted" : "None")</small></div>
+            </div>
+        </div>
+    </div>
+    @if (!string.IsNullOrEmpty(Model.Employee.Brief))
+    {
+        <div style="padding-bottom:5px">
+            <textarea asp-for="@Model.Employee.Brief" class="form-control fullwidth" rows="5" readonly style="border:none;font-size:12px;color:gray"></textarea>
+        </div>
+    }
+    @if (!string.IsNullOrEmpty(Model.Employee.OthBrief))
+    {
+        <div>
+            <textarea asp-for="@Model.Employee.OthBrief" class="form-control fullwidth" readonly style="border:none;font-size:12px;color:gray"></textarea>
+        </div>
+    }
+</div>

@@ -2,37 +2,42 @@
 @model IEnumerable<EmployeeQualification>
 
 <div class="container-fluid" style="padding:0px">
-    <label><small>Qualifications</small></label>
-    <hr />
-    <table class="table table-condensed">
-        <thead>
-            <tr>
-                <th><small>Qualification Type</small></th>
-                <th><small>Name</small></th>
-                <th><small>Competency Area</small></th>
-                <th><small>Competency</small></th>
-                <th><small>Planned?</small></th>
-                <th><small>Obtained Date</small></th>
-                <th>
-                    <a href="#" class="btn btn-xs" onclick="addToEmployee('Qualifications')" data-toggle="modal" data-target="#myModal" title="Add Qualification"><span class="glyphicon glyphicon-plus"></span></a>
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td><small>@item.QualificationType.Name</small></td>
-                    <td><small>@item.Name</small></td>
-                    <td><small>@item.CompetencyAreaType.Name</small></td>
-                    <td><small>(@item.CompetencySubCategory.CompetencyCategory.Name) @item.CompetencySubCategory.Name</small></td>
-                    <td><input type="checkbox" asp-for="@item.IsPlanned" readonly disabled /></td>
-                    <td><small>@item.ObtainedDate.ToString("dd-MM-yyyy")</small></td>
-                    <td>
-                        <a href="#" class="btn btn-xs" onclick="editQualification(@item.Id)" title="Edit"><span class="glyphicon glyphicon-pencil"></span></a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <label><small>Qualifications</small></label>
+        </div>
+        <div class="panel-body">
+            <table class="table table-condensed">
+                <thead>
+                    <tr>
+                        <th><small>Qualification Type</small></th>
+                        <th><small>Name</small></th>
+                        <th><small>Competency Area</small></th>
+                        <th><small>Competency</small></th>
+                        <th><small>Planned?</small></th>
+                        <th><small>Obtained Date</small></th>
+                        <th>
+                            <a href="#" class="btn btn-xs" onclick="addToEmployee('Qualifications')" data-toggle="modal" data-target="#myModal" title="Add Qualification"><span class="glyphicon glyphicon-plus"></span></a>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td><small>@item.QualificationType.Name</small></td>
+                            <td><small>@item.Name</small></td>
+                            <td><small>@item.CompetencyAreaType.Name</small></td>
+                            <td><small>(@item.CompetencySubCategory.CompetencyCategory.Name) @item.CompetencySubCategory.Name</small></td>
+                            <td><input type="checkbox" asp-for="@item.IsPlanned" readonly disabled /></td>
+                            <td><small>@item.ObtainedDate.ToString("dd-MM-yyyy")</small></td>
+                            <td>
+                                <a href="#" class="btn btn-xs" onclick="editQualification(@item.Id)" title="Edit"><span class="glyphicon glyphicon-pencil"></span></a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>

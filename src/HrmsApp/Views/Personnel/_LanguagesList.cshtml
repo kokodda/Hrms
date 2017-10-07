@@ -2,36 +2,41 @@
 @model IEnumerable<EmployeeLanguage>
 
 <div class="container-fluid" style="padding:0px">
-    <label><small>Languages</small></label>
-    <hr />
-    <table class="table table-condensed">
-        <thead>
-            <tr>
-                <th><small>Language</small></th>
-                <th><small>Naration</small></th>
-                <th><small>Reading</small></th>
-                <th><small>Speaking</small></th>
-                <th><small>Writing</small></th>
-                <th>
-                    <a href="#" class="btn btn-xs" onclick="addToEmployee('Languages')" data-toggle="modal" data-target="#myModal" title="Add Language"><span class="glyphicon glyphicon-plus"></span></a>
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td><small>@item.LanguageType.Name</small></td>
-                    <td><small>@item.LanguageName</small></td>
-                    <td><small>@item.ReadingLevel</small></td>
-                    <td><small>@item.SpeakingLevel</small></td>
-                    <td><small>@item.WritingLevel</small></td>
-                    <td>
-                        <a href="#" class="btn btn-xs" onclick="editLanguage(@item.Id)" title="Edit"><span class="glyphicon glyphicon-pencil"></span></a>
-                        <a href="#" class="btn btn-xs" onclick="removeLanguage(@item.Id)" title="Remove"><span class="glyphicon glyphicon-trash"></span></a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <label><small>Languages</small></label>
+        </div>
+        <div class="panel-body">
+            <table class="table table-condensed">
+                <thead>
+                    <tr>
+                        <th><small>Language</small></th>
+                        <th><small>Naration</small></th>
+                        <th><small>Reading</small></th>
+                        <th><small>Speaking</small></th>
+                        <th><small>Writing</small></th>
+                        <th>
+                            <a href="#" class="btn btn-xs" onclick="addToEmployee('Languages')" data-toggle="modal" data-target="#myModal" title="Add Language"><span class="glyphicon glyphicon-plus"></span></a>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td><small>@item.LanguageType.Name</small></td>
+                            <td><small>@item.LanguageName</small></td>
+                            <td><small>@item.ReadingLevel</small></td>
+                            <td><small>@item.SpeakingLevel</small></td>
+                            <td><small>@item.WritingLevel</small></td>
+                            <td>
+                                <a href="#" class="btn btn-xs" onclick="editLanguage(@item.Id)" title="Edit"><span class="glyphicon glyphicon-pencil"></span></a>
+                                <a href="#" class="btn btn-xs" onclick="removeLanguage(@item.Id)" title="Remove"><span class="glyphicon glyphicon-trash"></span></a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>

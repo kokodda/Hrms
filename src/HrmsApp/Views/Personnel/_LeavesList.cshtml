@@ -2,51 +2,56 @@
 @model IEnumerable<EmployeeLeave>
 
 <div class="container-fluid" style="padding:0px">
-    <label><small>Leave History</small></label>
-    <hr />
-    <table class="table table-hover table-condensed">
-        <thead>
-            <tr>
-                <th><small>From-To</small></th>
-                <th><small>Leave Type</small></th>
-                <th><small>Submitted</small></th>
-                <th><small>Actual</small></th>
-                <th><small>Approved?</small></th>
-                <th><small>Cancelled?</small></th>
-                <th><small>Endorsed?</small></th>
-                <th>
-                    <a href="#" class="btn btn-xs" onclick="addLeaveTransaction()" data-toggle="modal" data-target="#myModal" title="Add Leave"><span class="glyphicon glyphicon-plus"></span></a>
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <label><small>Leave History</small></label>
+        </div>
+        <div class="panel-body">
+            <table class="table table-hover table-condensed">
+                <thead>
+                    <tr>
+                        <th><small>From-To</small></th>
+                        <th><small>Leave Type</small></th>
+                        <th><small>Submitted</small></th>
+                        <th><small>Actual</small></th>
+                        <th><small>Approved?</small></th>
+                        <th><small>Cancelled?</small></th>
+                        <th><small>Endorsed?</small></th>
+                        <th>
+                            <a href="#" class="btn btn-xs" onclick="addLeaveTransaction()" data-toggle="modal" data-target="#myModal" title="Add Leave"><span class="glyphicon glyphicon-plus"></span></a>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
             {
                 string actualFrom = item.ActualFromDate.HasValue ? item.ActualFromDate.Value.ToString("dd-MM-yyyy") : null;
                 string actualThru = item.ActualThruDate.HasValue ? item.ActualThruDate.Value.ToString("dd-MM-yyyy") : null;
-                <tr>
-                    <td><small>@item.FromDate.ToString("dd/MM") - @item.ThruDate.ToString("dd/MM")</small></td>
-                    <td><small>@item.LeaveType.Name</small></td>
-                    <td><small>@item.SubmittedDate.ToString("dd/MM")</small></td>
-                    <td><small>@actualFrom - @actualThru</small></td>
-                    <td><input type="checkbox" asp-for="@item.IsApproved" readonly disabled /></td>
-                    <td><input type="checkbox" asp-for="@item.IsCancelled" readonly disabled /></td>
-                    <td><input type="checkbox" asp-for="@item.IsEndorsed" readonly disabled /></td>
-                    <td class="btn-group">
-                        @if (!item.IsEndorsed)
-                        {
-                            <a role="button" href="#" class="btn btn-xs" onclick="editLeaveTransaction(@item.Id)" title="Edit"><span class="glyphicon glyphicon-pencil"></span></a>
-                            <a role="button" href="#" class="btn btn-xs" onclick="cancelLeaveTransaction(@item.Id)" title="Cancel"><span class="glyphicon glyphicon-remove"></span></a>
-                            <a role="button" href="#" class="btn btn-xs" onclick="deleteLeaveTransaction(@item.Id)" title="Delete"><span class="glyphicon glyphicon-trash"></span></a>
-                            <a role="button" href="#" class="btn btn-xs" onclick="approveLeaveTransaction(@item.Id)" title="Approve"><span class="fa fa-check"></span></a>
-                            @if (item.ActualFromDate.HasValue)
-                            {
-                                <a role="button" href="#" class="btn btn-xs" onclick="endorseLeaveTransaction(@item.Id)" title="Endorse"><span class="glyphicon glyphicon-ok"></span></a>
-                            }
-                        }
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+                        <tr>
+                            <td><small>@item.FromDate.ToString("dd/MM") - @item.ThruDate.ToString("dd/MM")</small></td>
+                            <td><small>@item.LeaveType.Name</small></td>
+                            <td><small>@item.SubmittedDate.ToString("dd/MM")</small></td>
+                            <td><small>@actualFrom - @actualThru</small></td>
+                            <td><input type="checkbox" asp-for="@item.IsApproved" readonly disabled /></td>
+                            <td><input type="checkbox" asp-for="@item.IsCancelled" readonly disabled /></td>
+                            <td><input type="checkbox" asp-for="@item.IsEndorsed" readonly disabled /></td>
+                            <td class="btn-group">
+                                @if (!item.IsEndorsed)
+                                {
+                                    <a role="button" href="#" class="btn btn-xs" onclick="editLeaveTransaction(@item.Id)" title="Edit"><span class="glyphicon glyphicon-pencil"></span></a>
+                                    <a role="button" href="#" class="btn btn-xs" onclick="cancelLeaveTransaction(@item.Id)" title="Cancel"><span class="glyphicon glyphicon-remove"></span></a>
+                                    <a role="button" href="#" class="btn btn-xs" onclick="deleteLeaveTransaction(@item.Id)" title="Delete"><span class="glyphicon glyphicon-trash"></span></a>
+                                    <a role="button" href="#" class="btn btn-xs" onclick="approveLeaveTransaction(@item.Id)" title="Approve"><span class="fa fa-check"></span></a>
+                                    @if (item.ActualFromDate.HasValue)
+                                    {
+                                        <a role="button" href="#" class="btn btn-xs" onclick="endorseLeaveTransaction(@item.Id)" title="Endorse"><span class="glyphicon glyphicon-ok"></span></a>
+                                    }
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>

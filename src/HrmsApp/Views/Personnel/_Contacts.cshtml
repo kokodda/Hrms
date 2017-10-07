@@ -1,0 +1,25 @@
+﻿@using HrmsApp.Models;
+@model EmployeeViewModel
+
+<div class="container-fluid" style="padding:0px">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <label><small>Contacts</small></label>
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-sm-4">
+                    <div><span class="fa fa-mobile-phone" style="font-size:24px"></span>&nbsp;&nbsp;&nbsp;<small>@Model.Employee.Phone</small></div>
+                    <div><span class="glyphicon glyphicon-phone-alt"></span>&nbsp;&nbsp;<small>@Model.Employee.HomePhone1</small></div>
+                    <div><span class="glyphicon glyphicon-phone-alt"></span>&nbsp;&nbsp;<small>@Model.Employee.HomePhone2</small></div>
+                    <div><span class="glyphicon glyphicon-envelope"></span>&nbsp;&nbsp;<small>@Model.Employee.Email</small></div>
+                </div>
+                <div class="col-sm-8">
+                    <div><small><label>Governorate:</label>&nbsp;@Model.Employee.Governorate.Name</small></div>
+                    <div><small><label>Address:</label>&nbsp;@Model.Employee.Address</small></div>
+                    <div><small><label>Permenant Address:</label>&nbsp;@Model.Employee.PermenantAddress</small></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
