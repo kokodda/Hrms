@@ -39,7 +39,7 @@
         </select>
     </div>
     <div class="form-group-sm">
-        <label class="control-label" asp-for="FromJobGradeId"><small>From Job Grade</small></label>
+        <label class="control-label" asp-for="FromJobGradeId"><small>From Job Grade (Lowest Grade)</small></label>
         <select class="form-control" asp-for="FromJobGradeId" required>
             <option value="">Select from List ...</option>
             @foreach (SelectListItem item in new SelectList(ViewBag.jobGradesList, "Id", "Name"))
@@ -49,7 +49,7 @@
         </select>
     </div>
     <div class="form-group-sm">
-        <label class="control-label" asp-for="ThruJobGradeId"><small>Through Job Grade</small></label>
+        <label class="control-label" asp-for="ThruJobGradeId"><small>Through Job Grade (Highest Grade)</small></label>
         <select class="form-control" asp-for="ThruJobGradeId" required>
             <option value="">Select from List ...</option>
             @foreach (SelectListItem item in new SelectList(ViewBag.jobGradesList, "Id", "Name"))

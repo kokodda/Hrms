@@ -10,7 +10,7 @@
             <table class="table table-condensed">
                 <thead>
                     <tr>
-                        <th><small>Qualification Type</small></th>
+                        <th><small>Type</small></th>
                         <th><small>Name</small></th>
                         <th><small>Competency Area</small></th>
                         <th><small>Competency</small></th>
@@ -32,7 +32,7 @@
                             <td><input type="checkbox" asp-for="@item.IsPlanned" readonly disabled /></td>
                             <td><small>@item.ObtainedDate.ToString("dd-MM-yyyy")</small></td>
                             <td>
-                                <a href="#" class="btn btn-xs" onclick="editQualification(@item.Id)" title="Edit"><span class="glyphicon glyphicon-pencil"></span></a>
+                                <a href="#" class="btn btn-xs" onclick="editListItem('Qualifications', @item.Id)" data-toggle="modal" data-target="#myModal" title="Edit"><span class="glyphicon glyphicon-pencil"></span></a>
                             </td>
                         </tr>
                     }

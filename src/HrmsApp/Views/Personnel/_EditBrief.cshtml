@@ -2,7 +2,7 @@
 @model Employee
 
 
-<form role="form" id="popupForm" asp-controller="Personnel" asp-action="EditEmployee" data-ajax="true" data-ajax-method="POST" data-ajax-success="onSuccess">
+<form role="form" id="popupForm" asp-controller="Personnel" asp-action="EditEmployee" data-ajax="true" data-ajax-method="POST" data-ajax-update="#employeeSection" data-ajax-success="onSuccess();getPersonalInfo()">
     <br />
     <input type="hidden" asp-for="Id" />
     <div class="form-group-sm">

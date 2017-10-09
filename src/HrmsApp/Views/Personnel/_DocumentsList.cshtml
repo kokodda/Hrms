@@ -11,9 +11,9 @@
                 <thead>
                     <tr>
                         <th><small>Type</small></th>
-                        <th><small>Details</small></th>
+                        <th><small>Number</small></th>
                         <th><small>Expiry Date</small></th>
-                        <th><small>Url</small></th>
+                        <th><small>Copy</small></th>
                         <th>
                             <a href="#" class="btn btn-xs" onclick="addToEmployee('Documents')" data-toggle="modal" data-target="#myModal" title="Add Document"><span class="glyphicon glyphicon-plus"></span></a>
                         </th>
@@ -26,11 +26,10 @@
                             <td><small>@item.DocumentType.Name</small></td>
                             <td><small>@item.Details</small></td>
                             <td><small>@string.Format("{0}", item.ExpiryDate.HasValue ? item.ExpiryDate.Value.ToString("dd-MM-yyyy") : null)</small></td>
-                            <td><a href="#" onclick="downloadDocument(@item.Url)" title="Download"><small>@item.Url</small></a></td>
+                            <td><a href="#" onclick="downloadDocument('@item.Url')" title="Download"><small>@item.Url</small></a></td>
                             <td>
-                                <a href="#" class="btn btn-xs" onclick="uploadDocument(@item.Id, @item.DocumentType.Id)" data-toggle="modal" data-target="#filePopupForm" title="Upload"><span class="glyphicon glyphicon-upload"></span></a>
-                                <a href="#" class="btn btn-xs" onclick="editDocument(@item.Id)" title="Edit"><span class="glyphicon glyphicon-pencil"></span></a>
-                                <a href="#" class="btn btn-xs" onclick="removeDocument(@item.Id)" title="Remove"><span class="glyphicon glyphicon-trash"></span></a>
+                                <a href="#" class="btn btn-xs" onclick="uploadDocument(@item.Id, @item.DocumentType.Id)" data-toggle="modal" data-target="#filePopupForm" title="Upload"><span class="fa fa-upload"></span></a>
+                                <a href="#" class="btn btn-xs" onclick="editListItem('Documents', @item.Id)" data-toggle="modal" data-target="#myModal" title="Edit"><span class="glyphicon glyphicon-pencil"></span></a>
                             </td>
                         </tr>
                     }

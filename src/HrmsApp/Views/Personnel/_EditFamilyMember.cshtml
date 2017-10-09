@@ -1,0 +1,35 @@
+﻿@using HrmsModel.Models;
+@model EmployeeFamily
+
+<form role="form" id="popupForm" asp-controller="Personnel" asp-action="EditFamilyMember" data-ajax="true" data-ajax-method="POST" data-ajax-update="#listSection" data-ajax-success="onSuccess" data-ajax-failure="onFailure">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" asp-for="Id" />
+    <div class="form-group-sm">
+        <label asp-for="FamilyMemberTypeId" class="control-label"><small>Family Member (*)</small></label>
+        <select asp-for="FamilyMemberTypeId" class="form-control" required>
+            <option value="">Select from List ...</option>
+            @foreach (SelectListItem x in new SelectList(ViewBag.familyMemberTypesList, "Id", "Name"))
+            {
+                <option value="@x.Value">@x.Text</option>
+            }
+        </select>
+    </div>
+    <div class="form-group-sm">
+        <label asp-for="Name" class="control-label"><small>Name</small></label>
+        <input type="text" asp-for="Name" class="form-control" required />
+    </div>
+    <div class="form-group-sm">
+        <label asp-for="BirthDate" class="control-label"><small>Date of Birth (*)</small></label>
+        <input type="date" asp-for="BirthDate" class="form-control" required />
+    </div>
+    <div class="form-group-sm">
+        <label asp-for="Contacts" class="control-label"><small>Contacts</small></label>
+        <input type="text" asp-for="Contacts" class="form-control" />
+    </div>
+    <div class="input-group-sm">
+        <label class="control-label" asp-for="IsActive">
+            <input type="checkbox" asp-for="IsActive" />
+            <span><small>Is Included?</small></span>
+        </label>
+    </div>
+</form>

@@ -7,7 +7,7 @@
     string salaryDisabled = (Model.BasicSalary != 0 || (Model.JobGradeId.HasValue && Model.SalaryStepId.HasValue)) ? "disabled" : null;
 }
 
-<form role="form" id="popupForm" asp-controller="Personnel" asp-action="EditEmployment" data-ajax="true" data-ajax-method="POST" data-ajax-update="#listSection" data-ajax-success="onSuccess" data-ajax-failure="onFailure">
+<form role="form" id="popupForm" asp-controller="Personnel" asp-action="EditEmployment" data-ajax="true" data-ajax-method="POST" data-ajax-update="#listSection" data-ajax-success="onSuccess();refreshEmployment()" data-ajax-failure="onFailure">
     <input type="hidden" asp-for="Id" />
     <div class="form-group-sm">
         <label class="control-label" asp-for="EmploymentTypeId"><small>Employment Type</small></label>

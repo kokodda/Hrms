@@ -7,7 +7,6 @@
 }
 <link href="~/lib/bootstrap-fileinput/css/fileinput.css" media="all" rel="stylesheet" type="text/css" />
 
-
 <div class="container-fluid" style="padding:0px">
     <div id="employeeHeaderSection">
         @Html.Partial("_EmployeeHeader", Model)
@@ -18,11 +17,8 @@
             @Html.Partial("_MainEmployment", Model)
         </div>
         <div class="col-sm-8">
-            <div id="personalDataSection">
-                @Html.Partial("_PersonalData", Model)
-            </div>
-            <div id="contactsSection">
-                @Html.Partial("_Contacts", Model)
+            <div id="employeeSection">
+                @Html.Partial("_PersonalData", Model.Employee)
             </div>
             <div id="listSection"></div>
             <div id="subListSection"></div>
@@ -66,17 +62,12 @@
                 <input type="file" name="files" accept="image/*" class="file-loading" id="inputPhotos" />
             </div>
             <div class="modal-footer">
-                <strong>
-                    <button type="button" class="btn btn-default btn-xs pull-right" onclick="onFileInputClearClick('inputPhotos')" data-dismiss="modal">Cancel</button> &nbsp; &nbsp;
-                    <span class="pull-right" id="popupResult1"></span>
-                </strong>
+                <button type="button" class="btn btn-default btn-xs pull-right" onclick="onFileInputClearClick('inputPhotos')" data-dismiss="modal">Cancel</button> &nbsp; &nbsp;
+                <small><span class="pull-left" id="popupResult1"></span></small>
             </div>
         </div>
     </div>
 </div>
-
-@Html.Hidden("docIdHF")
-@Html.Hidden("docTypeIdHF")
 
 @section Scripts
 {
@@ -86,60 +77,6 @@
     <script src="~/lib/bootstrap-fileinput/js/fileinput.min.js"></script>
     <script>
         $(document).on('ready', function () {
-            var url = '@Url.Action("PhotoUpload", "Personnel", new { id = "xyz" })';
-            $("#inputPhotos").fileinput({
-                uploadAsync: false,
-                showUpload: true,
-                showRemove: true,
-                multiple: false,
-                previewFileType: "image",
-                browseClass: "btn btn-success",
-                browseLabel: "Browse",
-                browseIcon: "<i class=\"glyphicon glyphicon-file\"></i> ",
-                removeClass: "btn btn-danger",
-                removeLabel: "Remove",
-                removeIcon: "<i class=\"glyphicon glyphicon-trash\"></i> ",
-                uploadClass: "btn btn-info",
-                uploadLabel: "Upload",
-                uploadIcon: "<i class=\"glyphicon glyphicon-upload\"></i> ",
-                uploadUrl: url.replace('xyz', @Model.Employee.Id)
-            });
-            $('#inputPhotos').on('filebatchuploadsuccess', function (event, data, previewId, index) {
-                $('#photoNameHF').val(data.filenames[0]);
-                $('#photoCtrl').attr('src', "data:image/png;base64," + data.response);
-                $('#popupResult1').html('Employee Photo Successfully Uploaded.');
-            });
-
-            url = '@Url.Action("FileUpload", "Personnel", new { id = "id1", docTypeId = "typeId1" })';
-            $("#inputFiles").fileinput({
-                uploadAsync: false,
-                showUpload: true,
-                showRemove: true,
-                multiple: false,
-                previewFileType: "file",
-                browseClass: "btn btn-success",
-                browseLabel: "Browse",
-                browseIcon: "<i class=\"glyphicon glyphicon-file\"></i> ",
-                removeClass: "btn btn-danger",
-                removeLabel: "Remove",
-                removeIcon: "<i class=\"glyphicon glyphicon-trash\"></i> ",
-                uploadClass: "btn btn-info",
-                uploadLabel: "Upload",
-                uploadIcon: "<i class=\"glyphicon glyphicon-upload\"></i> ",
-                uploadUrl: url.replace('id1', $('#docIdHF').val()).replace('typeId1', $('#docTypeIdHF').val())
-            });
-            $('#inputFiles').on('filebatchuploadsuccess', function (event, data, previewId, index) {
-                $('#filePopupResult').html('File Successfully Uploaded.');
-                $.ajax({
-                    url: '@Url.Action("DocumentsList", "Positions")',
-                    type: 'GET',
-                    data: { id: @Model.Employee.Id },
-                    success: function (result) {
-                        $('#listSection').html(result);
-                    }
-                });
-            });
-
             $('#contactsSection').hide();
         })
 
@@ -166,8 +103,52 @@
             $('#formResult').html('Failed to Update! Please Correct All Errors.');
             $('.popupBtns').removeAttr('disabled');
         }
+        function refreshEmployee() {
+            if ($('#empUid').text() !== $('#empUidHF').val()) {
+                $('#empUid').html($('#empUidHF').val());
+            }
+            if ($('#joinDate') !== $('#joinDateHF').val()) {
+                $('#joinDate').html($('#joinDateHF').val());
+            }
+            if ($('#empName').text() !== $('#empNameHF').val()) {
+                $('#empName').html($('#empNameHF').val());
+            }
+        }
+        function refreshEmployment() {
+            $('#posName').html($('#posName_gen').text() + " : " + $('#ouName_gen').text());
+            $('#dateInPosition').html($('#dateInPosition_gen').text());
+            $('#jobGrade').html($('#jobGradeHF').val());
+            $('#salaryStep').html($('#salaryStep_gen').text());
+            $('#salaryScale').html($('#salaryScale_gen').text());
+            $('#attendance').html($('#attendance_gen').text());
+            $('#overtime').html($('#overtime_gen').text());
+            $('#empType').html($('#empType_gen').text());
+        }
+
         function editPhoto() {
-            $('#photoModal').show();
+            $("#inputPhotos").fileinput({
+                uploadAsync: false,
+                showUpload: true,
+                showRemove: true,
+                multiple: false,
+                previewFileType: "image",
+                browseClass: "btn btn-success",
+                browseLabel: "Browse",
+                browseIcon: "<i class=\"glyphicon glyphicon-file\"></i> ",
+                removeClass: "btn btn-danger",
+                removeLabel: "Remove",
+                removeIcon: "<i class=\"glyphicon glyphicon-trash\"></i> ",
+                uploadClass: "btn btn-info",
+                uploadLabel: "Upload",
+                uploadIcon: "<i class=\"glyphicon glyphicon-upload\"></i> ",
+                uploadUrl: '@Url.Action("PhotoUpload", "Personnel")',
+                uploadExtraData: {id: @Model.Employee.Id}
+            });
+            $('#inputPhotos').on('filebatchuploadsuccess', function (event, data, previewId, index) {
+                $('#photoNameHF').val(data.filenames[0]);
+                $('#photoCtrl').attr('src', "data:image/png;base64," + data.response);
+                $('#popupResult1').html('Employee Photo Successfully Uploaded.');
+            });
         }
         function showPromo() {
             $('#promo').removeClass('hidden');
@@ -185,12 +166,14 @@
             $('#subListSection').html(null);
             $('#contactsSection').hide();
             $('#personalDataSection').show();
+            $('#employeeSection').show();
         }
         function getContacts() {
             $('#listSection').html(null);
             $('#subListSection').html(null);
             $('#contactsSection').show();
             $('#personalDataSection').hide();
+            $('#employeeSection').show();
         }
         function getLeave() {
             $.ajax({
@@ -198,8 +181,7 @@
                 type: 'GET',
                 data: { id: @Model.Employee.Id },
                 success: function (result) {
-                    $('#personalDataSection').hide();
-                    $('#contactsSection').hide();
+                    $('#employeeSection').hide();
                     $('#listSection').html(result);
                 }
             });
@@ -225,8 +207,35 @@
             });
         }
         function uploadDocument(id, typeId) {
-            $('#docIdHF').val(id);
-            $('#docTypeIdHF').val(typeId);
+            $("#inputFiles").fileinput({
+                uploadAsync: false,
+                showUpload: true,
+                showRemove: true,
+                multiple: false,
+                previewFileType: "file",
+                browseClass: "btn btn-success",
+                browseLabel: "Browse",
+                browseIcon: "<i class=\"glyphicon glyphicon-file\"></i> ",
+                removeClass: "btn btn-danger",
+                removeLabel: "Remove",
+                removeIcon: "<i class=\"glyphicon glyphicon-trash\"></i> ",
+                uploadClass: "btn btn-info",
+                uploadLabel: "Upload",
+                uploadIcon: "<i class=\"glyphicon glyphicon-upload\"></i> ",
+                uploadUrl: '@Url.Action("FileUpload", "Personnel")',
+                uploadExtraData: { id: id, docTypeId: typeId }
+            });
+            $('#inputFiles').on('filebatchuploadsuccess', function (event, data, previewId, index) {
+                $.ajax({
+                    url: '@Url.Action("DocumentsList", "Personnel")',
+                    type: 'GET',
+                    data: { id: @Model.Employee.Id },
+                    success: function (result) {
+                        $('#listSection').html(result);
+                        $('#filePopupResult').html('File Successfully Uploaded.');
+                    }
+                });
+            });
         }
         function downloadDocument(fileName) {
             var url = '/files/Personnel/' + fileName;
@@ -257,8 +266,7 @@
                 type: 'GET',
                 data: { id: @Model.Employee.Id },
                 success: function (result) {
-                    $('#personalDataSection').hide();
-                    $('#contactsSection').hide();
+                    $('#employeeSection').hide();
                     $('#listSection').html(result);
                     if (lst === 'Career') {
                         $.ajax({
@@ -311,6 +319,39 @@
                 }
             });
         }
+        function editListItem(lst, id) {
+            var url;
+            var popupTitle;
+            switch (lst) {
+                case 'Qualifications':
+                    url = '@Url.Action("EditQualification", "Personnel")';
+                    popupTitle = 'Edit Qualification';
+                    break;
+                case 'Languages':
+                    url = '@Url.Action("EditLanguage", "Personnel")';
+                    popupTitle = 'Edit Language';
+                    break;
+                case 'Family':
+                    url = '@Url.Action("EditFamilyMember", "Personnel")';
+                    popupTitle = 'Edit Family Member';
+                    break;
+                case 'Documents':
+                    url = '@Url.Action("EditDocument", "Personnel")';
+                    popupTitle = 'Edit Document';
+                    break;
+            }
+            $.ajax({
+                url: url,
+                type: 'GET',
+                data: { id: id },
+                success: function (result) {
+                    $('#myModal-body').html(result);
+                    $('#myModal-label').html(popupTitle);
+                    showPopup();
+                }
+            });
+        }
+
         function addEmployment(id) {
             $.ajax({
                 url: '@Url.Action("AddEmployment", "Personnel")',
@@ -348,6 +389,7 @@
                 success: function (result) {
                     $('#subListSection').html(result);
                     showPromo();
+                    refreshEmployment();
                 }
             });
         }
@@ -372,8 +414,7 @@
                 type: 'GET',
                 data: { id: @Model.Employee.Id },
                 success: function (result) {
-                    $('#personalDataSection').hide();
-                    $('#contactsSection').hide();
+                    $('#employeeSection').hide();
                     $('#subListSection').html(null);
                     $('#listSection').html(result);
                 }

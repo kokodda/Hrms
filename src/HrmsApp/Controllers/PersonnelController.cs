@@ -184,13 +184,13 @@ namespace HrmsApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditEmployee(Employee item)
         {
-            var model = await _context.Employees.SingleOrDefaultAsync(b => b.Id == item.Id);
+            var model = await _context.Employees.Include(b => b.Governorate).Include(b => b.Nationality).SingleOrDefaultAsync(b => b.Id == item.Id);
             item.LastUpdated = DateTime.Now.Date;
             item.UpdatedBy = "user";
             await TryUpdateModelAsync(model);
 
             await _context.SaveChangesAsync();
-            return Content("Success", "text/html");
+            return PartialView("_PersonalData", model);
         }
 
         public async Task<IActionResult> EditContacts(long id)
@@ -260,6 +260,24 @@ namespace HrmsApp.Controllers
             return RedirectToAction("FamilyList", new { id = item.EmployeeId });
         }
 
+        public async Task<IActionResult> EditFamilyMember(long id)
+        {
+            var model = await _context.EmployeeFamilies.SingleOrDefaultAsync(b => b.Id == id);
+            ViewBag.familyMemberTypesList = _lookup.GetLookupItems<FamilyMemberType>();
+            return PartialView("_EditFamilyMember", model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditFamilyMember(EmployeeFamily item)
+        {
+            var model = await _context.EmployeeFamilies.SingleOrDefaultAsync(b => b.Id == item.Id);
+            await TryUpdateModelAsync(model);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("FamilyList", new { id = model.EmployeeId });
+        }
+
         //qualifications
         public async Task<IActionResult> QualificationsList(long id)
         {
@@ -286,6 +304,27 @@ namespace HrmsApp.Controllers
             return RedirectToAction("QualificationsList", new { id = item.EmployeeId });
         }
 
+        public async Task<IActionResult> EditQualification(long id)
+        {
+            var model = _context.EmployeeQualifications.SingleOrDefaultAsync(b => b.Id == id);
+            ViewBag.qualificationTypesList = _lookup.GetLookupItems<QualificationType>();
+            ViewBag.competencyAreaTypesList = _lookup.GetLookupItems<CompetencyAreaType>();
+            ViewBag.competencySubCategoriesList = await _context.CompetencySubCategories.Include(b => b.CompetencyCategory)
+                                    .Where(b => b.IsActive).OrderBy(b => b.CompetencyCategory.SortOrder).ThenBy(b => b.SortOrder).ToListAsync();
+            return PartialView("_EditQualification", await model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditQualification(EmployeeQualification item)
+        {
+            var model = await _context.EmployeeQualifications.SingleOrDefaultAsync(b => b.Id == item.Id);
+            await TryUpdateModelAsync(model);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("QualificationsList", new { id = model.EmployeeId });
+        }
+
         //languages
         public async Task<IActionResult> LanguagesList(long id)
         {
@@ -308,6 +347,24 @@ namespace HrmsApp.Controllers
             return RedirectToAction("LanguagesList", new { id = item.EmployeeId });
         }
 
+        public async Task<IActionResult> EditLanguage(long id)
+        {
+            var model = _context.EmployeeLanguages.SingleOrDefaultAsync(b => b.Id == id);
+            ViewBag.languageTypesList = _lookup.GetLookupItems<LanguageType>();
+            return PartialView("_EditLanguage", await model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditLanguage(EmployeeLanguage item)
+        {
+            var model = await _context.EmployeeLanguages.SingleOrDefaultAsync(b => b.Id == item.Id);
+            await TryUpdateModelAsync(model);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("LanguagesList", new { id = model.EmployeeId });
+        }
+
         //documents
         public async Task<IActionResult> DocumentsList(long id)
         {
@@ -328,6 +385,24 @@ namespace HrmsApp.Controllers
             _context.EmployeeDocuments.Add(item);
             await _context.SaveChangesAsync();
             return RedirectToAction("DocumentsList", new { id = item.EmployeeId });
+        }
+
+        public async Task<IActionResult> EditDocument(long id)
+        {
+            var model = _context.EmployeeDocuments.SingleOrDefaultAsync(b => b.Id == id);
+            ViewBag.documentTypesList = _lookup.GetLookupItems<DocumentType>();
+            return PartialView("_EditDocument", await model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditDocument(EmployeeDocument item)
+        {
+            var model = await _context.EmployeeDocuments.SingleOrDefaultAsync(b => b.Id == item.Id);
+            await TryUpdateModelAsync(model);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("DocumentsList", new { id = model.EmployeeId });
         }
 
         //career
@@ -371,7 +446,7 @@ namespace HrmsApp.Controllers
             promo.Details = item.Details;
             promo.EffectiveFromDate = item.FromDate;
             promo.IsActive = true;
-            promo.IsApproved = true;
+            promo.IsApproved = false;
             promo.JobGradeId = item.JobGradeId;
             promo.LastUpdated = DateTime.Now.Date;
             promo.SalaryStepId = item.SalaryStepId;
@@ -437,6 +512,7 @@ namespace HrmsApp.Controllers
             item.CreatedDate = DateTime.Now.Date;
             item.LastUpdated = DateTime.Now.Date;
             item.UpdatedBy = "user";
+            item.IsApproved = false;
             _context.EmployeePromotions.Add(item);
             await _context.SaveChangesAsync();
 

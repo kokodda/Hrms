@@ -3,7 +3,7 @@
 
 <form role="form" id="popupForm" asp-controller="Personnel" asp-action="AddQualification" data-ajax="true" data-ajax-method="POST" data-ajax-update="#listSection" data-ajax-success="onSuccess" data-ajax-failure="onFailure">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <input type="hidden" asp-for="EmployeeId" class="form-control" id="employeeId" />
+    <input type="hidden" asp-for="EmployeeId" id="employeeId" />
     <div class="form-group-sm">
         <label asp-for="QualificationTypeId" class="control-label"><small>Qualification Type (*)</small></label>
         <select asp-for="QualificationTypeId" class="form-control" required>

@@ -1,0 +1,25 @@
+﻿@using HrmsModel.Models;
+@model EmployeeDocument
+
+<form role="form" id="popupForm" asp-controller="Personnel" asp-action="EditDocument" data-ajax="true" data-ajax-method="POST" data-ajax-update="#listSection" data-ajax-success="onSuccess" data-ajax-failure="onFailure">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" asp-for="Id" />
+    <div class="form-group-sm">
+        <label asp-for="DocumentTypeId" class="control-label"><small>Document Type (*)</small></label>
+        <select asp-for="DocumentTypeId" class="form-control" required>
+            <option value="">Select from List ...</option>
+            @foreach (SelectListItem x in new SelectList(ViewBag.documentTypesList, "Id", "Name"))
+            {
+                <option value="@x.Value">@x.Text</option>
+            }
+        </select>
+    </div>
+    <div class="form-group-sm">
+        <label asp-for="Details" class="control-label"><small>Document Number (*)</small></label>
+        <input type="text" asp-for="Details" class="form-control" required />
+    </div>
+    <div class="form-group-sm">
+        <label asp-for="ExpiryDate" class="control-label"><small>Expiry Date</small></label>
+        <input type="date" asp-for="ExpiryDate" class="form-control" />
+    </div>
+</form>

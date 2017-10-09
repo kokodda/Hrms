@@ -203,8 +203,15 @@ namespace HrmsApp.Controllers
             var ss = await _context.SalaryScales.SingleOrDefaultAsync(b => b.Id == id);
             int startGradeSrl = _context.JobGrades.SingleOrDefault(b => b.Id == ss.ThruJobGradeId).SortOrder;
             int endGradeSrl = _context.JobGrades.SingleOrDefault(b => b.Id == ss.FromJobGradeId).SortOrder;
+            int tmp;
+            if(startGradeSrl > endGradeSrl) //swap min and max values
+            {
+                tmp = startGradeSrl;
+                startGradeSrl = endGradeSrl;
+                endGradeSrl = tmp;
+            }
             var gradesList = await _context.JobGrades.Include(b => b.GradeGroup)
-                                        .Where(b => b.SortOrder >= endGradeSrl && b.SortOrder <= startGradeSrl)
+                                        .Where(b => b.SortOrder >= startGradeSrl && b.SortOrder <= endGradeSrl)
                                         .OrderByDescending(b => b.SortOrder).ToListAsync();
             var stepsList = await _context.SalarySteps.Where(b => b.IsActive).OrderBy(b => b.SortOrder).ToListAsync();
 

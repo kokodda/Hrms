@@ -1,0 +1,51 @@
+﻿@using HrmsModel.Models;
+@model EmployeeLanguage
+
+<form role="form" id="popupForm" asp-controller="Personnel" asp-action="EditLanguage" data-ajax="true" data-ajax-method="POST" data-ajax-update="#listSection" data-ajax-success="onSuccess" data-ajax-failure="onFailure">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" asp-for="Id" />
+    <div class="form-group-sm">
+        <label asp-for="LanguageTypeId" class="control-label"><small>Language (*)</small></label>
+        <select asp-for="LanguageTypeId" class="form-control" required>
+            <option value="">Select from List ...</option>
+            @foreach (SelectListItem x in new SelectList(ViewBag.languageTypesList, "Id", "Name"))
+            {
+                <option value="@x.Value">@x.Text</option>
+            }
+        </select>
+    </div>
+    <div class="form-group-sm">
+        <label asp-for="LanguageName" class="control-label"><small>Naration</small></label>
+        <input type="text" asp-for="LanguageName" class="form-control" />
+    </div>
+    <br />
+    <div class="form-group-sm">
+        <label asp-for="ReadingLevel" class="control-label"><small>Reading Level (*)</small></label>
+        <div>
+            <input type="radio" asp-for="ReadingLevel" value="BEGINNER" checked /><small>Beginner</small>
+            <span><input type="radio" asp-for="ReadingLevel" value="INTERMEDIATE" /><small>Intermediate</small></span>
+            <span><input type="radio" asp-for="ReadingLevel" value="BEGINNER" /><small>Advanced</small></span>
+            <span><input type="radio" asp-for="ReadingLevel" value="NATIVE" /><small>Native</small></span>
+        </div>
+    </div>
+    <br />
+    <div class="form-group-sm">
+        <label asp-for="SpeakingLevel" class="control-label"><small>Speaking Level (*)</small></label>
+        <div>
+            <input type="radio" asp-for="SpeakingLevel" value="BEGINNER" checked /><small>Beginner</small>
+            <span><input type="radio" asp-for="SpeakingLevel" value="INTERMEDIATE" /><small>Intermediate</small></span>
+            <span><input type="radio" asp-for="SpeakingLevel" value="BEGINNER" /><small>Advanced</small></span>
+            <span><input type="radio" asp-for="SpeakingLevel" value="NATIVE" /><small>Native</small></span>
+        </div>
+    </div>
+    <br />
+    <div class="form-group-sm">
+        <label asp-for="WritingLevel" class="control-label"><small>Writing Level (*)</small></label>
+        <div>
+            <input type="radio" asp-for="WritingLevel" value="BEGINNER" checked /><small>Beginner</small>
+            <span><input type="radio" asp-for="WritingLevel" value="INTERMEDIATE" /><small>Intermediate</small></span>
+            <span><input type="radio" asp-for="WritingLevel" value="BEGINNER" /><small>Advanced</small></span>
+            <span><input type="radio" asp-for="WritingLevel" value="NATIVE" /><small>Native</small></span>
+        </div>
+    </div>
+</form>

@@ -2,15 +2,15 @@
 @model EmployeeViewModel
 
 <div class="container-fluid" style="padding:0px">
-    <div><small><label>Employee Uid: </label>&nbsp;@Model.Employee.EmpUid</small></div>
-    <div><small><label>Join Date: </label>&nbsp;@Model.Employee.JoinDate.ToString("dd-MM-yyyy")</small></div>
-    <div><small><label>Date In Position: </label>&nbsp;@Model.DateInPosition.ToString("dd-MM-yyyy")</small></div>
+    <div><small><label>Employee Uid: </label>&nbsp;<span id="empUid">@Model.Employee.EmpUid</span></small></div>
+    <div><small><label>Join Date: </label>&nbsp;<span id="joinDate">@Model.Employee.JoinDate.ToString("dd-MM-yyyy")</span></small></div>
+    <div><small><label>Date In Position: </label>&nbsp;<span id="dateInPosition">@Model.DateInPosition.ToString("dd-MM-yyyy")</span></small></div>
     <br />
-    <div><small><label>Job Grade: </label>&nbsp;@string.Format("{0}", Model.JobGradeId.HasValue ? Model.JobGradeCode : "NA")</small></div>
-    <div><small><label>Salary Step: </label>&nbsp;@string.Format("{0}", Model.SalaryStepId.HasValue ? Model.SalaryStepCode : "NA")</small></div>
-    <div><small><label>Salary Scale: </label>&nbsp;@string.Format("{0}", Model.SalaryScaleTypeId.HasValue ? Model.SalaryScaleTypeName : "NA")</small></div>
+    <div><small><label>Job Grade: </label>&nbsp;<span id="jobGrade">@string.Format("{0}", Model.JobGradeId.HasValue ? Model.JobGradeCode : "NA")</span></small></div>
+    <div><small><label>Salary Step: </label>&nbsp;<span id="salaryStep">@string.Format("{0}", Model.SalaryStepId.HasValue ? Model.SalaryStepCode : "NA")</span></small></div>
+    <div><small><label>Salary Scale: </label>&nbsp;<span id="salaryScale">@string.Format("{0}", Model.SalaryScaleTypeId.HasValue ? Model.SalaryScaleTypeName : "NA")</span></small></div>
     <br />
-    <div><small><label>Attendance: </label>&nbsp;@string.Format("{0}", Model.IsAttendRequired ? "Required" : "Not Required")</small></div>
-    <div><small><label>OverTime: </label>&nbsp;@string.Format("{0}", Model.IsOverTimeAllowed ? "Allowed" : "Not Allowed")</small></div>
-    <div><small><label>Employment Type: </label>&nbsp;@Model.EmploymentTypeName</small></div>
+    <div><small><label>Attendance: </label>&nbsp;<span id="attendance">@string.Format("{0}", Model.IsAttendRequired ? "Required" : "Not Required")</span></small></div>
+    <div><small><label>OverTime: </label>&nbsp;<span id="overtime">@string.Format("{0}", Model.IsOverTimeAllowed ? "Allowed" : "Not Allowed")</span></small></div>
+    <div><small><label>Employment Type: </label>&nbsp;<span id="empType">@Model.EmploymentTypeName</span></small></div>
 </div>

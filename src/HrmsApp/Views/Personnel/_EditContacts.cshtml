@@ -1,8 +1,7 @@
 ﻿@using HrmsModel.Models;
 @model Employee
 
-
-<form role="form" id="popupForm" asp-controller="Personnel" asp-action="EditEmployee" data-ajax="true" data-ajax-method="POST" data-ajax-success="onSuccess">
+<form role="form" id="popupForm" asp-controller="Personnel" asp-action="EditEmployee" data-ajax="true" data-ajax-method="POST" data-ajax-update="#employeeSection" data-ajax-success="onSuccess();getContacts()">
     <input type="hidden" asp-for="Id" />
     <div class="form-group-sm">
         <label class="control-label" asp-for="Phone"><small>Phone (*)</small></label>
