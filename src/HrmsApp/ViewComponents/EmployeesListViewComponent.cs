@@ -18,7 +18,7 @@ namespace HrmsApp.ViewComponents
             _context = context;
         }
 
-        public async Task<IViewComponentResult> InvokeAsync(string orgUnitTypeCode, string employeeUid, string employeeName, int? jobGradeId, int? gradeGroupId, int? titleId, int? governorateId = null, bool isHead = false, bool isActive = true, bool isProbation = false, bool isActing = false, bool isBirthday = false, long? orgUnitId = null, int? nationalityId = null)
+        public async Task<IViewComponentResult> InvokeAsync(string orgUnitTypeCode, string employeeUid, string employeeName, int? jobGradeId, int? gradeGroupId, int? titleId, int? governorateId = null, string assigned = "all", bool isHead = false, bool isActive = true, bool isProbation = false, bool isActing = false, bool isBirthday = false, long? orgUnitId = null, int? nationalityId = null)
         {
             List<EmployeeViewModel> model = new List<EmployeeViewModel>();
             var empList = await _context.Employments.Include(b => b.EmploymentType).Include(b => b.Employee).Include(b => b.Position)
@@ -33,6 +33,7 @@ namespace HrmsApp.ViewComponents
                                             && (!jobGradeId.HasValue || b.JobGrade.Id == jobGradeId)
                                             && (!titleId.HasValue || b.PositionId.HasValue || b.IsHead)
                                             && (!isHead || b.IsHead) && (!isProbation || b.IsProbation) && (!isActing || b.IsActing)
+                                            && (assigned == "all" || (assigned == "assigned" && (b.PositionId.HasValue || b.IsHead)) || (assigned == "unassigned" && (!b.PositionId.HasValue && !b.IsHead)))
                                             && (!isBirthday || (b.Employee.BirthDate.DayOfYear == DateTime.Today.Date.DayOfYear))
                                             && (string.IsNullOrEmpty(employeeName) || b.Employee.FirstName.Contains(employeeName) || b.Employee.FamilyName.Contains(employeeName) || b.Employee.OthFirstName.Contains(employeeName) || b.Employee.OthFamilyName.Contains(employeeName))
                                             && (string.IsNullOrEmpty(employeeUid) || b.Employee.EmpUid == employeeUid)
@@ -116,6 +117,7 @@ namespace HrmsApp.ViewComponents
                 item.IsActing = emp.IsActing;
                 item.IsAttendRequired = emp.IsAttendRequired;
                 item.IsOverTimeAllowed = emp.IsOverTimeAllowed;
+                item.IsProbation = emp.IsProbation;
                 model.Add(item);
             }
             return View(model);

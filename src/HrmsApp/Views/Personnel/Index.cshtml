@@ -19,11 +19,13 @@
         </div>
         <div class="col-sm-2">
             <ul class="list-unstyled">
-                <li><small><a href="#" onclick="filterByType()">Heads of Units</a></small></li>
-                <li><small><a href="#" onclick="filterByType('Probation')">In Probation</a></small></li>
-                <li><small><a href="#" onclick="filterByType('Acting')">Acting</a></small></li>
-                <li><small><a href="#" onclick="filterByType('Archive')">Archive</a></small></li>
-                <li><small><a href="#" onclick="filterByType('Birthday')">Birthday List</a></small></li>
+                <li><small><a href="#" onclick="filterByType()">Heads of Units</a>&nbsp;<span class="badge alert-info">@ViewBag.headsCnt</span></small></li>
+                <li><small><a href="#" onclick="filterByType('Assigned')">Assigned</a>&nbsp;<span class="badge alert-info">@ViewBag.assignedCnt</span></small></li>
+                <li><small><a href="#" onclick="filterByType('Unassigned')">Un Assigned</a>&nbsp;<span class="badge alert-info">@ViewBag.unassignedCnt</span></small></li>
+                <li><small><a href="#" onclick="filterByType('Acting')">Acting</a>&nbsp;<span class="badge alert-info">@ViewBag.actingCnt</span></small></li>
+                <li><small><a href="#" onclick="filterByType('Probation')">In Probation</a>&nbsp;<span class="badge alert-info">@ViewBag.probationCnt</span></small></li>
+                <li><small><a href="#" onclick="filterByType('Archive')">Archive</a>&nbsp;<span class="badge alert-info">@ViewBag.archiveCnt</span></small></li>
+                <li><small><a href="#" onclick="filterByType('Birthday')">Birthday List</a>&nbsp;<span class="badge alert-info">@ViewBag.birthdayCnt</span></small></li>
             </ul>
             <hr />
             <label><small>Find ...</small></label>
@@ -115,7 +117,7 @@
     @{ await Html.RenderPartialAsync("_PopupForm"); }
     <script>
         $(document).on('ready', function () {
-
+            
         });
 
         function showPopup() {

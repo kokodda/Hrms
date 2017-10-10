@@ -36,5 +36,6 @@ namespace HrmsApp.Models
         public int BasicSalary { get; set; }
         public bool IsAttendRequired { get; set; }
         public bool IsOverTimeAllowed { get; set; }
+        public bool IsProbation { get; set; }
     }
 }

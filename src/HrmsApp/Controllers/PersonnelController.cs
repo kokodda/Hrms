@@ -26,16 +26,25 @@ namespace HrmsApp.Controllers
             _environment = environment;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             ViewBag.orgUnitTypesList = _lookup.GetLookupItems<OrgUnitType>();
-            ViewBag.orgUnitsList = _context.OrgUnits.Include(b => b.OrgUnitType)
-                        .Where(b => b.IsActive).OrderBy(b => b.OrgUnitType.SortOrder).ThenBy(b => b.SortOrder).ToList();
-            ViewBag.nationalitiesList = _context.Nationalities.Where(b => b.IsActive).ToList();
-            ViewBag.governoratesList = _context.Governorates.Where(b => b.IsActive).ToList();
+            ViewBag.orgUnitsList = await _context.OrgUnits.Include(b => b.OrgUnitType)
+                        .Where(b => b.IsActive).OrderBy(b => b.OrgUnitType.SortOrder).ThenBy(b => b.SortOrder).ToListAsync();
+            ViewBag.nationalitiesList = await _context.Nationalities.Where(b => b.IsActive).ToListAsync();
+            ViewBag.governoratesList = await _context.Governorates.Where(b => b.IsActive).ToListAsync();
             ViewBag.standardTitlesList = _lookup.GetLookupItems<StandardTitleType>();
-            ViewBag.gradeGroupsList = _context.GradeGroups.Where(b => b.IsActive).ToList();
-            ViewBag.jobGradesList = _context.JobGrades.Where(b => b.IsActive).ToList();
+            ViewBag.gradeGroupsList = await _context.GradeGroups.Where(b => b.IsActive).ToListAsync();
+            ViewBag.jobGradesList = await _context.JobGrades.Where(b => b.IsActive).ToListAsync();
+
+            var emp = _context.Employments.Where(b => b.IsActive);
+            ViewBag.headsCnt = await emp.Where(b => b.IsHead).CountAsync();
+            ViewBag.assignedCnt = await emp.Where(b => b.IsHead || b.PositionId.HasValue).CountAsync();
+            ViewBag.unassignedCnt = await emp.Where(b => !b.IsHead && !b.PositionId.HasValue).CountAsync();
+            ViewBag.actingCnt = await emp.Where(b => b.IsActing).CountAsync();
+            ViewBag.probationCnt = await emp.Where(b => b.IsProbation).CountAsync();
+            ViewBag.birthdayCnt = await _context.Employees.Where(b => b.BirthDate.DayOfYear == DateTime.Today.Date.DayOfYear).CountAsync();
+            ViewBag.archiveCnt = await _context.Employees.Where(b => !b.IsActive).CountAsync();
             return View();
         }
 
@@ -69,6 +78,10 @@ namespace HrmsApp.Controllers
                     return ViewComponent("EmployeesList", new { isProbation = true });
                 case "Acting":
                     return ViewComponent("EmployeesList", new { isActing = true });
+                case "Assigned":
+                    return ViewComponent("EmployeesList", new { assigned = "assigned" });
+                case "Unassigned":
+                    return ViewComponent("EmployeesList", new { assigned = "unassigned" });
                 case "Archive":
                     return ViewComponent("EmployeesList", new { isActive = false });
                 case "Birthday":
@@ -169,6 +182,7 @@ namespace HrmsApp.Controllers
             model.IsActing = emp.IsActing;
             model.IsAttendRequired = emp.IsAttendRequired;
             model.IsOverTimeAllowed = emp.IsOverTimeAllowed;
+            model.IsProbation = emp.IsProbation;
 
             return View("EmployeeIndex", model);
         }
