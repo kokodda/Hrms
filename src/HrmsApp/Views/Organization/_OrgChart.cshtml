@@ -118,7 +118,7 @@
                         <td><small>@item.TotalVacancy</small></td>
                         <td>
                             <a href="#" class="btn btn-xs" onclick="editOrgUnit(@item.OrgUnit.Id)" data-toggle="modal" data-target="#myModal" title="Edit"><span class="fa fa-pencil"></span></a>
-                            <a href="#" class="btn btn-xs" onclick="positionsList(@item.OrgUnit.Id)" title="Positions"><span class="fa fa-group"></span></a>
+                            <a href="#" class="btn btn-xs" onclick="positionsList(@item.OrgUnit.Id, '@item.OrgUnit.Name')" data-toggle="modal" data-target="#myModal" title="Positions"><span class="fa fa-group"></span></a>
                         </td>
                     </tr>
                 }

@@ -2,24 +2,23 @@
 @model IEnumerable<Position>
 
 <div class="container-fluid">
-    <div><label><small>@ViewBag.orgUnitName</small></label></div>
-    <div>
-        <a href="#" onclick="addPosition(@ViewBag.orgUnitId)" data-toggle="modal" data-target="#myModal"><small>Add Position ...</small></a>
-    </div>
-    <hr />
     <table class="table table-hover table-condensed">
         <thead>
             <tr>
                 <th><small>Position</small></th>
                 <th><small>Capacity</small></th>
+                <th><small>Staff</small></th>
+                <th><small>Vacancy</small></th>
             </tr>
         </thead>
         <tbody>
             @foreach(var item in Model)
             {
                 <tr>
-                    <td><a href="#" onclick="editPosition(@item.Id)" data-toggle="modal" data-target="#myModal" title="Edit"><small>@item.Name</small></a></td>
+                    <td><small>@item.Name</small></td>
                     <td><small>@item.Capacity</small></td>
+                    <td><small>@item.Employments.Where(b => b.IsActive).Count()</small></td>
+                    <td><small>@item.TotalVacant</small></td>
                 </tr>
             }
         </tbody>

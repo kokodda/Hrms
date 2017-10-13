@@ -28,6 +28,9 @@ namespace HrmsModel.Data
         public virtual DbSet<Governorate> Governorates { get; set; }
         public virtual DbSet<Nationality> Nationalities { get; set; }
 
+        public virtual DbSet<Calendar> Calendars { get; set; }
+        public virtual DbSet<Holiday> Holidays { get; set; }
+        public virtual DbSet<HolidayVariation> HolidayVariations { get; set; }
         public virtual DbSet<OrgUnit> OrgUnits { get; set; }
         public virtual DbSet<Position> Positions { get; set; }
         public virtual DbSet<GradeGroup> GradeGroups { get; set; }
@@ -39,7 +42,6 @@ namespace HrmsModel.Data
         public virtual DbSet<AllowancePolicy> AllowancePolicies { get; set; }
         public virtual DbSet<Competency> Competencies { get; set; }
         public virtual DbSet<SalaryScale> SalaryScales { get; set; }
-
         public virtual DbSet<Candidate> Candidates { get; set; }
         public virtual DbSet<Employee> Employees { get; set; }
         public virtual DbSet<EmployeeDocument> EmployeeDocuments { get; set; }
@@ -401,6 +403,7 @@ namespace HrmsModel.Data
             modelBuilder.Entity<Employment>().Property(b => b.IsOverTimeAllowed).HasDefaultValue(false);
             modelBuilder.Entity<Employment>().Property(b => b.IsProbation).HasDefaultValue(false);
             modelBuilder.Entity<Employment>().Property(b => b.BasicSalary).HasDefaultValue(0);
+            modelBuilder.Entity<Employment>().Property(b => b.IsPayrollExcluded).HasDefaultValue(false);
             modelBuilder.Entity<Employment>().Property(b => b.Details).HasMaxLength(256);
             modelBuilder.Entity<Employment>().Property(b => b.Remarks).HasMaxLength(256);
             modelBuilder.Entity<Employment>().Property(b => b.IsActive).HasDefaultValue(false);
@@ -464,6 +467,35 @@ namespace HrmsModel.Data
             modelBuilder.Entity<EmployeeGroup>().HasOne(b => b.GenericSubGroup).WithMany(b => b.EmployeeGroups).HasForeignKey(b => b.GenericSubGroupId).OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<EmployeeGroup>().Property(b => b.JoinDate).HasColumnType("date");
             modelBuilder.Entity<EmployeeGroup>().ToTable("EmployeeGroups");
+
+            modelBuilder.Entity<Calendar>().HasKey(b => b.Id);
+            modelBuilder.Entity<Calendar>().Property(b => b.Name).IsRequired().HasMaxLength(100);
+            modelBuilder.Entity<Calendar>().Property(b => b.OthName).IsRequired().HasMaxLength(100);
+            modelBuilder.Entity<Calendar>().Property(b => b.FromTime).HasColumnType("datetime");
+            modelBuilder.Entity<Calendar>().Property(b => b.ThruTime).HasColumnType("datetime");
+            modelBuilder.Entity<Calendar>().Property(b => b.BreakMinutes).HasDefaultValue(0);
+            modelBuilder.Entity<Calendar>().Property(b => b.FlexStartMinutes).HasDefaultValue(0);
+            modelBuilder.Entity<Calendar>().Property(b => b.EffectiveFromDate).HasColumnType("date");
+            modelBuilder.Entity<Calendar>().Property(b => b.IsActive).HasDefaultValue(true);
+            modelBuilder.Entity<Calendar>().ToTable("Calendars");
+
+            modelBuilder.Entity<Holiday>().HasKey(b => b.Id);
+            modelBuilder.Entity<Holiday>().Property(b => b.Name).IsRequired().HasMaxLength(100);
+            modelBuilder.Entity<Holiday>().Property(b => b.OthName).IsRequired().HasMaxLength(100);
+            modelBuilder.Entity<Holiday>().Property(b => b.IsHijri).HasDefaultValue(false);
+            modelBuilder.Entity<Holiday>().Property(b => b.IsActive).HasDefaultValue(true);
+            modelBuilder.Entity<Holiday>().ToTable("Holidays");
+
+            modelBuilder.Entity<HolidayVariation>().HasKey(b => b.Id);
+            modelBuilder.Entity<HolidayVariation>().HasOne(b => b.Calendar).WithMany(b => b.HolidayVariations).HasForeignKey(b => b.CalendarId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<HolidayVariation>().HasOne(b => b.Holiday).WithMany(b => b.HolidayVariations).HasForeignKey(b => b.HolidayId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<HolidayVariation>().Property(b => b.NbrDays).HasDefaultValue(0);
+            modelBuilder.Entity<HolidayVariation>().Property(b => b.CompensateNbrDays).HasDefaultValue(0);
+            modelBuilder.Entity<HolidayVariation>().Property(b => b.FromDate).HasColumnType("date");
+            modelBuilder.Entity<HolidayVariation>().Property(b => b.Narration).IsRequired().HasMaxLength(256);
+            modelBuilder.Entity<HolidayVariation>().Property(b => b.IsComponsated).HasDefaultValue(false);
+            modelBuilder.Entity<HolidayVariation>().Property(b => b.IsActive).HasDefaultValue(true);
+            modelBuilder.Entity<HolidayVariation>().ToTable("HolidayVariations");
         }
     }
 }

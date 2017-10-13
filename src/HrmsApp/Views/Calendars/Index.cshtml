@@ -1,0 +1,171 @@
+﻿@{
+    ViewData["Title"] = "Calendars";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid" style="padding:0px">
+    <h3>Calendars Index</h3>
+    <a href="#" onclick="addCalendar()" data-toggle="modal" data-target="#myModal"><small>Add Calendar ...</small></a>
+    <hr />
+    <div class="row">
+        <div class="col-sm-3" id="calendarsSection"></div>
+        <div class="col-sm-9">
+            <div id="holidaysSection"></div>
+            <div id="variationsSection"></div>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{ await Html.RenderPartialAsync("_PopupForm"); }
+    
+    <script>
+        $(document).on('ready', function () {
+            calendarsList();
+            holidaysList();
+            variationsList();
+        });
+
+        function showPopup() {
+            $('#popupResult').html(null).text(null);
+            $('.popupBtns').removeAttr('disabled');
+        }
+        function onPopupSubmit() {
+            $('#popupForm').submit();
+        }
+        function onSuccess() {
+            $('#popupResult').html('Successfully Updated.');
+            $('.popupBtns').attr('disabled', 'disabled');
+        }
+        function onFailure() {
+            $('#formResult').html('Failed to Update! Please Correct All Errors.');
+            $('.popupBtns').removeAttr('disabled');
+        }
+
+        //calendars
+        function calendarsList() {
+            $.ajax({
+                url: '@Url.Action("CalendarsList", "Calendars")',
+                type: 'GET',
+                success: function (result) {
+                    $('#calendarsSection').html(result);
+                }
+            });
+        }
+        function addCalendar() {
+            $.ajax({
+                url: '@Url.Action("AddCalendar", "Calendars")',
+                type: 'GET',
+                success: function (result) {
+                    $('#myModal-body').html(result);
+                    $('#myModal-label').html('Add New Calendar');
+                    showPopup();
+                }
+            });
+        }
+        function editCalendar(id) {
+            $.ajax({
+                url: '@Url.Action("EditCalendar", "Calendars")',
+                type: 'GET',
+                data: { id: id },
+                success: function (result) {
+                    $('#myModal-body').html(result);
+                    $('#myModal-label').html('Edit Calendar');
+                    showPopup();
+                }
+            });
+        }
+
+        //holidays
+        function holidaysList() {
+            $.ajax({
+                url: '@Url.Action("HolidaysList", "Calendars")',
+                type: 'GET',
+                success: function (result) {
+                    $('#holidaysSection').html(result);
+                }
+            });
+        }
+        function addHoliday() {
+            $.ajax({
+                url: '@Url.Action("AddHoliday", "Calendars")',
+                type: 'GET',
+                success: function (result) {
+                    $('#myModal-body').html(result);
+                    $('#myModal-label').html('Add New Holiday');
+                    showPopup();
+                }
+            });
+        }
+        function editHoliday(id) {
+            $.ajax({
+                url: '@Url.Action("EditHoliday", "Calendars")',
+                type: 'GET',
+                data: { id: id },
+                success: function (result) {
+                    $('#myModal-body').html(result);
+                    $('#myModal-label').html('Edit Holiday');
+                    showPopup();
+                }
+            });
+        }
+
+        //holiday variations
+        function variationsList(id) {
+            $.ajax({
+                url: '@Url.Action("VariationsList", "Calendars")',
+                type: 'GET',
+                data: { id: id },
+                success: function (result) {
+                    $('#variationsSection').html(result);
+                }
+            });
+        }
+        function addVariation(id, holidayName) {
+            $.ajax({
+                url: '@Url.Action("AddVariation", "Calendars")',
+                type: 'GET',
+                data: { id: id },
+                success: function (result) {
+                    $('#myModal-body').html(result);
+                    $('#myModal-label').html('Add Holiday Variation for: ' + holidayName);
+                    $('#holidayId').val(id);
+                    showPopup();
+                }
+            });
+        }
+        function editVariation(id) {
+            $.ajax({
+                url: '@Url.Action("EditVariation", "Calendars")',
+                type: 'GET',
+                data: { id: id },
+                success: function (result) {
+                    $('#myModal-body').html(result);
+                    $('#myModal-label').html('Edit Holiday Variation');
+                    showPopup();
+                }
+            });
+        }
+        function componsateVariation(id, vDate) {
+            var dd = new Date();
+            var vDate1 = new Date(vDate);
+            if (vDate1.getDate() > dd.getDate()) {
+                alert("Error! You cannot perform Holiday Compensation before the Holiday date.");
+                return;
+            }
+            if (!confirm("Please Confirm! About to Componsate All Employees By Crediting Their Annual Leave?")) {
+                return;
+            }
+            $.ajax({
+                url: '@Url.Action("ComponsateVariation", "Calendars")',
+                type: 'GET',
+                data: { id: id },
+                success: function (result) {
+                    $('#variationsSection').html(result);
+                }
+            });
+        }
+    </script>
+}

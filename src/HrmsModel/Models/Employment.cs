@@ -24,6 +24,7 @@ namespace HrmsModel.Models
         public bool IsAttendRequired { get; set; }
         public bool IsOverTimeAllowed { get; set; }
         public int BasicSalary { get; set; }
+        public bool IsPayrollExcluded { get; set; }
         public string Details { get; set; }
         public string Remarks { get; set; }
         public bool IsProbation { get; set; }

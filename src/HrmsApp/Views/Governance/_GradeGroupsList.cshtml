@@ -12,7 +12,9 @@
                 <th><small>Name</small></th>
                 <th><small>Name Translated</small></th>
                 <th><small>Is Active</small></th>
-                <th></th>
+                <th>
+                    <a href="#" class="btn btn-xs" onclick="addGradeGroup()" data-toggle="modal" data-target="#myModal" title="Add"><span class="glyphicon glyphicon-plus"></span></a>
+                </th>
             </tr>
         </thead>
         <tbody>
@@ -25,7 +27,7 @@
                     <td><small>@item.OthName</small></td>
                     <td><input type="checkbox" asp-for="@item.IsActive" disabled readonly /></td>
                     <td>
-                        <a href="#" class="btn btn-xs" title="Edit"><span class="glyphicon glyphicon-pencil"></span></a>
+                        <a href="#" class="btn btn-xs" onclick="editGradeGroup(@item.Id)" data-toggle="modal" data-target="#myModal" title="Edit"><span class="glyphicon glyphicon-pencil"></span></a>
                     </td>
                 </tr>
             }

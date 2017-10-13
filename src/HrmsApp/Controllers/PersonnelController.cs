@@ -180,6 +180,7 @@ namespace HrmsApp.Controllers
             else
                 model.BasicSalary = emp.BasicSalary;
             model.IsActing = emp.IsActing;
+            model.IsPayrollExcluded = emp.IsPayrollExcluded;
             model.IsAttendRequired = emp.IsAttendRequired;
             model.IsOverTimeAllowed = emp.IsOverTimeAllowed;
             model.IsProbation = emp.IsProbation;

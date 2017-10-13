@@ -37,5 +37,6 @@ namespace HrmsApp.Models
         public bool IsAttendRequired { get; set; }
         public bool IsOverTimeAllowed { get; set; }
         public bool IsProbation { get; set; }
+        public bool IsPayrollExcluded { get; set; }
     }
 }

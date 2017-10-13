@@ -1,0 +1,28 @@
+﻿@using HrmsModel.Models;
+@model HolidayVariation
+
+<form role="form" id="popupForm" asp-controller="Calendars" asp-action="EditVariation" data-ajax="true" data-ajax-method="POST" data-ajax-update="#variationsSection" data-ajax-success="onSuccess" data-ajax-failure="onFailure">
+    <input type="hidden" asp-for="Id" />
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="FromDate"><small>Occasion Date (*)</small></label>
+        <input type="date" asp-for="FromDate" class="form-control" required />
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="NbrDays"><small>Holiday Total Days (*)</small></label>
+        <input type="number" asp-for="NbrDays" class="form-control" required />
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="CompensateNbrDays"><small>Componsation Total Days (*)</small></label>
+        <input type="number" asp-for="CompensateNbrDays" class="form-control" required />
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="Narration"><small>Narration (*)</small></label>
+        <input type="text" asp-for="Narration" class="form-control fullwidth" required />
+    </div>
+    <div class="input-group-sm">
+        <label class="control-label" asp-for="IsActive">
+            <input type="checkbox" asp-for="IsActive" />
+            <span><small>Is Active?</small></span>
+        </label>
+    </div>
+</form>

@@ -32,16 +32,68 @@ namespace HrmsApp.Controllers
             return PartialView("_GradeGroupsList", await model.ToListAsync());
         }
 
+        public async Task<IActionResult> EditGradeGroup(int id)
+        {
+            var model = _context.GradeGroups.SingleOrDefaultAsync(b => b.Id == id);
+            return PartialView("_EditGradeGroup", await model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditGradeGroup(GradeGroup item)
+        {
+            var model = await _context.GradeGroups.SingleOrDefaultAsync(b => b.Id == item.Id);
+            await TryUpdateModelAsync(model);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("GradeGroupsList");
+        }
+
         public async Task<IActionResult> JobGradesList()
         {
             var model = _context.JobGrades.Include(b => b.GradeGroup).OrderBy(b => b.GradeGroup.SortOrder).ThenBy(b => b.SortOrder);
             return PartialView("_JobGradesList", await model.ToListAsync());
         }
 
-        public async Task<IActionResult> StandardTitlesList()
+        public async Task<IActionResult> EditJobGrade(int id)
+        {
+            var model = _context.JobGrades.SingleOrDefaultAsync(b => b.Id == id);
+            ViewBag.gradeGroupsList = await _context.GradeGroups.Where(b => b.IsActive).OrderBy(b => b.SortOrder).ToListAsync();
+            return PartialView("_EditJobGrade", await model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditJobGrade(JobGrade item)
+        {
+            var model = await _context.JobGrades.SingleOrDefaultAsync(b => b.Id == item.Id);
+            await TryUpdateModelAsync(model);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("JobGradesList");
+        }
+
+        public async Task<IActionResult> StandardTitleTypesList()
         {
             var model = _context.StandardTitleTypes.OrderBy(b => b.SortOrder);
-            return PartialView("_StandardTitlesList", await model.ToListAsync());
+            return PartialView("_StandardTitleTypesList", await model.ToListAsync());
+        }
+
+        public async Task<IActionResult> EditStandardTitleType(int id)
+        {
+            var model = _context.StandardTitleTypes.SingleOrDefaultAsync(b => b.Id == id);
+            return PartialView("_EditStandardTitleType", await model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditStandardTitleType(StandardTitleType item)
+        {
+            var model = await _context.StandardTitleTypes.SingleOrDefaultAsync(b => b.Id == item.Id);
+            await TryUpdateModelAsync(model);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("StandardTitleTypesList");
         }
 
         //competencies

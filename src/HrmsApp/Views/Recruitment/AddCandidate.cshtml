@@ -1,0 +1,366 @@
+﻿@using HrmsModel.Models;
+@using Newtonsoft.Json;
+@using Microsoft.AspNetCore.Mvc.ViewFeatures;
+@model Candidate
+
+@{
+    ViewData["Title"] = "Personnel";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid" style="padding:0px">
+    <br />
+    <h3 id="formHeader">Add New Candidate</h3>
+    <br />
+    <div class="row">
+        <div class="col-sm-2" style="font-size:small">
+            <dl>
+                <dt>Unit:</dt><dd>@ViewBag.orgUnitName</dd>
+                <dt>Job Position:</dt><dd>@ViewBag.positionName</dd>
+            </dl>
+            <hr />
+            <ul class="list-unstyled">
+                <li><a href="#personalDataSection">Personal Data</a></li>
+                <li><a href="#contactsSection">Contacts</a></li>
+                <li><a href="#qualificationsSection">Qualifications</a></li>
+                <li><a href="#experiencesSection">Experiences</a></li>
+                <li><a href="#hrSection">HR Interview</a></li>
+                <li><a href="#technicalSection">Technical Interview</a></li>
+                <li><a href="#resultSection">Result</a></li>
+            </ul>
+            <hr />
+            <div class="form-group-sm">
+                <label class="btn btn-sm btn-default" id="btnSave" onclick="onSubmitClick(false)" tabindex="-1">Save</label>
+                <label class="btn btn-sm btn-primary" id="btnSubmit" onclick="onSubmitClick(true)" tabindex="-1">Submit</label>
+            </div>
+            <div>
+                <small><span id="formResult" style="font-style:italic" class="pull-right"></span></small>
+            </div>
+            <hr />
+            <div>
+                <a href="#" onclick="back()"><small>Back To List ...</small></a>
+            </div>
+        </div>
+        
+        <div class="col-sm-6">
+            <form id="candidateForm" novalidate>
+                <input type="hidden" asp-for="Id" />
+                <input type="hidden" asp-for="OrgUnitId" value="@ViewBag.orgUnitId" />
+                <input type="hidden" asp-for="PositionId" value="@ViewBag.positionId" />
+                <input type="hidden" asp-for="IsHead" value="@ViewBag.isHead" />
+                <input type="hidden" asp-for="AppForm" />
+                <input type="hidden" name="Version" value="1.0" />
+                <input type="submit" id="submit-form" name="submit" class="hidden" />
+
+                <section id="personalDataSection">
+                    <div>
+                        <label style="color:silver"><small>Personnal Data</small></label>
+                    </div>
+                    <div class="form-group-sm">
+                        <label class="control-label" asp-for="FirstName"><small>First Name (*)</small></label>
+                        <input type="text" asp-for="FirstName" class="form-control" required autofocus />
+                    </div>
+                    <div class="form-group-sm">
+                        <label class="control-label" asp-for="FatherName"><small>Father (Middle) Name (*)</small></label>
+                        <input type="text" asp-for="FatherName" class="form-control" required />
+                    </div>
+                    <div class="form-group-sm">
+                        <label class="control-label" asp-for="FamilyName"><small>Family Name (*)</small></label>
+                        <input type="text" asp-for="FamilyName" class="form-control" required />
+                    </div>
+                    <div class="form-group-sm">
+                        <label class="control-label" asp-for="MotherName"><small>Mother Name</small></label>
+                        <input type="text" asp-for="MotherName" class="form-control" />
+                    </div>
+                    <br />
+                    <div><label style="color:silver"><small>Names Translation</small></label></div>
+                    <div class="form-group-sm">
+                        <label class="control-label" asp-for="OthFirstName"><small>First Name (*)</small></label>
+                        <input type="text" asp-for="OthFirstName" class="form-control" required />
+                    </div>
+                    <div class="form-group-sm">
+                        <label class="control-label" asp-for="OthFatherName"><small>Father (Middle) Name (*)</small></label>
+                        <input type="text" asp-for="OthFatherName" class="form-control" required />
+                    </div>
+                    <div class="form-group-sm">
+                        <label class="control-label" asp-for="OthFamilyName"><small>Family Name (*)</small></label>
+                        <input type="text" asp-for="OthFamilyName" class="form-control" required />
+                    </div>
+                    <div class="form-group-sm">
+                        <label class="control-label" asp-for="OthMotherName"><small>Mother Name</small></label>
+                        <input type="text" asp-for="OthMotherName" class="form-control" />
+                    </div>
+                    <br />
+                    <div class="input-group-sm">
+                        <label class="control-label" asp-for="IsMale">
+                            <input type="checkbox" asp-for="IsMale" checked />
+                            <span><small>Is Male? (*)</small></span>
+                        </label>
+                    </div>
+                    <div class="form-group-sm">
+                        <label class="control-label" asp-for="BirthDate"><small>Date Of Birth (*)</small></label>
+                        <input type="date" asp-for="BirthDate" class="form-control" required />
+                    </div>
+                    <div class="form-group-sm">
+                        <label class="control-label" asp-for="NationalityId"><small>Nationality (*)</small></label>
+                        <select class="form-control" asp-for="NationalityId">
+                            <option value="">Select from List ...</option>
+                            @foreach (SelectListItem item in new SelectList(ViewBag.nationalitiesList, "Id", "Name"))
+                            {
+                                <option value="@item.Value">@item.Text</option>
+                            }
+                        </select>
+                    </div>
+                    <br />
+                    <div class="form-group-sm">
+                        <label class="control-label" asp-for="MaritalStatus"><small>Marital Status (*)</small></label>
+                        <select class="form-control" asp-for="MaritalStatus">
+                            <option value="">Select from List ...</option>
+                            <option value="SINGLE">Single</option>
+                            <option value="MARRIED">Married</option>
+                            <option value="DIVORCED">Divorced</option>
+                            <option value="WIDOW">Widow</option>
+                        </select>
+                    </div>
+                    <div class="form-group-sm">
+                        <label class="control-label"><small>Family Size</small></label>
+                        <small><input name="FamilySize" class="form-control" /></small>
+                    </div>
+                    <div class="input-group-sm">
+                        <label class="control-label" asp-for="IsMilitaryExempted">
+                            <input type="checkbox" asp-for="IsMilitaryExempted" checked />
+                            <span><small>Is Military Service Exempted? (*)</small></span>
+                        </label>
+                    </div>
+                </section>
+                
+                <br />
+                <section id="contactsSection">
+                    <div style="border-bottom:solid thick;border-bottom-color:silver">
+                        <label style="color:silver"><small>Contacts</small></label>
+                        <a href="#formHeader" tabindex="-1"><span class="pull-right fa fa-anchor"></span></a>
+                    </div>
+                    <br />
+                    <div class="form-group-sm">
+                        <label class="control-label" asp-for="Phone"><small>Phone (*)</small></label>
+                        <input type="text" asp-for="Phone" class="form-control" required />
+                    </div>
+                    <div class="form-group-sm">
+                        <label class="control-label" asp-for="HomePhone1"><small>Home Phone 1 (*)</small></label>
+                        <input type="text" asp-for="HomePhone1" class="form-control" required />
+                    </div>
+                    <div class="form-group-sm">
+                        <label class="control-label" asp-for="HomePhone2"><small>Home Phone 2</small></label>
+                        <input type="text" asp-for="HomePhone2" class="form-control" />
+                    </div>
+                    <div class="form-group-sm">
+                        <label class="control-label" asp-for="Email"><small>email</small></label>
+                        <input type="email" asp-for="Email" class="form-control" />
+                    </div>
+                    <br />
+                    <div><label style="color:silver"><small>Addresses</small></label></div>
+                    <div class="form-group-sm">
+                        <label class="control-label" asp-for="GovernorateId"><small>Governorate (*)</small></label>
+                        <select class="form-control" asp-for="GovernorateId" required>
+                            <option value="">Select from List ...</option>
+                            @foreach (SelectListItem item in new SelectList(ViewBag.governoratesList, "Id", "Name"))
+                            {
+                                <option value="@item.Value">@item.Text</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="form-group-sm">
+                        <label class="control-label" asp-for="Address"><small>Address</small></label>
+                        <input type="text" asp-for="Address" class="form-control fullwidth" />
+                    </div>
+                    <div class="form-group-sm">
+                        <label class="control-label" asp-for="PermenantAddress"><small>Permenant Address</small></label>
+                        <input type="text" asp-for="PermenantAddress" class="form-control fullwidth" />
+                    </div>
+                </section>
+                
+                <br />
+                <section id="qualificationsSection">
+                    <div style="border-bottom:solid thick;border-bottom-color:silver">
+                        <label style="color:silver"><small>Qualifications</small></label>
+                        <a href="#formHeader" tabindex="-1"><span class="pull-right fa fa-anchor"></span></a>
+                    </div>
+                    <br />
+                    @for(int i = 0; i < 5; i++)
+                    {
+                        <div class="row">
+                            <div class="col-sm-4" style="padding-right:0px">
+                                <select class="form-control" name="QualificationsList.Type[@i]" style="font-size:small">
+                                    <option value="">Select Type ...</option>
+                                    @foreach (SelectListItem item in new SelectList(ViewBag.qualificationTypesList, "Id", "Name"))
+                                    {
+                                        <option value="@item.Value">@item.Text</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="col-sm-8" style="padding-left:0px">
+                                <small><input name="QualificationsList.Details[@i]" class="form-control fullwidth" placeholder="Details" /></small>
+                            </div>
+                        </div>
+                    }
+                </section>
+
+                <br />
+                <section id="experiencesSection">
+                    <div style="border-bottom:solid thick;border-bottom-color:silver">
+                        <label style="color:silver"><small>Experiences</small></label>
+                        <a href="#formHeader" tabindex="-1"><span class="pull-right fa fa-anchor"></span></a>
+                    </div>
+                    <br />
+                    @for (int i = 0; i < 5; i++)
+                    {
+                        <div class="row">
+                            <div class="col-sm-4" style="padding-right:0px">
+                                <select class="form-control" name="ExperiencesList.Type[@i]" style="font-size:small">
+                                    <option value="">Select Type ...</option>
+                                    @foreach (SelectListItem item in new SelectList(ViewBag.experienceTypesList, "Id", "Name"))
+                                    {
+                                        <option value="@item.Value">@item.Text</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="col-sm-8" style="padding-left:0px">
+                                <small><input name="ExperiencesList.Details[@i]" class="form-control fullwidth" placeholder="Details" /></small>
+                            </div>
+                        </div>
+                    }
+                </section>
+
+                <br />
+                <section id="hrSection">
+                    <div style="border-bottom:solid thick;border-bottom-color:silver">
+                        <label style="color:silver"><small>HR Interviews</small></label>
+                        <a href="#formHeader" tabindex="-1"><span class="pull-right fa fa-anchor"></span></a>
+                    </div>
+                    <br />
+                    @for (int i = 0; i < 3; i++)
+                    {
+                        <div class="row">
+                            <div class="col-sm-4" style="padding-right:0px">
+                                <small><input name="HRInterviewList.Interviewer[@i]" class="form-control fullwidth" placeholder="Interviewer" /></small>
+                            </div>
+                            <div class="col-sm-8" style="padding-left:0px">
+                                <small><input name="HRInterviewList.Feedback[@i]" class="form-control fullwidth" placeholder="Feedback" /></small>
+                            </div>
+                        </div>
+                    }
+                </section>
+
+                <br />
+                <section id="technicalSection">
+                    <div style="border-bottom:solid thick;border-bottom-color:silver">
+                        <label style="color:silver"><small>Technical Interviews</small></label>
+                        <a href="#formHeader" tabindex="-1"><span class="pull-right fa fa-anchor"></span></a>
+                    </div>
+                    <br />
+                    @for (int i = 0; i < 3; i++)
+                    {
+                        <div class="row">
+                            <div class="col-sm-4" style="padding-right:0px">
+                                <small><input name="TechnicalInterviewList.Interviewer[@i]" class="form-control fullwidth" placeholder="Interviewer" /></small>
+                            </div>
+                            <div class="col-sm-8" style="padding-left:0px">
+                                <small><input name="TechnicalInterviewList.Feedback[@i]" class="form-control fullwidth" placeholder="Feedback" /></small>
+                            </div>
+                        </div>
+                    }
+                </section>
+
+                <br />
+                <section id="resultSection">
+                    <div style="border-bottom:solid thick;border-bottom-color:silver">
+                        <label style="color:silver"><small>Final Result</small></label>
+                        <a href="#formHeader" tabindex="-1"><span class="pull-right fa fa-anchor"></span></a>
+                    </div>
+                    <br />
+                    <div>
+                        <small><input name="FinalResult" class="form-control fullwidth" placeholder="Final Result" /></small>
+                    </div>
+                </section>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        $(document).on('ready', function () {
+            $('#candidateForm').validate({ // initialize the plugin
+                // rules & options,
+                errorPlacement: function (error, element) {
+                    element.attr("title", error.text());
+                }
+            });
+        });
+
+        function back() {
+            var url = '@Url.Action("Index", "Recruitment")';
+            window.location.href = url;
+        }
+
+        const form = document.getElementById('candidateForm');
+
+        //handling form submit
+        function onSubmitClick(validate) {
+            if (validate) {
+                if (confirm('Please Confirm! About to Validate and Submit Form?')) {
+                    $('#submit-form').val('submit').click();
+                } else {
+                    return false;
+                }
+            }
+            else {
+                $('#submit-form').val('save').click();
+            }
+        }
+
+        //obtain form data as json
+        const handleFormSubmit = event => {
+            event.preventDefault();
+
+            //validate form
+            if ($('#submit-form').val() === 'submit') {
+                $('#candidateForm').validate();
+                if (!$('#candidateForm').valid()) {
+                    $('#formResult').html('Failed! Please Correct All Data and Resubmit.');
+                    return false;
+                }
+            }
+
+            var data = $('#candidateForm').serializeJSON();
+
+            // ...this is where we’d actually post the form data...
+            $.ajax({
+                url: '@Url.Action("AddCandidate", "Recruitment")',
+                type: 'POST',
+                dataType: "json",
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                data: JSON.stringify(data),
+                success: function (result) {
+                    $('#formResult').html(result);
+                    if ($('#submit-form').val() === "submit")
+                    {
+                        $('#btnSubmit').attr('disabled', 'disabled');
+                        $('#btnSave').attr('disabled', 'disabled');
+                    }
+                    $(window).scrollTop($('#formHeader').offset().top);
+                },
+                failure: function () {
+                    $('#btnSubmit').removeAttr('disabled');
+                    $('#btnSave').removeAttr('disabled');
+                }
+            })
+        };
+        form.addEventListener('submit', handleFormSubmit);
+    </script>
+}

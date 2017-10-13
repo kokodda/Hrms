@@ -11,8 +11,8 @@ namespace HrmsModel.Data
     public interface ILookupServices
     {
         IEnumerable<ILookup> GetLookupItems<T>() where T : class, ILookup;
-        void AddLookupItem<T>(LookupItem item) where T : class, ILookup, new();
-        void UpdateLookupItem<T>(LookupItem item) where T : class, ILookup;
+        void AddLookupItem<T>(ILookup item) where T : class, ILookup, new();
+        void UpdateLookupItem<T>(ILookup item) where T : class, ILookup;
         void RemoveLookupItem<T>(int id) where T : class, ILookup;
         void Refresh<T>() where T : class, ILookup;
     }
@@ -45,7 +45,7 @@ namespace HrmsModel.Data
         }
 
         //add lookup item
-        public void AddLookupItem<T>(LookupItem item) where T : class, ILookup, new()
+        public void AddLookupItem<T>(ILookup item) where T : class, ILookup, new()
         {
             T modelItem = new T();
             modelItem.Name = item.Name;
@@ -58,7 +58,7 @@ namespace HrmsModel.Data
         }
 
         //update lookup item
-        public void UpdateLookupItem<T>(LookupItem item) where T : class, ILookup
+        public void UpdateLookupItem<T>(ILookup item) where T : class, ILookup
         {
             var modelItem = _context.Set<T>().SingleOrDefault(b => b.Id == item.Id);
             modelItem.Name = item.Name;

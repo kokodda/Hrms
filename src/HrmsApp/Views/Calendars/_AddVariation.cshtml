@@ -1,0 +1,40 @@
+﻿@using HrmsModel.Models;
+@model HolidayVariation
+
+<form role="form" id="popupForm" asp-controller="Calendars" asp-action="AddVariation" data-ajax="true" data-ajax-method="POST" data-ajax-update="#variationsSection" data-ajax-success="onSuccess" data-ajax-failure="onFailure">
+    <input type="hidden" asp-for="HolidayId" id="holidayId" />
+    @if(ViewBag.calendarId != null)
+    {
+        <input type="hidden" asp-for="CalendarId" value="@ViewBag.calendarId" />
+
+    }
+    else
+    {
+        <div class="form-group-sm">
+            <label class="control-label" asp-for="CalendarId"><small>Calendar (*)</small></label>
+            <select class="form-control" asp-for="CalendarId" required>
+                <option value="">Select from List ...</option>
+                @foreach (SelectListItem item in new SelectList(ViewBag.calendarsList, "Id", "Name"))
+                {
+                    <option value="@item.Value">@item.Text</option>
+                }
+            </select>
+        </div>
+    }
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="FromDate"><small>Occasion Date (*)</small></label>
+        <input type="date" asp-for="FromDate" class="form-control" required />
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="NbrDays"><small>Holiday Total Days (*)</small></label>
+        <input type="number" asp-for="NbrDays" class="form-control" value="0" required />
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="CompensateNbrDays"><small>Componsation Total Days (*)</small></label>
+        <input type="number" asp-for="CompensateNbrDays" class="form-control" value="0" required />
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="Narration"><small>Narration (*)</small></label>
+        <input type="text" asp-for="Narration" class="form-control fullwidth" required />
+    </div>
+</form>

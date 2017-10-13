@@ -1,0 +1,31 @@
+﻿@using HrmsModel.Models;
+@model Holiday
+
+<form role="form" id="popupForm" asp-controller="Calendars" asp-action="AddHoliday" data-ajax="true" data-ajax-method="POST" data-ajax-update="#holidaysSection" data-ajax-success="onSuccess" data-ajax-failure="onFailure">
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="Name"><small>Occasion Name (*)</small></label>
+        <input type="text" asp-for="Name" class="form-control" required />
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="OthName"><small>Name Translated (*)</small></label>
+        <input type="text" asp-for="OthName" class="form-control" required />
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="FromMonth"><small>Month (*)</small></label>
+        <input type="number" asp-for="FromMonth" class="form-control" required />
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="FromDay"><small>Start Day (*)</small></label>
+        <input type="number" asp-for="FromDay" class="form-control" required />
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="NbrDays"><small>Total Days (*)</small></label>
+        <input type="number" asp-for="NbrDays" class="form-control" required />
+    </div>
+    <div class="input-group-sm">
+        <label class="control-label" asp-for="IsHijri">
+            <input type="checkbox" asp-for="IsHijri" />
+            <span><small>Is Hijri (*)</small></span>
+        </label>
+    </div>
+</form>

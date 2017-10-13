@@ -345,6 +345,12 @@ namespace HrmsModel.Data
                     _context.Nationalities.Add(x);
                 _context.SaveChanges();
             }
+
+            if(!_context.Calendars.Any())
+            {
+                _context.Calendars.Add(new Calendar { Name = "Company Official Calendar", OthName = "Company Official Calendar", EffectiveFromDate = DateTime.Now.Date, FirstWeekDay = "Saturday", FromTime = DateTime.Parse("08:30"), ThruTime = DateTime.Parse("16:30") });
+                _context.SaveChanges();
+            }
         }
     }
 }

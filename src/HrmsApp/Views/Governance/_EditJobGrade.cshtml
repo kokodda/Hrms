@@ -1,0 +1,34 @@
+﻿@using HrmsModel.Models;
+@model JobGrade
+
+<form role="form" id="popupForm" asp-controller="Governance" asp-action="EditJobGrade" data-ajax="true" data-ajax-method="POST" data-ajax-update="#listSection" data-ajax-success="onSuccess" data-ajax-failure="onFailure">
+    <input type="hidden" asp-for="Id" />
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="GradeGroupId"><small>Grade Group (*)</small></label>
+        <select class="form-control" asp-for="GradeGroupId" required>
+            <option value="">Select from List ...</option>
+            @foreach (SelectListItem item in new SelectList(ViewBag.gradeGroupsList, "Id", "Name"))
+            {
+                <option value="@item.Value">@item.Text</option>
+            }
+        </select>
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="Code"><small>Code (*)</small></label>
+        <input type="text" asp-for="Code" class="form-control" required />
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="Name"><small>Name (*)</small></label>
+        <input type="text" asp-for="Name" class="form-control" required />
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="OthName"><small>Name Translated (*)</small></label>
+        <input type="text" asp-for="OthName" class="form-control" />
+    </div>
+    <div class="input-group-sm">
+        <label class="control-label" asp-for="IsActive">
+            <input type="checkbox" asp-for="IsActive" />
+            <span><small>Is Active?</small></span>
+        </label>
+    </div>
+</form>

@@ -57,9 +57,19 @@
 
         function getDictionary(typeName) {
             $.ajax({
-                url: '@Url.Action("Dictionary", "Admin")',
+                url: '@Url.Action("DictionaryList", "Admin")',
                 type: 'GET',
                 data: { typeName: typeName },
+                success: function (result) {
+                    $('#listSection').html(result);
+                }
+            });
+        }
+        function editDictionary(typeName, id, status) {
+            $.ajax({
+                url: '@Url.Action("EditDictionary", "Admin")',
+                type: 'GET',
+                data: { typeName: typeName, id: id, status: status },
                 success: function (result) {
                     $('#listSection').html(result);
                 }

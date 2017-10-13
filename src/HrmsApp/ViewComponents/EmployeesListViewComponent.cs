@@ -115,6 +115,7 @@ namespace HrmsApp.ViewComponents
                 else
                     item.BasicSalary = emp.BasicSalary;
                 item.IsActing = emp.IsActing;
+                item.IsPayrollExcluded = emp.IsPayrollExcluded;
                 item.IsAttendRequired = emp.IsAttendRequired;
                 item.IsOverTimeAllowed = emp.IsOverTimeAllowed;
                 item.IsProbation = emp.IsProbation;

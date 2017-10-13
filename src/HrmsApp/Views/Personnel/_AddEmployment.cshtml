@@ -94,6 +94,12 @@
         <label asp-for="BasicSalary" class="control-label"><small>Basic Salary</small></label>
         <input type="number" asp-for="BasicSalary" class="form-control" />
     </div>
+    <div class="input-group-sm">
+        <label class="control-label" asp-for="IsPayrollExcluded">
+            <input type="checkbox" asp-for="IsPayrollExcluded" />
+            <span><small>Is Excluded from Payroll?</small></span>
+        </label>
+    </div>
     <hr />
     <div class="input-group-sm">
         <label class="control-label" asp-for="IsAttendRequired">

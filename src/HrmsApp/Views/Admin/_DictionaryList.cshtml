@@ -22,14 +22,22 @@
         <tbody>
             @foreach (var item in Model)
             {
-                <tr>
+                string rColor = item.IsActive ? "black" : "silver";
+                <tr style="color:@rColor">
                     <td><small>@item.SortOrder</small></td>
                     <td><small>@item.Name</small></td>
                     <td><small>@item.OthName</small></td>
                     <td><small>@item.SysCode</small></td>
                     <td><input type="checkbox" asp-for="@item.IsActive" disabled readonly /></td>
                     <td>
-                        <a role="button" href="#" class="btn btn-xs" onclick="edit(@item.Id)" data-toggle="modal" data-target="#myModal" title="Edit"><span class="glyphicon glyphicon-pencil"></span></a>
+                        @if (item.IsActive)
+                        {
+                            <a role="button" href="#" class="btn btn-xs" onclick="editDictionary('@ViewBag.typeName', @item.Id, false)" title="Disable"><span class="glyphicon glyphicon-remove"></span></a>
+                        }
+                        else
+                        {
+                            <a role="button" href="#" class="btn btn-xs" onclick="editDictionary('@ViewBag.typeName', @item.Id, true)" title="Enable"><span class="glyphicon glyphicon-ok"></span></a>
+                        }
                     </td>
                 </tr>
             }

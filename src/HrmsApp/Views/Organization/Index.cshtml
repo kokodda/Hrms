@@ -41,6 +41,7 @@
         function showPopup() {
             $('#popupResult').html(null).text(null);
             $('.popupBtns').removeAttr('disabled');
+            $('.popupBtns').show();
         }
         function onPopupSubmit() {
             $('#popupForm').submit();
@@ -120,13 +121,15 @@
         }
 
         //positions
-        function positionsList(id) {
+        function positionsList(id, ouName) {
             $.ajax({
                 url: '@Url.Action("PositionsList", "Organization")',
                 type: 'GET',
                 data: { id: id },
                 success: function (result) {
-                    $('#detailsSection').html(result);
+                    $('#myModal-body').html(result);
+                    $('#myModal-label').html(ouName);
+                    $('.popupBtns').hide();
                 }
             });
         }

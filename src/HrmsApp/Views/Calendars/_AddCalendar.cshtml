@@ -1,0 +1,52 @@
+﻿@using HrmsModel.Models;
+@model Calendar
+
+<form role="form" id="popupForm" asp-controller="Calendars" asp-action="AddCalendar" data-ajax="true" data-ajax-method="POST" data-ajax-update="#calendarsSection" data-ajax-success="onSuccess" data-ajax-failure="onFailure">
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="Name"><small>Calendar Name (*)</small></label>
+        <input type="text" asp-for="Name" class="form-control" required />
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="OthName"><small>Name Translated (*)</small></label>
+        <input type="text" asp-for="OthName" class="form-control" required />
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="FirstWeekDay"><small>First Day of the Week (*)</small></label>
+        <select class="form-control" asp-for="FirstWeekDay" required>
+            <option value="">Select from List ...</option>
+            <option value="Sunday">Sunday</option>
+            <option value="Monday">Monday</option>
+            <option value="Tuesday">Tuesday</option>
+            <option value="Wednesday">Wednesday</option>
+            <option value="Thursday">Thursday</option>
+            <option value="Friday">Friday</option>
+            <option value="Saturday">Saturday</option>
+        </select>
+    </div>
+
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="NbrWorkingDays"><small>Number of Working Days (*)</small></label>
+        <input type="number" asp-for="NbrWorkingDays" class="form-control" required />
+    </div>
+    <hr />
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="FromTime"><small>From Time (*)</small></label>
+        <input type="time" asp-for="FromTime" class="form-control" required />
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="ThruTime"><small>Through Time (*)</small></label>
+        <input type="time" asp-for="ThruTime" class="form-control" required />
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="FlexStartMinutes"><small>Flexible Start in Minutes (*)</small></label>
+        <input type="number" asp-for="FlexStartMinutes" class="form-control" value="0" required />
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="BreakMinutes"><small>Break in Minutes (*)</small></label>
+        <input type="number" asp-for="BreakMinutes" class="form-control" value="0" required />
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="EffectiveFromDate"><small>Effective From Date (*)</small></label>
+        <input type="date" asp-for="EffectiveFromDate" class="form-control" required />
+    </div>
+</form>

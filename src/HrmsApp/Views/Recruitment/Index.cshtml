@@ -1,12 +1,10 @@
-﻿@using HrmsModel.Models;
-
-@{
+﻿@{
     ViewData["Title"] = "Recruitment";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <div class="container-fluid" style="padding:0px">
-    <h3>Job Positions Index</h3>
+    <h3>Recruitment Index</h3>
     <div class="btn-group">
         <button class="btn btn-xs btn-primary" onclick="vacanciesList()"><small>Vacancies</small></button>
         <button class="btn btn-xs btn-default" onclick="candidatesList()"><small>Candidates</small></button>
@@ -76,6 +74,10 @@
         //employee & candidate
         function addEmployee(buId, posId, isHead) {
             var url = '@Html.Raw(Url.Action("AddEmployee", "Recruitment", new { buId = "_buId", posId = "_posId", isHead = "_isHead" }))';
+            window.location.href = url.replace("_buId", buId).replace("_posId", posId).replace("_isHead", isHead);
+        }
+        function addCandidate(buId, posId, isHead) {
+            var url = '@Html.Raw(Url.Action("AddCandidate", "Recruitment", new { buId = "_buId", posId = "_posId", isHead = "_isHead" }))';
             window.location.href = url.replace("_buId", buId).replace("_posId", posId).replace("_isHead", isHead);
         }
     </script>

@@ -1,0 +1,49 @@
+﻿@using  HrmsModel.Models
+@model IEnumerable<HolidayVariation>
+
+<div class="container-fluid" style="padding:0px">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <label><small>Holidays Variations for &nbsp; @DateTime.Today.Year</small></label>
+            <span class="pull-right"><a href="#" onclick="variationsList()" title="All Variations"><span class="fa fa-refresh"></span></a></span>
+        </div>
+        <div class="panel-body">
+            <table class="table table-hover table-condensed" style="font-size:smaller">
+                <thead>
+                    <tr>
+                        <th>Calendar</th>
+                        <th>Occasion</th>
+                        <th>Occaison Day</th>
+                        <th>Total Days</th>
+                        <th>Compensation Days</th>
+                        <th>Narration</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.Calendar.Name</td>
+                            <td>@item.Holiday.Name</td>
+                            <td>@item.FromDate.Day &nbsp; @string.Format("{0}", System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(item.FromDate.Month))</td>
+                            <td>@item.NbrDays</td>
+                            <td>@item.CompensateNbrDays</td>
+                            <td>@item.Narration</td>
+                            <td>
+                                @if (item.CompensateNbrDays != 0 && !item.IsComponsated)
+                                {
+                                    <a href="#" class="btn btn-xs pull-right" onclick="componsateVariation(@item.Id, '@item.FromDate')" title="Componsate"><span class="fa fa-check"></span></a>
+                                }
+                                @if (!item.IsComponsated)
+                                {
+                                    <a href="#" class="btn btn-xs pull-right" onclick="editVariation(@item.Id)" data-toggle="modal" data-target="#myModal" title="Edit"><span class="fa fa-pencil"></span></a>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Hosting;
 using System.IO;
 using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
 
 namespace HrmsApp.Controllers
 {
@@ -162,6 +163,68 @@ namespace HrmsApp.Controllers
             }
             await _context.SaveChangesAsync();
             return Content("Employee Successfully Added.", "text/html");
+        }
+
+        //new candidate
+        public async Task<IActionResult> AddCandidate(long buId, long? posId, bool isHead = false)
+        {
+            var x = await _context.OrgUnits.SingleOrDefaultAsync(b => b.Id == buId);
+            ViewBag.orgUnitName = x.Name;
+            ViewBag.isUnassigned = false;
+            if (posId.HasValue && !isHead)
+                ViewBag.positionName = _context.Positions.SingleOrDefault(b => b.Id == posId).Name;
+            else if (!posId.HasValue && isHead)
+                ViewBag.positionName = x.HeadPositionName;
+            else
+            {
+                ViewBag.positionName = "Unassigned Position";
+                ViewBag.isUnassigned = true;
+            }
+            ViewBag.positionId = posId;
+            ViewBag.isHead = isHead.ToString();
+            ViewBag.orgUnitId = buId;
+            ViewBag.nationalitiesList = await _context.Nationalities.Where(b => b.IsActive).ToListAsync();
+            ViewBag.governoratesList = await _context.Governorates.Where(b => b.IsActive).ToListAsync();
+            ViewBag.employmentTypesList = _lookup.GetLookupItems<EmploymentType>();
+            ViewBag.qualificationTypesList = _lookup.GetLookupItems<QualificationType>().Where(b => b.SysCode != "DOMAIN_EXPERIENCE" && b.SysCode != "OTHER_EXPERIENCE");
+            ViewBag.experienceTypesList = _lookup.GetLookupItems<QualificationType>().Where(b => b.SysCode == "DOMAIN_EXPERIENCE" || b.SysCode == "OTHER_EXPERIENCE");
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddCandidate([FromBody] dynamic data)
+        {
+            Candidate item = new Candidate();
+            item.AppForm = JsonConvert.SerializeObject(data);
+            item.OrgUnitId = data.OrgUnitId;
+            item.PositionId = data.PositionId;
+            item.IsHead = data.IsHead;
+            item.FirstName = data.FirstName;
+            item.FamilyName = data.FamilyName;
+            item.FatherName = data.FatherName;
+            item.MotherName = data.MotherName;
+            item.OthFirstName = data.OthFirstName;
+            item.OthFamilyName = data.OthFamilyName;
+            item.OthFatherName = data.OthFatherName;
+            item.OthMotherName = data.OthMotherName;
+            item.BirthDate = data.BirthDate;
+            item.IsMale = data.IsMale;
+            item.IsMilitaryExempted = data.IsMilitaryExempted;
+            item.MaritalStatus = data.MaritalStatus;
+            item.NationalityId = data.NationalityId;
+            item.GovernorateId = data.GovernorateId;
+            item.Phone = data.Phone;
+            item.HomePhone1 = data.HomePhone1;
+            item.HomePhone2 = data.HomePhone2;
+            item.Email = data.Email;
+            item.Address = data.Address;
+            item.PermenantAddress = data.PermenantAddress;
+
+            item.LastUpdated = DateTime.Now.Date;
+            item.UpdatedBy = "user";
+            _context.Candidates.Add(item);
+            await _context.SaveChangesAsync();
+            return Json("Candidate is Successfully Saved.");
         }
     }
 }

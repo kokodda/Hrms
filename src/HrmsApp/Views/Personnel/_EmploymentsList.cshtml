@@ -36,8 +36,9 @@
             </div>
             <div class="row">
                 <div class="col-sm-4"><small><label>Salary Scale:</label>&nbsp;<span id="salaryScale_gen">@string.Format("{0}", gen.SalaryScaleTypeId.HasValue ? gen.SalaryScaleType.Name : "NA")</span></small></div>
-                <div class="col-sm-4"><small><label>Salary Step:</label>&nbsp;<span id="salaryStep_gen">@string.Format("{0}", gen.SalaryStepId.HasValue ? gen.SalaryStep.Code : "NA")</span></small></div>
-                <div class="col-sm-4"><small><label>Salary:</label>&nbsp;@string.Format("{0}", gen.IsHead ? (gen.JobGradeId.HasValue ? "Grade Related" : gen.BasicSalary.ToString()) : (gen.PositionId.HasValue ? (gen.Position.JobGradeId.HasValue ? "Grade Related" : gen.BasicSalary.ToString()) : gen.BasicSalary.ToString()))</small></div>
+                <div class="col-sm-2"><small><label>Salary Step:</label>&nbsp;<span id="salaryStep_gen">@string.Format("{0}", gen.SalaryStepId.HasValue ? gen.SalaryStep.Code : "NA")</span></small></div>
+                <div class="col-sm-2"><small><label>Salary:</label>&nbsp;@string.Format("{0}", gen.IsHead ? (gen.JobGradeId.HasValue ? "Grade Related" : gen.BasicSalary.ToString()) : (gen.PositionId.HasValue ? (gen.Position.JobGradeId.HasValue ? "Grade Related" : gen.BasicSalary.ToString()) : gen.BasicSalary.ToString()))</small></div>
+                <div class="col-sm-3"><small><label>Payroll Excluded?</label>&nbsp;<input type="checkbox" asp-for="@gen.IsPayrollExcluded" readonly disabled /></small></div>
             </div>
         </div>
     </div>

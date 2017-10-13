@@ -11,7 +11,7 @@
             <ul class="list-unstyled">
                 <li><a href="javascript:getGradeGroupsList();"><small>Job Grade Groups</small></a></li>
                 <li><a href="javascript:getJobGradesList();"><small>Job Grades</small></a></li>
-                <li><a href="javascript:getStandardTitlesList();"><small>Standard Titles</small></a></li>
+                <li><a href="javascript:getStandardTitleTypesList();"><small>Standard Titles</small></a></li>
             </ul>
             <hr />
             <label><small>Competencies</small></label>
@@ -82,6 +82,29 @@
                 }
             });
         }
+        function addGradeGroup() {
+            $.ajax({
+                url: '@Url.Action("AddGradeGroup", "Governance")',
+                type: 'GET',
+                success: function (result) {
+                    $('#myModal-body').html(result);
+                    $('#myModal-label').html('Add New Grade Group');
+                    showPopup();
+                }
+            });
+        }
+        function editGradeGroup(id) {
+            $.ajax({
+                url: '@Url.Action("EditGradeGroup", "Governance")',
+                type: 'GET',
+                data: { id: id },
+                success: function (result) {
+                    $('#myModal-body').html(result);
+                    $('#myModal-label').html('Edit Grade Group');
+                    showPopup();
+                }
+            });
+        }
         function getJobGradesList() {
             $.ajax({
                 url: '@Url.Action("JobGradesList", "Governance")',
@@ -91,12 +114,36 @@
                 }
             });
         }
-        function getStandardTitlesList() {
+        function editJobGrade(id) {
             $.ajax({
-                url: '@Url.Action("StandardTitlesList", "Governance")',
+                url: '@Url.Action("EditJobGrade", "Governance")',
+                type: 'GET',
+                data: { id: id },
+                success: function (result) {
+                    $('#myModal-body').html(result);
+                    $('#myModal-label').html('Edit Job Grade');
+                    showPopup();
+                }
+            });
+        }
+        function getStandardTitleTypesList() {
+            $.ajax({
+                url: '@Url.Action("StandardTitleTypesList", "Governance")',
                 type: 'GET',
                 success: function (result) {
                     $('#listSection').html(result);
+                }
+            });
+        }
+        function editStandardTitleType(id) {
+            $.ajax({
+                url: '@Url.Action("EditStandardTitleType", "Governance")',
+                type: 'GET',
+                data: { id: id },
+                success: function (result) {
+                    $('#myModal-body').html(result);
+                    $('#myModal-label').html('Edit Standard Title');
+                    showPopup();
                 }
             });
         }

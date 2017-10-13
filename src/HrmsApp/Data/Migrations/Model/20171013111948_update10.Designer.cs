@@ -8,9 +8,10 @@ using HrmsModel.Data;
 namespace HrmsApp.Data.Migrations.Model
 {
     [DbContext(typeof(HrmsDbContext))]
-    partial class HrmsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20171013111948_update10")]
+    partial class update10
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.0.3")
@@ -887,9 +888,9 @@ namespace HrmsApp.Data.Migrations.Model
                         .ValueGeneratedOnAdd()
                         .HasDefaultValue(false);
 
-                    b.Property<bool>("IsPayrollExcluded")
+                    b.Property<bool>("IsPayrollIncluded")
                         .ValueGeneratedOnAdd()
-                        .HasDefaultValue(false);
+                        .HasDefaultValue(true);
 
                     b.Property<bool>("IsProbation")
                         .ValueGeneratedOnAdd()

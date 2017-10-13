@@ -180,5 +180,10 @@ namespace HrmsApp.Controllers
             return RedirectToAction("OrgChart", new { id = parentId });
         }
         
+        public async Task<IActionResult> PositionsList(long id)
+        {
+            var model = _context.Positions.Include(b => b.Employments).Where(b => b.OrgUnitId == id && b.IsActive);
+            return PartialView("_PositionsList", await model.ToListAsync());
+        }
     }
 }

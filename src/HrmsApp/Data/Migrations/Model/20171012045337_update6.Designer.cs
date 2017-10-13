@@ -8,9 +8,10 @@ using HrmsModel.Data;
 namespace HrmsApp.Data.Migrations.Model
 {
     [DbContext(typeof(HrmsDbContext))]
-    partial class HrmsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20171012045337_update6")]
+    partial class update6
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.0.3")
@@ -114,7 +115,7 @@ namespace HrmsApp.Data.Migrations.Model
                         .ValueGeneratedOnAdd()
                         .HasDefaultValue(0);
 
-                    b.Property<DateTime>("FromTime")
+                    b.Property<DateTime>("FromHour")
                         .HasColumnType("datetime");
 
                     b.Property<bool>("IsActive")
@@ -131,7 +132,7 @@ namespace HrmsApp.Data.Migrations.Model
                         .IsRequired()
                         .HasMaxLength(100);
 
-                    b.Property<DateTime>("ThruTime")
+                    b.Property<DateTime>("ThruHour")
                         .HasColumnType("datetime");
 
                     b.HasKey("Id");
@@ -887,10 +888,6 @@ namespace HrmsApp.Data.Migrations.Model
                         .ValueGeneratedOnAdd()
                         .HasDefaultValue(false);
 
-                    b.Property<bool>("IsPayrollExcluded")
-                        .ValueGeneratedOnAdd()
-                        .HasDefaultValue(false);
-
                     b.Property<bool>("IsProbation")
                         .ValueGeneratedOnAdd()
                         .HasDefaultValue(false);
@@ -1109,6 +1106,8 @@ namespace HrmsApp.Data.Migrations.Model
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<long>("CalendarId");
+
                     b.Property<int>("FromDay");
 
                     b.Property<int>("FromMonth");
@@ -1133,6 +1132,8 @@ namespace HrmsApp.Data.Migrations.Model
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CalendarId");
+
                     b.ToTable("Holidays");
                 });
 
@@ -1143,30 +1144,20 @@ namespace HrmsApp.Data.Migrations.Model
 
                     b.Property<long>("CalendarId");
 
-                    b.Property<int>("CompensateNbrDays")
-                        .ValueGeneratedOnAdd()
-                        .HasDefaultValue(0);
+                    b.Property<string>("Details");
 
                     b.Property<DateTime>("FromDate")
                         .HasColumnType("date");
 
-                    b.Property<long>("HolidayId");
+                    b.Property<long?>("HolidayId");
 
                     b.Property<bool>("IsActive")
                         .ValueGeneratedOnAdd()
                         .HasDefaultValue(true);
 
-                    b.Property<bool>("IsComponsated")
-                        .ValueGeneratedOnAdd()
-                        .HasDefaultValue(false);
+                    b.Property<int>("NbrDays");
 
-                    b.Property<string>("Narration")
-                        .IsRequired()
-                        .HasMaxLength(256);
-
-                    b.Property<int>("NbrDays")
-                        .ValueGeneratedOnAdd()
-                        .HasDefaultValue(0);
+                    b.Property<int>("Year");
 
                     b.HasKey("Id");
 
@@ -1943,6 +1934,13 @@ namespace HrmsApp.Data.Migrations.Model
                         .WithMany("GenericSubGroups")
                         .HasForeignKey("GenericGroupId")
                         .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("HrmsModel.Models.Holiday", b =>
+                {
+                    b.HasOne("HrmsModel.Models.Calendar", "Calendar")
+                        .WithMany("Holidays")
+                        .HasForeignKey("CalendarId");
                 });
 
             modelBuilder.Entity("HrmsModel.Models.HolidayVariation", b =>
