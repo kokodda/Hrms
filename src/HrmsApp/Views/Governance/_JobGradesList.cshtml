@@ -32,6 +32,7 @@
                     <td><input type="checkbox" asp-for="@item.IsActive" disabled readonly /></td>
                     <td>
                         <a href="#" class="btn btn-xs" onclick="editJobGrade(@item.Id)" data-toggle="modal" data-target="#myModal" title="Edit"><span class="glyphicon glyphicon-pencil"></span></a>
+                        <a href="#" class="btn btn-xs" onclick="jobGradeDetails(@item.Id, '@item.GradeGroup.Code/@item.Code')" title="Details"><span class="fa fa-ellipsis-v"></span></a>
                     </td>
                 </tr>
             }

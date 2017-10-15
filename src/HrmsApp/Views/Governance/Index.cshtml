@@ -105,6 +105,17 @@
                 }
             });
         }
+        function gradeGroupDetails(id, ggName) {
+            $.ajax({
+                url: '@Url.Action("GradeGroupDetails", "Governance")',
+                type: 'GET',
+                data: { id: id },
+                success: function (result) {
+                    $('#listSection').html(result);
+                    $('#title1').html('Grade Group : ' + ggName);
+                }
+            });
+        }
         function getJobGradesList() {
             $.ajax({
                 url: '@Url.Action("JobGradesList", "Governance")',
@@ -134,6 +145,17 @@
                     $('#myModal-body').html(result);
                     $('#myModal-label').html('Edit Job Grade');
                     showPopup();
+                }
+            });
+        }
+        function jobGradeDetails(id, jgName) {
+            $.ajax({
+                url: '@Url.Action("JobGradeDetails", "Governance")',
+                type: 'GET',
+                data: { id: id },
+                success: function (result) {
+                    $('#listSection').html(result);
+                    $('#title1').html('Job Grade : ' + jgName);
                 }
             });
         }

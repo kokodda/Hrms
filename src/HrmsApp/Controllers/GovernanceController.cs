@@ -67,6 +67,49 @@ namespace HrmsApp.Controllers
             return RedirectToAction("GradeGroupsList");
         }
 
+        public async Task<IActionResult> GradeGroupDetails(int id)
+        {
+            List<string> model = new List<string>();
+            List<int> Ids = new List<int>();
+
+            //
+            var x = _context.AllowancePolicies.Include(b => b.AllowanceType).OrderBy(b => b.AllowanceType.SortOrder);
+            var xGroup = await x.Where(b => b.GradeGroupId == id).ToListAsync();
+            Ids = xGroup.Select(b => b.AllowanceTypeId).ToList();
+            var xCompany = await x.Where(b => b.IsCompanyPolicy && !Ids.Contains(b.AllowanceTypeId)).ToListAsync();
+            model.Add("Title|Allowances Policy|");
+            foreach(var xCompany1 in xCompany)
+                model.Add(xCompany1.AllowanceType.Name + "|" + xCompany1.Amount + (xCompany1.isPercentage ? "% of Basic Salary" : null) + "|Company Level");
+            foreach (var xGroup1 in xGroup)
+                model.Add(xGroup1.AllowanceType.Name + "|" + xGroup1.Amount + (xGroup1.isPercentage ? "% of Basic Salary|" : "|"));
+
+            //
+            var y = _context.LeavePolicies.Include(b => b.LeaveType).OrderBy(b => b.LeaveType.SortOrder);
+            var yGroup = await y.Where(b => b.GradeGroupId == id).ToListAsync();
+            Ids = yGroup.Select(b => b.LeaveTypeId).ToList();
+            var yCompany = await y.Where(b => b.IsCompanyPolicy && !Ids.Contains(b.LeaveTypeId)).ToListAsync();
+            model.Add("Title|Leave Policy|");
+            foreach (var yCompany1 in yCompany)
+                model.Add(yCompany1.LeaveType.Name + "|" + yCompany1.TotalDays + " days|Company Level");
+            foreach (var yGroup1 in yGroup)
+                model.Add(yGroup1.LeaveType.Name + "|" + yGroup1.TotalDays + " days|");
+
+            //
+            var z = _context.Competencies.Include(b => b.CompetencySubCategory).ThenInclude(b => b.CompetencyCategory)
+                                .OrderBy(b => b.CompetencySubCategory.CompetencyCategory.SortOrder).ThenBy(b => b.CompetencySubCategory.SortOrder);
+            var zGroup = await z.Where(b => b.GradeGroupId == id).ToListAsync();
+            Ids = zGroup.Select(b => b.CompetencySubCategoryId).ToList();
+            var zCompany = await z.Where(b => b.IsCompanyPolicy && !Ids.Contains(b.CompetencySubCategoryId)).OrderBy(b => b.CompetencySubCategory.CompetencyCategory.SortOrder)
+                                .ThenBy(b => b.CompetencySubCategory.SortOrder).ToListAsync();
+            model.Add("Title|Competencies|");
+            foreach (var zCompany1 in zCompany)
+                model.Add(zCompany1.CompetencySubCategory.CompetencyCategory.Name + " -> " + zCompany1.CompetencySubCategory.Name + "|" + zCompany1.Requirements + "|Company Level");
+            foreach (var zGroup1 in zGroup)
+                model.Add(zGroup1.CompetencySubCategory.CompetencyCategory.Name + " -> " + zGroup1.CompetencySubCategory.Name + "|" + zGroup1.Requirements + "|");
+
+            return PartialView("_GradeGroupDetails", model);
+        }
+
         public async Task<IActionResult> JobGradesList()
         {
             var model = _context.JobGrades.Include(b => b.GradeGroup).OrderBy(b => b.GradeGroup.SortOrder).ThenBy(b => b.SortOrder);
@@ -109,6 +152,57 @@ namespace HrmsApp.Controllers
             await _context.SaveChangesAsync();
 
             return RedirectToAction("JobGradesList");
+        }
+
+        public async Task<IActionResult> JobGradeDetails(int id)
+        {
+            List<string> model = new List<string>();
+            List<int> Ids = new List<int>();
+            int gradeGroupId = _context.JobGrades.SingleOrDefault(b => b.Id == id).GradeGroupId;
+            //
+            var x = _context.AllowancePolicies.Include(b => b.AllowanceType).OrderBy(b => b.AllowanceType.SortOrder);
+            var xGrade = await x.Where(b => b.JobGradeId == id).ToListAsync();
+            Ids = xGrade.Select(b => b.AllowanceTypeId).ToList();
+            var xCompany = await x.Where(b => b.IsCompanyPolicy && !Ids.Contains(b.AllowanceTypeId)).ToListAsync();
+            var xGroup = await x.Where(b => b.GradeGroupId == gradeGroupId && !Ids.Contains(b.AllowanceTypeId)).ToListAsync();
+            model.Add("Title|Allowances Policy|");
+            foreach (var xCompany1 in xCompany)
+                model.Add(xCompany1.AllowanceType.Name + "|" + xCompany1.Amount + (xCompany1.isPercentage ? "% of Basic Salary" : null) + "|Company Level");
+            foreach (var xGroup1 in xGroup)
+                model.Add(xGroup1.AllowanceType.Name + "|" + xGroup1.Amount + (xGroup1.isPercentage ? "% of Basic Salary" : null) + "|Grade Group Level");
+            foreach (var xGrade1 in xGrade)
+                model.Add(xGrade1.AllowanceType.Name + "|" + xGrade1.Amount + (xGrade1.isPercentage ? "% of Basic Salary|" : "|"));
+
+            //
+            var y = _context.LeavePolicies.Include(b => b.LeaveType).OrderBy(b => b.LeaveType.SortOrder);
+            var yGrade = await y.Where(b => b.JobGradeId == id).ToListAsync();
+            Ids = yGrade.Select(b => b.LeaveTypeId).ToList();
+            var yCompany = await y.Where(b => b.IsCompanyPolicy && !Ids.Contains(b.LeaveTypeId)).ToListAsync();
+            var yGroup = await y.Where(b => b.GradeGroupId == gradeGroupId && !Ids.Contains(b.LeaveTypeId)).ToListAsync();
+            model.Add("Title|Leave Policy|");
+            foreach (var yCompany1 in yCompany)
+                model.Add(yCompany1.LeaveType.Name + "|" + yCompany1.TotalDays + " days|Company Level");
+            foreach (var yGroup1 in yGroup)
+                model.Add(yGroup1.LeaveType.Name + "|" + yGroup1.TotalDays + " days|Grade Group Level");
+            foreach (var yGrade1 in yGrade)
+                model.Add(yGrade1.LeaveType.Name + "|" + yGrade1.TotalDays + " days|");
+
+            //
+            var z = _context.Competencies.Include(b => b.CompetencySubCategory).ThenInclude(b => b.CompetencyCategory)
+                                .OrderBy(b => b.CompetencySubCategory.CompetencyCategory.SortOrder).ThenBy(b => b.CompetencySubCategory.SortOrder);
+            var zGrade = await z.Where(b => b.JobGradeId == id).ToListAsync();
+            Ids = zGrade.Select(b => b.CompetencySubCategoryId).ToList();
+            var zCompany = await z.Where(b => b.IsCompanyPolicy && !Ids.Contains(b.CompetencySubCategoryId)).ToListAsync();
+            var zGroup = await z.Where(b => b.GradeGroupId == gradeGroupId && !Ids.Contains(b.CompetencySubCategoryId)).ToListAsync();
+            model.Add("Title|Competencies|");
+            foreach (var zCompany1 in zCompany)
+                model.Add(zCompany1.CompetencySubCategory.CompetencyCategory.Name + " -> " + zCompany1.CompetencySubCategory.Name + "|" + zCompany1.Requirements + "|Company Level");
+            foreach (var zGroup1 in zGroup)
+                model.Add(zGroup1.CompetencySubCategory.CompetencyCategory.Name + " -> " + zGroup1.CompetencySubCategory.Name + "|" + zGroup1.Requirements + "|Grade Group Level");
+            foreach (var zGrade1 in zGrade)
+                model.Add(zGrade1.CompetencySubCategory.CompetencyCategory.Name + " -> " + zGrade1.CompetencySubCategory.Name + "|" + zGrade1.Requirements + "|");
+
+            return PartialView("_JobGradeDetails", model);
         }
 
         public async Task<IActionResult> StandardTitleTypesList()

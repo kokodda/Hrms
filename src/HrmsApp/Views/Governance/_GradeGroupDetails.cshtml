@@ -1,0 +1,32 @@
+﻿@model List<string>
+
+<div class="container-fluid" style="padding:0px">
+    <div><label style="color:silver" id="title1"></label></div>
+    <div><a href="history(-1);"><small>Back to List ...</small></a></div>
+    <hr />
+    
+    <table class="table table-condensed" style="font-size:smaller;padding-top:0px">
+        @foreach (string item in Model)
+        {
+            string[] str = item.Split('|');
+            if (str[0] == "Title")
+            {
+                <tr style="background-color:lightgray;border-color:transparent">
+                    <td><label>@str[1]</label></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            }
+            else
+            {
+                <tr>
+                    <td style="border-color:transparent"></td>
+                    <td class="pull-right" style="border-color:transparent"><label>@str[0]</label></td>
+                    <td style="border-color:transparent">@str[1]</td>
+                    <td style="border-color:transparent">@str[2]</td>
+                </tr>
+            }
+        }
+    </table>
+</div>
