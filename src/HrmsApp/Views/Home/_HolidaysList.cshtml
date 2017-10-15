@@ -1,0 +1,19 @@
+﻿@model List<string>
+
+<div class="container-fluid" style="padding:0px">
+    <div class="panel panel-default">
+        <div class="panel-heading" style="text-align:center">
+            <label><small>Upcoming Holidays</small></label>
+        </div>
+        <div class="panel-body">
+            <dl style="font-size:smaller;text-align:center">
+                @foreach (var item in Model)
+                {
+                    string[] hol = item.Split('|');
+                    <dt>@hol[0]</dt>
+                    <dd>@hol[1]</dd>
+                }
+            </dl>
+        </div>
+    </div>
+</div>

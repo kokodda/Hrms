@@ -1,8 +1,7 @@
 ﻿@using HrmsModel.Models;
 @model JobGrade
 
-<form role="form" id="popupForm" asp-controller="Governance" asp-action="EditJobGrade" data-ajax="true" data-ajax-method="POST" data-ajax-update="#listSection" data-ajax-success="onSuccess" data-ajax-failure="onFailure">
-    <input type="hidden" asp-for="Id" />
+<form role="form" id="popupForm" asp-controller="Governance" asp-action="AddJobGrade" data-ajax="true" data-ajax-method="POST" data-ajax-update="#listSection" data-ajax-success="onSuccess" data-ajax-failure="onFailure">
     <div class="form-group-sm">
         <label class="control-label" asp-for="GradeGroupId"><small>Grade Group (*)</small></label>
         <select class="form-control" asp-for="GradeGroupId" required>
@@ -24,11 +23,5 @@
     <div class="form-group-sm">
         <label class="control-label" asp-for="SalaryIncrPctg"><small>Increment % from Salary of Previous Grade (*)</small></label>
         <input type="number" asp-for="SalaryIncrPctg" class="form-control" required />
-    </div>
-    <div class="input-group-sm">
-        <label class="control-label" asp-for="IsActive">
-            <input type="checkbox" asp-for="IsActive" />
-            <span><small>Is Active?</small></span>
-        </label>
     </div>
 </form>

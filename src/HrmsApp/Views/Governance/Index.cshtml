@@ -114,6 +114,17 @@
                 }
             });
         }
+        function addJobGrade() {
+            $.ajax({
+                url: '@Url.Action("AddJobGrade", "Governance")',
+                type: 'GET',
+                success: function (result) {
+                    $('#myModal-body').html(result);
+                    $('#myModal-label').html('Add Job Grade');
+                    showPopup();
+                }
+            });
+        }
         function editJobGrade(id) {
             $.ajax({
                 url: '@Url.Action("EditJobGrade", "Governance")',
@@ -132,6 +143,17 @@
                 type: 'GET',
                 success: function (result) {
                     $('#listSection').html(result);
+                }
+            });
+        }
+        function addStandardTitleType() {
+            $.ajax({
+                url: '@Url.Action("AddStandardTitleType", "Governance")',
+                type: 'GET',
+                success: function (result) {
+                    $('#myModal-body').html(result);
+                    $('#myModal-label').html('Add Standard Title');
+                    showPopup();
                 }
             });
         }
@@ -158,10 +180,52 @@
                 }
             });
         }
+        function addCompetencyCategory() {
+            $.ajax({
+                url: '@Url.Action("AddCompetencyCategory", "Governance")',
+                type: 'GET',
+                success: function (result) {
+                    $('#myModal-body').html(result);
+                    $('#myModal-label').html('Add Competency Category');
+                    showPopup();
+                }
+            });
+        }
+        function toggleCompetencyCategory(id, status) {
+            $.ajax({
+                url: '@Url.Action("ToggleCompetencyCategory", "Governance")',
+                type: 'GET',
+                data: { id: id, status: status },
+                success: function (result) {
+                    $('#listSection').html(result);
+                }
+            });
+        }
         function getCompetencySubCategoriesList() {
             $.ajax({
                 url: '@Url.Action("CompetencySubCategoriesList", "Governance")',
                 type: 'GET',
+                success: function (result) {
+                    $('#listSection').html(result);
+                }
+            });
+        }
+        function addCompetencySubCategory() {
+            $.ajax({
+                url: '@Url.Action("AddCompetencySubCategory", "Governance")',
+                type: 'GET',
+                success: function (result) {
+                    $('#myModal-body').html(result);
+                    $('#myModal-label').html('Add Competency Sub Category');
+                    showPopup();
+                }
+            });
+        }
+        function toggleCompetencySubCategory(id, status) {
+            $.ajax({
+                url: '@Url.Action("ToggleCompetencySubCategory", "Governance")',
+                type: 'GET',
+                data: { id: id, status: status },
                 success: function (result) {
                     $('#listSection').html(result);
                 }
@@ -189,6 +253,61 @@
                 }
             });
         }
+        function editCompetency(id) {
+            $.ajax({
+                url: '@Url.Action("EditCompetency", "Governance")',
+                type: 'GET',
+                data: { id: id },
+                success: function (result) {
+                    $('#myModal-body').html(result);
+                    $('#myModal-label').html('Edit Competency');
+                    showPopup();
+                }
+            });
+        }
+        function onPolicyLevelChange(level) {
+            if (level === "company") {
+                if ($('#isCompany').attr('checked') === 'checked') {
+                    $('#isCompany').removeAttr('checked');
+                    $('#isCompany').removeAttr('required');
+                    $('#gradeGroupId').removeAttr('disabled');
+                    $('#jobGradeId').removeAttr('disabled');
+                    $('#gradeGroupId').attr('required', 'required');
+                    $('#jobGradeId').attr('required', 'required');
+                } else {
+                    $('#isCompany').attr('checked', 'checked');
+                    $('#isCompany').attr('required', 'required');
+                    $('#gradeGroupId').val(null);
+                    $('#gradeGroupId').attr('disabled', 'disabled');
+                    $('#jobGradeId').val(null);
+                    $('#jobGradeId').attr('disabled', 'disabled');
+                    $('#gradeGroupId').removeAttr('required');
+                    $('#jobGradeId').removeAttr('required');
+                }
+            } else if (level === 'gradeGroup') {
+                if ($('#gradeGroupId').val()) {
+                    $('#jobGradeId').val(null);
+                    $('#jobGradeId').attr('disabled', 'disabled');
+                    $('#jobGradeId').removeAttr('required');
+                } else {
+                    $('#jobGradeId').removeAttr('disabled');
+                    $('#jobGradeId').attr('required', 'required');
+                }
+            } else {
+                if ($('#jobGradeId').val()) {
+                    $('#gradeGroupId').val(null);
+                    $('#gradeGroupId').attr('disabled', 'disabled');
+                    $('#gradeGroupId').removeAttr('required');
+                } else {
+                    $('#gradeGroupId').removeAttr('disabled');
+                    $('#gradeGroupId').attr('required', 'required');
+                }
+            }
+        }
+        function onEditPolicySubmit() {
+            $('#gradeGroupId').removeAttr('disabled');
+            $('#jobGradeId').removeAttr('disabled');
+        }
 
         //leave
         function getLeavePoliciesList(level) {
@@ -209,6 +328,18 @@
                 success: function (result) {
                     $('#myModal-body').html(result);
                     $('#myModal-label').html('Add New Leave Policy');
+                    showPopup();
+                }
+            });
+        }
+        function editLeavePolicy(id) {
+            $.ajax({
+                url: '@Url.Action("EditLeavePolicy", "Governance")',
+                type: 'GET',
+                data: { id: id },
+                success: function (result) {
+                    $('#myModal-body').html(result);
+                    $('#myModal-label').html('Edit Leave Policy');
                     showPopup();
                 }
             });
@@ -237,6 +368,18 @@
                 }
             });
         }
+        function editAllowancePolicy(id) {
+            $.ajax({
+                url: '@Url.Action("EditAllowancePolicy", "Governance")',
+                type: 'GET',
+                data: { id: id },
+                success: function (result) {
+                    $('#myModal-body').html(result);
+                    $('#myModal-label').html('Edit Allowance Policy');
+                    showPopup();
+                }
+            });
+        }
 
         //salaries
         function getSalaryStepsList() {
@@ -245,6 +388,29 @@
                 type: 'GET',
                 success: function (result) {
                     $('#listSection').html(result);
+                }
+            });
+        }
+        function addSalaryStep() {
+            $.ajax({
+                url: '@Url.Action("AddSalaryStep", "Governance")',
+                type: 'GET',
+                success: function (result) {
+                    $('#myModal-body').html(result);
+                    $('#myModal-label').html('Add New Salary Step');
+                    showPopup();
+                }
+            });
+        }
+        function editSalaryStep(id) {
+            $.ajax({
+                url: '@Url.Action("EditSalaryStep", "Governance")',
+                type: 'GET',
+                data: { id: id },
+                success: function (result) {
+                    $('#myModal-body').html(result);
+                    $('#myModal-label').html('Edit Salary Step');
+                    showPopup();
                 }
             });
         }

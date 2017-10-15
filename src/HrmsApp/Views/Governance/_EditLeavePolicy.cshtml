@@ -1,0 +1,56 @@
+﻿@using HrmsModel.Models;
+@model LeavePolicy
+
+@{
+    string gradeGroupDisabled = null;
+    string jobGradeDisabled = null;
+    if (Model.IsCompanyPolicy)
+    {
+        gradeGroupDisabled = "disabled";
+        jobGradeDisabled = "disabled";
+    }
+}
+<form role="form" id="popupForm" asp-controller="Governance" asp-action="EditLeavePolicy" data-ajax="true" data-ajax-method="POST" onsubmit="onEditPolicySubmit()" data-ajax-update="#listSection" data-ajax-success="onSuccess" data-ajax-failure="onFailure">
+    <input type="hidden" asp-for="Id" />
+    <label><small>@Model.LeaveType.Name</small></label>
+    <hr />
+    <div class="input-group-sm">
+        <label class="control-label">
+            <input type="checkbox" asp-for="IsCompanyPolicy" id="isCompany" onchange="onPolicyLevelChange('company')" />
+            <span><small>Company Level Policy</small></span>
+        </label>
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="GradeGroupId"><small>Grade Group</small></label>
+        <select class="form-control" asp-for="GradeGroupId" id="gradeGroupId" onchange="onPolicyLevelChange('gradeGroup')" disabled="@gradeGroupDisabled">
+            <option value="">Select from List ...</option>
+            @foreach (SelectListItem item in new SelectList(ViewBag.gradeGroupsList, "Id", "Name"))
+            {
+                <option value="@item.Value">@item.Text</option>
+            }
+        </select>
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="JobGradeId"><small>Job Grade</small></label>
+        <select class="form-control" asp-for="JobGradeId" id="jobGradeId" onchange="onPolicyLevelChange('jobGrade')" disabled="@jobGradeDisabled">
+            <option value="">Select from List ...</option>
+            @foreach (SelectListItem item in new SelectList(ViewBag.jobGradesList, "Id", "Name"))
+            {
+                <option value="@item.Value">@item.Text</option>
+            }
+        </select>
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="TotalDays"><small>Entitlement in Days</small></label>
+        <input type="number" asp-for="TotalDays" class="form-control" required />
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="Description"><small>Description</small></label>
+        <input type="text" asp-for="Description" class="form-control fullwidth" />
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="Remarks"><small>Remarks</small></label>
+        <input type="text" asp-for="Remarks" class="form-control fullwidth" />
+    </div>
+</form>
+    

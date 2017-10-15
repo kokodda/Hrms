@@ -1,0 +1,58 @@
+﻿@using HrmsModel.Models;
+@model Competency
+
+@{ 
+    string gradeGroupDisabled = null;
+    string jobGradeDisabled = null;
+    if (Model.IsCompanyPolicy)
+    {
+        gradeGroupDisabled = "disabled";
+        jobGradeDisabled = "disabled";
+    }
+}
+<form role="form" id="popupForm" asp-controller="Governance" asp-action="EditCompetency" data-ajax="true" data-ajax-method="POST" onsubmit="onEditPolicySubmit()" data-ajax-update="#listSection" data-ajax-success="onSuccess" data-ajax-failure="onFailure">
+    <input type="hidden" asp-for="Id" />
+    <label><small>@Model.CompetencySubCategory.CompetencyCategory.Name -> @Model.CompetencySubCategory.Name</small></label>
+    <hr />
+    <div class="input-group-sm">
+        <label class="control-label">
+            <input type="checkbox" asp-for="IsCompanyPolicy" id="isCompany" onchange="onPolicyLevelChange('company')" />
+            <span><small>Company Level Competency</small></span>
+        </label>
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="GradeGroupId"><small>Grade Group</small></label>
+        <select class="form-control" asp-for="GradeGroupId" id="gradeGroupId" onchange="onPolicyLevelChange('gradeGroup')" disabled="@gradeGroupDisabled">
+            <option value="">Select from List ...</option>
+            @foreach (SelectListItem item in new SelectList(ViewBag.gradeGroupsList, "Id", "Name"))
+            {
+                <option value="@item.Value">@item.Text</option>
+            }
+        </select>
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="JobGradeId"><small>Job Grade</small></label>
+        <select class="form-control" asp-for="JobGradeId" id="jobGradeId" onchange="onPolicyLevelChange('jobGrade')" disabled="@jobGradeDisabled">
+            <option value="">Select from List ...</option>
+            @foreach (SelectListItem item in new SelectList(ViewBag.jobGradesList, "Id", "Name"))
+            {
+                <option value="@item.Value">@item.Text</option>
+            }
+        </select>
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="Requirements"><small>Requirements</small></label>
+        <input type="text" asp-for="Requirements" class="form-control fullwidth" />
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="Remarks"><small>Remarks</small></label>
+        <input type="text" asp-for="Remarks" class="form-control fullwidth" />
+    </div>
+    <div class="input-group-sm">
+        <label class="control-label" asp-for="IsActive">
+            <input type="checkbox" asp-for="IsActive" />
+            <span><small>Is Active?</small></span>
+        </label>
+    </div>
+</form>
+    

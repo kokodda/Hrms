@@ -32,6 +32,24 @@ namespace HrmsApp.Controllers
             return PartialView("_GradeGroupsList", await model.ToListAsync());
         }
 
+        public IActionResult AddGradeGroup()
+        {
+            return PartialView("_AddGradeGroup");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddGradeGroup(GradeGroup item)
+        {
+            int cnt = await _context.GradeGroups.CountAsync();
+            item.Code = "G" + (cnt + 1).ToString();
+            item.SortOrder = (cnt + 1) * 10;
+            _context.GradeGroups.Add(item);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("GradeGroupsList");
+        }
+
         public async Task<IActionResult> EditGradeGroup(int id)
         {
             var model = _context.GradeGroups.SingleOrDefaultAsync(b => b.Id == id);
@@ -53,6 +71,26 @@ namespace HrmsApp.Controllers
         {
             var model = _context.JobGrades.Include(b => b.GradeGroup).OrderBy(b => b.GradeGroup.SortOrder).ThenBy(b => b.SortOrder);
             return PartialView("_JobGradesList", await model.ToListAsync());
+        }
+
+        public IActionResult AddJobGrade()
+        {
+            ViewBag.gradeGroupsList = _context.GradeGroups.Where(b => b.IsActive).OrderBy(b => b.SortOrder).ToList();
+            return PartialView("_AddJobGrade");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddJobGrade(JobGrade item)
+        {
+            int cnt = await _context.JobGrades.CountAsync();
+            int maxGrade = int.Parse(_context.JobGrades.OrderByDescending(b => b.SortOrder).First().Code);
+            item.Code = (maxGrade + 1).ToString();
+            item.SortOrder = (cnt + 1) * 10;
+            _context.JobGrades.Add(item);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("JobGradesList");
         }
 
         public async Task<IActionResult> EditJobGrade(int id)
@@ -79,6 +117,24 @@ namespace HrmsApp.Controllers
             return PartialView("_StandardTitleTypesList", await model.ToListAsync());
         }
 
+        public IActionResult AddStandardTitleType()
+        {
+            return PartialView("_AddStandardTitleType");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddStandardTitleType(StandardTitleType item)
+        {
+            int cnt = await _context.StandardTitleTypes.CountAsync();
+            item.SortOrder = (cnt + 1) * 10;
+            _context.StandardTitleTypes.Add(item);
+            await _context.SaveChangesAsync();
+            _lookup.Refresh<StandardTitleType>();
+
+            return RedirectToAction("StandardTitleTypesList");
+        }
+
         public async Task<IActionResult> EditStandardTitleType(int id)
         {
             var model = _context.StandardTitleTypes.SingleOrDefaultAsync(b => b.Id == id);
@@ -92,6 +148,7 @@ namespace HrmsApp.Controllers
             var model = await _context.StandardTitleTypes.SingleOrDefaultAsync(b => b.Id == item.Id);
             await TryUpdateModelAsync(model);
             await _context.SaveChangesAsync();
+            _lookup.Refresh<StandardTitleType>();
 
             return RedirectToAction("StandardTitleTypesList");
         }
@@ -101,6 +158,49 @@ namespace HrmsApp.Controllers
         {
             var model = _context.CompetencyCategories.OrderBy(b => b.SortOrder);
             return PartialView("_CompetencyCategoriesList", await model.ToListAsync());
+        }
+
+        public IActionResult AddCompetencyCategory()
+        {
+            return PartialView("_AddCompetencyCategory");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddCompetencyCategory(CompetencyCategory item)
+        {
+            _context.CompetencyCategories.Add(item);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("CompetencyCategoriesList");
+        }
+
+        public async Task<IActionResult> ToggleCompetencyCategory(int id, bool status)
+        {
+            _context.CompetencyCategories.SingleOrDefault(b => b.Id == id).IsActive = status;
+            await _context.SaveChangesAsync();
+            return RedirectToAction("CompetencyCategoriesList");
+        }
+
+        public IActionResult AddCompetencySubCategory()
+        {
+            ViewBag.competencyCategoriesList = _context.CompetencyCategories.Where(b => b.IsActive).OrderBy(b => b.SortOrder).ToList();
+            return PartialView("_AddCompetencySubCategory");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddCompetencySubCategory(CompetencySubCategory item)
+        {
+            _context.CompetencySubCategories.Add(item);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("CompetencySubCategoriesList");
+        }
+
+        public async Task<IActionResult> ToggleCompetencySubCategory(int id, bool status)
+        {
+            _context.CompetencySubCategories.SingleOrDefault(b => b.Id == id).IsActive = status;
+            await _context.SaveChangesAsync();
+            return RedirectToAction("CompetencySubCategoriesList");
         }
 
         public async Task<IActionResult> CompetencySubCategoriesList()
@@ -144,6 +244,36 @@ namespace HrmsApp.Controllers
             return RedirectToAction("CompetenciesList", new { level = level });
         }
 
+        public async Task<IActionResult> EditCompetency(long id)
+        {
+            var model = await _context.Competencies.Include(b => b.CompetencySubCategory).ThenInclude(b => b.CompetencyCategory)
+                                        .SingleOrDefaultAsync(b => b.Id == id);
+            ViewBag.gradeGroupsList = await _context.GradeGroups.ToListAsync();
+            ViewBag.jobGradesList = await _context.JobGrades.ToListAsync();
+            return PartialView("_EditCompetency", model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditCompetency(Competency item)
+        {
+            var model = await _context.Competencies.SingleOrDefaultAsync(b => b.Id == item.Id);
+            await TryUpdateModelAsync(model);
+            model.LastUpdated = DateTime.Now.Date;
+            model.UpdatedBy = "user";
+            await _context.SaveChangesAsync();
+
+            string level;
+            if (item.IsCompanyPolicy)
+                level = "ORG";
+            else if (item.GradeGroupId.HasValue)
+                level = "GRADE_GROUP";
+            else
+                level = "JOB_GRADE";
+
+            return RedirectToAction("CompetenciesList", new { level = level });
+        }
+
         //leave
         public async Task<IActionResult> LeavePoliciesList(string level)
         {
@@ -175,6 +305,35 @@ namespace HrmsApp.Controllers
             item.UpdatedBy = "user";
             _context.LeavePolicies.Add(item);
             await _context.SaveChangesAsync();
+
+            return RedirectToAction("LeavePoliciesList", new { level = level });
+        }
+
+        public async Task<IActionResult> EditLeavePolicy(long id)
+        {
+            var model = await _context.LeavePolicies.Include(b => b.LeaveType).SingleOrDefaultAsync(b => b.Id == id);
+            ViewBag.gradeGroupsList = await _context.GradeGroups.ToListAsync();
+            ViewBag.jobGradesList = await _context.JobGrades.ToListAsync();
+            return PartialView("_EditLeavePolicy", model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditLeavePolicy(LeavePolicy item)
+        {
+            var model = await _context.LeavePolicies.SingleOrDefaultAsync(b => b.Id == item.Id);
+            await TryUpdateModelAsync(model);
+            model.LastUpdated = DateTime.Now.Date;
+            model.UpdatedBy = "user";
+            await _context.SaveChangesAsync();
+
+            string level;
+            if (item.IsCompanyPolicy)
+                level = "ORG";
+            else if (item.GradeGroupId.HasValue)
+                level = "GRADE_GROUP";
+            else
+                level = "JOB_GRADE";
 
             return RedirectToAction("LeavePoliciesList", new { level = level });
         }
@@ -214,11 +373,75 @@ namespace HrmsApp.Controllers
             return RedirectToAction("AllowancePoliciesList", new { level = level });
         }
 
+        public async Task<IActionResult> EditAllowancePolicy(long id)
+        {
+            var model = await _context.AllowancePolicies.Include(b => b.AllowanceType).SingleOrDefaultAsync(b => b.Id == id);
+            ViewBag.gradeGroupsList = await _context.GradeGroups.ToListAsync();
+            ViewBag.jobGradesList = await _context.JobGrades.ToListAsync();
+            return PartialView("_EditAllowancePolicy", model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditAllowancePolicy(AllowancePolicy item)
+        {
+            var model = await _context.AllowancePolicies.SingleOrDefaultAsync(b => b.Id == item.Id);
+            await TryUpdateModelAsync(model);
+            model.LastUpdated = DateTime.Now.Date;
+            model.UpdatedBy = "user";
+            await _context.SaveChangesAsync();
+
+            string level;
+            if (item.IsCompanyPolicy)
+                level = "ORG";
+            else if (item.GradeGroupId.HasValue)
+                level = "GRADE_GROUP";
+            else
+                level = "JOB_GRADE";
+
+            return RedirectToAction("AllowancePoliciesList", new { level = level });
+        }
+
         //salaries
         public async Task<IActionResult> SalaryStepsList()
         {
             var model = _context.SalarySteps.OrderBy(b => b.SortOrder);
             return PartialView("_SalaryStepsList", await model.ToListAsync());
+        }
+
+        public IActionResult AddSalaryStep()
+        {
+            return PartialView("_AddSalaryStep");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddSalaryStep(SalaryStep item)
+        {
+            int cnt = await _context.SalarySteps.CountAsync();
+            item.Code = "s" + cnt.ToString();
+            item.SortOrder = (cnt + 1) * 10;
+            _context.SalarySteps.Add(item);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("SalaryStepsList");
+        }
+
+        public async Task<IActionResult> EditSalaryStep(int id)
+        {
+            var model = await _context.SalarySteps.SingleOrDefaultAsync(b => b.Id == id);
+            return PartialView("_EditSalaryStep", model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditSalaryStep(SalaryStep item)
+        {
+            var model = await _context.SalarySteps.SingleOrDefaultAsync(b => b.Id == item.Id);
+            await TryUpdateModelAsync(model);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("SalaryStepsList");
         }
 
         public async Task<IActionResult> SalaryScalesList()

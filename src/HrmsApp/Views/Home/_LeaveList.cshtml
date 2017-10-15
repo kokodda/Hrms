@@ -1,0 +1,28 @@
+﻿@model List<string>
+
+<div class="container-fluid" style="padding:0px">
+    <div class="panel panel-default">
+        <div class="panel-heading" style="text-align:center">
+            <label><small>Today Leave</small></label>
+        </div>
+        <div class="panel-body">
+            <dl class="dl-horizontal" style="font-size:smaller;text-align:center">
+                @foreach (var item in Model)
+                {
+                    string[] str = item.Split('|');
+                    <dt>@str[0]</dt>
+                    <dd>@str[1]</dd>
+                }
+            </dl>
+            <br />
+            <div style="text-align:center">
+                <div>
+                    <label><small>Absence Percentage:</small></label> &nbsp; <small>@ViewBag.absencePctg</small>
+                </div>
+                <div>
+                    <a href="~/Home/LeaveDetails"><small>See Details ...</small></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

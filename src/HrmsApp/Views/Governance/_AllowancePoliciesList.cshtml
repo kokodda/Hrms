@@ -51,7 +51,7 @@
                     <td><small>@item.Remarks</small></td>
                     <td><input type="checkbox" asp-for="@item.IsActive" disabled readonly /></td>
                     <td>
-                        <a href="#" class="btn btn-xs" title="Edit"><span class="glyphicon glyphicon-pencil"></span></a>
+                        <a href="#" class="btn btn-xs" onclick="editAllowancePolicy(@item.Id)" data-toggle="modal" data-target="#myModal" title="Edit"><span class="glyphicon glyphicon-pencil"></span></a>
                     </td>
                 </tr>
             }

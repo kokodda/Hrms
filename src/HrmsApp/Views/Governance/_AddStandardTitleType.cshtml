@@ -1,0 +1,17 @@
+﻿@using HrmsModel.Models;
+@model StandardTitleType
+
+<form role="form" id="popupForm" asp-controller="Governance" asp-action="AddStandardTitleType" data-ajax="true" data-ajax-method="POST" data-ajax-update="#listSection" data-ajax-success="onSuccess" data-ajax-failure="onFailure">
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="Name"><small>Name (*)</small></label>
+        <input type="text" asp-for="Name" class="form-control" required />
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="OthName"><small>Name Translated (*)</small></label>
+        <input type="text" asp-for="OthName" class="form-control" required />
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="SysCode"><small>Sys Code (*)</small></label>
+        <input type="text" asp-for="SysCode" class="form-control" required />
+    </div>
+</form>

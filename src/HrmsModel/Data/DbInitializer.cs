@@ -33,11 +33,11 @@ namespace HrmsModel.Data
             {
                 var gradeGroups = new GradeGroup[]
                 {
-                    new GradeGroup { Code = "G1", Name = "G1", OthName = "G1", SortOrder = 1, IsActive = true },
-                    new GradeGroup { Code = "G2", Name = "G2", OthName = "G2", SortOrder = 2, IsActive = true },
-                    new GradeGroup { Code = "G3", Name = "G3", OthName = "G3", SortOrder = 3, IsActive = true },
-                    new GradeGroup { Code = "G4", Name = "G4", OthName = "G4", SortOrder = 4, IsActive = true },
-                    new GradeGroup { Code = "G5", Name = "G5", OthName = "G5", SortOrder = 5, IsActive = true }
+                    new GradeGroup { Code = "G1", Name = "G1", OthName = "G1", SortOrder = 10, IsActive = true },
+                    new GradeGroup { Code = "G2", Name = "G2", OthName = "G2", SortOrder = 20, IsActive = true },
+                    new GradeGroup { Code = "G3", Name = "G3", OthName = "G3", SortOrder = 30, IsActive = true },
+                    new GradeGroup { Code = "G4", Name = "G4", OthName = "G4", SortOrder = 40, IsActive = true },
+                    new GradeGroup { Code = "G5", Name = "G5", OthName = "G5", SortOrder = 50, IsActive = true }
                 };
                 foreach (GradeGroup x in gradeGroups)
                     _context.GradeGroups.Add(x);
@@ -49,7 +49,7 @@ namespace HrmsModel.Data
                 for(int i = 0; i <= 10; i++)
                 {
                     string s = "s" + i.ToString();
-                    _context.SalarySteps.Add(new SalaryStep { Code = s, Name = s, OthName = s, SortOrder = i + 1, SalaryIncrPctg = 100 + i * 5 });
+                    _context.SalarySteps.Add(new SalaryStep { Code = s, Name = s, OthName = s, SortOrder = (i + 1)*10, SalaryIncrPctg = 100 + i * 5 });
                 }
                 _context.SaveChanges();
             }
@@ -58,13 +58,13 @@ namespace HrmsModel.Data
             {
                 var jobGrades = new JobGrade[]
                 {
-                    new JobGrade { Code = "U", Name = "U", OthName = "U", GradeGroupId = 1, SalaryIncrPctg = 0, SortOrder = 1, IsActive = true },
-                    new JobGrade { Code = "A", Name = "A", OthName = "A", GradeGroupId = 1, SalaryIncrPctg = 25, SortOrder = 2, IsActive = true },
-                    new JobGrade { Code = "B", Name = "B", OthName = "B", GradeGroupId = 1, SalaryIncrPctg = 35, SortOrder = 3, IsActive = true },
-                    new JobGrade { Code = "C", Name = "C", OthName = "C", GradeGroupId = 1, SalaryIncrPctg = 50, SortOrder = 4, IsActive = true },
-                    new JobGrade { Code = "1", Name = "1", OthName = "1", GradeGroupId = 2, SalaryIncrPctg = 15, SortOrder = 5, IsActive = true },
-                    new JobGrade { Code = "2", Name = "2", OthName = "2", GradeGroupId = 2, SalaryIncrPctg = 15, SortOrder = 6, IsActive = true },
-                    new JobGrade { Code = "3", Name = "3", OthName = "3", GradeGroupId = 3, SalaryIncrPctg = 0, SortOrder = 7, IsActive = true }
+                    new JobGrade { Code = "U", Name = "U", OthName = "U", GradeGroupId = 1, SalaryIncrPctg = 0, SortOrder = 10, IsActive = true },
+                    new JobGrade { Code = "A", Name = "A", OthName = "A", GradeGroupId = 1, SalaryIncrPctg = 25, SortOrder = 20, IsActive = true },
+                    new JobGrade { Code = "B", Name = "B", OthName = "B", GradeGroupId = 1, SalaryIncrPctg = 35, SortOrder = 30, IsActive = true },
+                    new JobGrade { Code = "C", Name = "C", OthName = "C", GradeGroupId = 1, SalaryIncrPctg = 50, SortOrder = 40, IsActive = true },
+                    new JobGrade { Code = "1", Name = "1", OthName = "1", GradeGroupId = 2, SalaryIncrPctg = 15, SortOrder = 50, IsActive = true },
+                    new JobGrade { Code = "2", Name = "2", OthName = "2", GradeGroupId = 2, SalaryIncrPctg = 15, SortOrder = 60, IsActive = true },
+                    new JobGrade { Code = "3", Name = "3", OthName = "3", GradeGroupId = 3, SalaryIncrPctg = 0, SortOrder = 70, IsActive = true }
                 };
                 foreach (JobGrade x in jobGrades)
                     _context.JobGrades.Add(x);
@@ -156,14 +156,14 @@ namespace HrmsModel.Data
             {
                 var compCats = new CompetencyCategory[]
                 {
+                    new CompetencyCategory { Name = "Academic", OthName = "", SortOrder = 1, IsActive = true },
                     new CompetencyCategory { Name = "Business Focus", OthName = "", SortOrder = 10, IsActive = true },
                     new CompetencyCategory { Name = "Accountability", OthName = "", SortOrder = 20, IsActive = true },
                     new CompetencyCategory { Name = "Drive & Resillience", OthName = "", SortOrder = 30, IsActive = true },
                     new CompetencyCategory { Name = "Problem Solving", OthName = "", SortOrder = 40, IsActive = true },
                     new CompetencyCategory { Name = "Developing People", OthName = "", SortOrder = 50, IsActive = true },
                     new CompetencyCategory { Name = "Customer Orientation", OthName = "", SortOrder = 60, IsActive = true },
-                    new CompetencyCategory { Name = "Execution Excellence", OthName = "", SortOrder = 70, IsActive = true },
-                    new CompetencyCategory { Name = "Academic", OthName = "", SortOrder = 1, IsActive = true }
+                    new CompetencyCategory { Name = "Execution Excellence", OthName = "", SortOrder = 70, IsActive = true }
                 };
                 foreach (CompetencyCategory x in compCats)
                     _context.CompetencyCategories.Add(x);
@@ -174,43 +174,43 @@ namespace HrmsModel.Data
             {
                 var compSubCats = new CompetencySubCategory[]
                 {
-                    new CompetencySubCategory { Name = "Financial and Profitability Orientation", OthName = "", CompetencyCategoryId = 1, Description = "", SortOrder = 10, IsActive = true },
-                    new CompetencySubCategory { Name = "Enterpreneurial Skills", OthName = "", CompetencyCategoryId = 1, Description = "", SortOrder = 20, IsActive = true },
-                    new CompetencySubCategory { Name = "Strategic Thinking", OthName = "", CompetencyCategoryId = 1, Description = "", SortOrder = 30, IsActive = true },
-                    new CompetencySubCategory { Name = "Planning and Budgeting", OthName = "", CompetencyCategoryId = 1, Description = "", SortOrder = 40, IsActive = true },
-                    new CompetencySubCategory { Name = "Organization and Resource Management", OthName = "", CompetencyCategoryId = 1, Description = "", SortOrder = 50, IsActive = true },
-                    new CompetencySubCategory { Name = "Involvement and Ownership", OthName = "", CompetencyCategoryId = 2, Description = "", SortOrder = 60, IsActive = true },
-                    new CompetencySubCategory { Name = "Responsibility", OthName = "", CompetencyCategoryId = 2, Description = "", SortOrder = 70, IsActive = true },
-                    new CompetencySubCategory { Name = "Discipline", OthName = "", CompetencyCategoryId = 2, Description = "", SortOrder = 80, IsActive = true },
-                    new CompetencySubCategory { Name = "Organizational Contribution", OthName = "", CompetencyCategoryId = 2, Description = "", SortOrder = 90, IsActive = true },
-                    new CompetencySubCategory { Name = "Performance Orientation", OthName = "", CompetencyCategoryId = 2, Description = "", SortOrder = 100, IsActive = true },
-                    new CompetencySubCategory { Name = "Team Work", OthName = "", CompetencyCategoryId = 2, Description = "", SortOrder = 110, IsActive = true },
-                    new CompetencySubCategory { Name = "Initiative", OthName = "", CompetencyCategoryId = 3, Description = "", SortOrder = 120, IsActive = true },
-                    new CompetencySubCategory { Name = "Commitment", OthName = "", CompetencyCategoryId = 3, Description = "", SortOrder = 130, IsActive = true },
-                    new CompetencySubCategory { Name = "Task Orientation", OthName = "", CompetencyCategoryId = 3, Description = "", SortOrder = 140, IsActive = true },
-                    new CompetencySubCategory { Name = "Positive Attitude", OthName = "", CompetencyCategoryId = 3, Description = "", SortOrder = 150, IsActive = true },
-                    new CompetencySubCategory { Name = "Self Development", OthName = "", CompetencyCategoryId = 3, Description = "", SortOrder = 160, IsActive = true },
-                    new CompetencySubCategory { Name = "Problem Understanding and Defining", OthName = "", CompetencyCategoryId = 4, Description = "", SortOrder = 170, IsActive = true },
-                    new CompetencySubCategory { Name = "Analytical Ability", OthName = "", CompetencyCategoryId = 4, Description = "", SortOrder = 180, IsActive = true },
-                    new CompetencySubCategory { Name = "Decision Making", OthName = "", CompetencyCategoryId = 4, Description = "", SortOrder = 190, IsActive = true },
-                    new CompetencySubCategory { Name = "Data Interpretation", OthName = "", CompetencyCategoryId = 4, Description = "", SortOrder = 200, IsActive = true },
-                    new CompetencySubCategory { Name = "Creativity", OthName = "", CompetencyCategoryId = 4, Description = "", SortOrder = 210, IsActive = true },
-                    new CompetencySubCategory { Name = "Leadership Skills", OthName = "", CompetencyCategoryId = 5, Description = "", SortOrder = 220, IsActive = true },
-                    new CompetencySubCategory { Name = "Delegation Skills", OthName = "", CompetencyCategoryId = 5, Description = "", SortOrder = 230, IsActive = true },
-                    new CompetencySubCategory { Name = "People Management", OthName = "", CompetencyCategoryId = 5, Description = "", SortOrder = 240, IsActive = true },
-                    new CompetencySubCategory { Name = "HR Orientation", OthName = "", CompetencyCategoryId = 5, Description = "", SortOrder = 250, IsActive = true },
-                    new CompetencySubCategory { Name = "Coaching and Mentoring", OthName = "", CompetencyCategoryId = 5, Description = "", SortOrder = 260, IsActive = true },
-                    new CompetencySubCategory { Name = "Communication Skills", OthName = "", CompetencyCategoryId = 6, Description = "", SortOrder = 270, IsActive = true },
-                    new CompetencySubCategory { Name = "Service Orientation", OthName = "", CompetencyCategoryId = 6, Description = "", SortOrder = 280, IsActive = true },
-                    new CompetencySubCategory { Name = "Selling Skills", OthName = "", CompetencyCategoryId = 6, Description = "", SortOrder = 290, IsActive = true },
-                    new CompetencySubCategory { Name = "Negotiation Skills", OthName = "", CompetencyCategoryId = 6, Description = "", SortOrder = 300, IsActive = true },
-                    new CompetencySubCategory { Name = "Interpersonal Skills", OthName = "", CompetencyCategoryId = 6, Description = "", SortOrder = 310, IsActive = true },
-                    new CompetencySubCategory { Name = "Technical Knowledge", OthName = "", CompetencyCategoryId = 7, Description = "", SortOrder = 320, IsActive = true },
-                    new CompetencySubCategory { Name = "Technology Orientation", OthName = "", CompetencyCategoryId = 7, Description = "", SortOrder = 330, IsActive = true },
-                    new CompetencySubCategory { Name = "Quality Orientation", OthName = "", CompetencyCategoryId = 7, Description = "", SortOrder = 340, IsActive = true },
-                    new CompetencySubCategory { Name = "Process and Cost Orientation", OthName = "", CompetencyCategoryId = 7, Description = "", SortOrder = 350, IsActive = true },
-                    new CompetencySubCategory { Name = "Time Management", OthName = "", CompetencyCategoryId = 7, Description = "", SortOrder = 360, IsActive = true },
-                    new CompetencySubCategory { Name = "Degree", OthName = "", CompetencyCategoryId = 8, Description = "", SortOrder = 1, IsActive = true }
+                    new CompetencySubCategory { Name = "Degree", OthName = "", CompetencyCategoryId = 1, Description = "", SortOrder = 10, IsActive = true },
+                    new CompetencySubCategory { Name = "Financial and Profitability Orientation", OthName = "", CompetencyCategoryId = 2, Description = "", SortOrder = 20, IsActive = true },
+                    new CompetencySubCategory { Name = "Enterpreneurial Skills", OthName = "", CompetencyCategoryId = 2, Description = "", SortOrder = 30, IsActive = true },
+                    new CompetencySubCategory { Name = "Strategic Thinking", OthName = "", CompetencyCategoryId = 2, Description = "", SortOrder = 40, IsActive = true },
+                    new CompetencySubCategory { Name = "Planning and Budgeting", OthName = "", CompetencyCategoryId = 2, Description = "", SortOrder = 50, IsActive = true },
+                    new CompetencySubCategory { Name = "Organization and Resource Management", OthName = "", CompetencyCategoryId = 2, Description = "", SortOrder = 60, IsActive = true },
+                    new CompetencySubCategory { Name = "Involvement and Ownership", OthName = "", CompetencyCategoryId = 3, Description = "", SortOrder = 70, IsActive = true },
+                    new CompetencySubCategory { Name = "Responsibility", OthName = "", CompetencyCategoryId = 3, Description = "", SortOrder = 80, IsActive = true },
+                    new CompetencySubCategory { Name = "Discipline", OthName = "", CompetencyCategoryId = 3, Description = "", SortOrder = 90, IsActive = true },
+                    new CompetencySubCategory { Name = "Organizational Contribution", OthName = "", CompetencyCategoryId = 3, Description = "", SortOrder = 100, IsActive = true },
+                    new CompetencySubCategory { Name = "Performance Orientation", OthName = "", CompetencyCategoryId = 3, Description = "", SortOrder = 110, IsActive = true },
+                    new CompetencySubCategory { Name = "Team Work", OthName = "", CompetencyCategoryId = 3, Description = "", SortOrder = 120, IsActive = true },
+                    new CompetencySubCategory { Name = "Initiative", OthName = "", CompetencyCategoryId = 4, Description = "", SortOrder = 130, IsActive = true },
+                    new CompetencySubCategory { Name = "Commitment", OthName = "", CompetencyCategoryId = 4, Description = "", SortOrder = 140, IsActive = true },
+                    new CompetencySubCategory { Name = "Task Orientation", OthName = "", CompetencyCategoryId = 4, Description = "", SortOrder = 150, IsActive = true },
+                    new CompetencySubCategory { Name = "Positive Attitude", OthName = "", CompetencyCategoryId = 4, Description = "", SortOrder = 160, IsActive = true },
+                    new CompetencySubCategory { Name = "Self Development", OthName = "", CompetencyCategoryId = 4, Description = "", SortOrder = 170, IsActive = true },
+                    new CompetencySubCategory { Name = "Problem Understanding and Defining", OthName = "", CompetencyCategoryId = 5, Description = "", SortOrder = 180, IsActive = true },
+                    new CompetencySubCategory { Name = "Analytical Ability", OthName = "", CompetencyCategoryId = 5, Description = "", SortOrder = 190, IsActive = true },
+                    new CompetencySubCategory { Name = "Decision Making", OthName = "", CompetencyCategoryId = 5, Description = "", SortOrder = 200, IsActive = true },
+                    new CompetencySubCategory { Name = "Data Interpretation", OthName = "", CompetencyCategoryId = 5, Description = "", SortOrder = 210, IsActive = true },
+                    new CompetencySubCategory { Name = "Creativity", OthName = "", CompetencyCategoryId = 5, Description = "", SortOrder = 220, IsActive = true },
+                    new CompetencySubCategory { Name = "Leadership Skills", OthName = "", CompetencyCategoryId = 6, Description = "", SortOrder = 230, IsActive = true },
+                    new CompetencySubCategory { Name = "Delegation Skills", OthName = "", CompetencyCategoryId = 6, Description = "", SortOrder = 240, IsActive = true },
+                    new CompetencySubCategory { Name = "People Management", OthName = "", CompetencyCategoryId = 6, Description = "", SortOrder = 250, IsActive = true },
+                    new CompetencySubCategory { Name = "HR Orientation", OthName = "", CompetencyCategoryId = 6, Description = "", SortOrder = 260, IsActive = true },
+                    new CompetencySubCategory { Name = "Coaching and Mentoring", OthName = "", CompetencyCategoryId = 6, Description = "", SortOrder = 270, IsActive = true },
+                    new CompetencySubCategory { Name = "Communication Skills", OthName = "", CompetencyCategoryId = 7, Description = "", SortOrder = 280, IsActive = true },
+                    new CompetencySubCategory { Name = "Service Orientation", OthName = "", CompetencyCategoryId = 7, Description = "", SortOrder = 290, IsActive = true },
+                    new CompetencySubCategory { Name = "Selling Skills", OthName = "", CompetencyCategoryId = 7, Description = "", SortOrder = 300, IsActive = true },
+                    new CompetencySubCategory { Name = "Negotiation Skills", OthName = "", CompetencyCategoryId = 7, Description = "", SortOrder = 310, IsActive = true },
+                    new CompetencySubCategory { Name = "Interpersonal Skills", OthName = "", CompetencyCategoryId = 7, Description = "", SortOrder = 320, IsActive = true },
+                    new CompetencySubCategory { Name = "Technical Knowledge", OthName = "", CompetencyCategoryId = 8, Description = "", SortOrder = 330, IsActive = true },
+                    new CompetencySubCategory { Name = "Technology Orientation", OthName = "", CompetencyCategoryId = 8, Description = "", SortOrder = 340, IsActive = true },
+                    new CompetencySubCategory { Name = "Quality Orientation", OthName = "", CompetencyCategoryId = 8, Description = "", SortOrder = 350, IsActive = true },
+                    new CompetencySubCategory { Name = "Process and Cost Orientation", OthName = "", CompetencyCategoryId = 8, Description = "", SortOrder = 360, IsActive = true },
+                    new CompetencySubCategory { Name = "Time Management", OthName = "", CompetencyCategoryId = 8, Description = "", SortOrder = 370, IsActive = true }
                 };
                 foreach (CompetencySubCategory x in compSubCats)
                     _context.CompetencySubCategories.Add(x);

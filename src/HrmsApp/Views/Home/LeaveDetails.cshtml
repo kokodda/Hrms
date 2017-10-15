@@ -1,0 +1,46 @@
+﻿@using HrmsModel.Models;
+@model IEnumerable<EmployeeLeave>
+
+@{
+    ViewData["Title"] = "Home Page";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid" style="padding:0px">
+    <h3>Leave Details</h3>
+    <a href="~/Home/Index"><small>Back ...</small></a>
+    <hr />
+    @if(Model.Count() == 0)
+    {
+        <div style="color:silver">Leave List is Empty.</div>
+    }
+    @foreach(var lType in Model.Select(b => b.LeaveType).Distinct())
+    {
+        <div class="row">
+            <div class="col-sm-1"><label><small>@lType.Name</small></label></div>
+            <div class="col-sm-6" style="font-size:smaller">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Employee</th>
+                            <th>Unit</th>
+                            <th>From Date</th>
+                            <th>Through Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach(var item in Model.Where(b => b.LeaveTypeId == lType.Id))
+                        {
+                            <tr>
+                                <td>@item.Employee.FirstName &nbsp; @item.Employee.FatherName &nbsp; @item.Employee.FamilyName</td>
+                                <td>@item.Employee.Employments.FirstOrDefault(b => b.IsActive).OrgUnit.Name</td>
+                                <td>@item.FromDate.ToString("dd-MM")</td>
+                                <td>@item.ThruDate.ToString("dd-MM")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+</div>

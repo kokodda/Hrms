@@ -4,7 +4,7 @@
 <div class="container-fluid" style="padding:0px">
     <div class="panel panel-default">
         <div class="panel-heading">
-            <label><small>Holidays</small></label>
+            <label><small>Occuring Holidays</small></label>
             <span class="pull-right"><a href="#" onclick="addHoliday()" data-toggle="modal" data-target="#myModal" title="Add Holiday"><span class="fa fa-plus"></span></a></span>
         </div>
         <div class="panel-body">
@@ -38,7 +38,7 @@
                             <td><input type="checkbox" asp-for="@item.IsHijri" disabled readonly /></td>
                             <td><input type="checkbox" asp-for="@item.IsActive" disabled readonly /></td>
                             <td>
-                                <a href="#" class="btn btn-xs pull-right" onclick="addVariation(@item.Id, '@item.Name')" data-toggle="modal" data-target="#myModal" title="Add Variation"><span class="fa fa-plus"></span></a>
+                                <a href="#" class="btn btn-xs pull-right" onclick="addVariation(@item.Id, '@item.Name')" data-toggle="modal" data-target="#myModal" title="Add Variation"><span class="fa fa-code-fork"></span></a>
                                 <a href="#" class="btn btn-xs pull-right" onclick="editHoliday(@item.Id)" data-toggle="modal" data-target="#myModal" title="Edit"><span class="fa fa-pencil"></span></a>
                             </td>
                         </tr>
