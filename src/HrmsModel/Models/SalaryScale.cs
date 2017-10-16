@@ -24,5 +24,6 @@ namespace HrmsModel.Models
         public virtual SalaryScaleType SalaryScaleType { get; set; }
         public virtual JobGrade FromJobGrade { get; set; }
         public virtual JobGrade ThruJobGrade { get; set; }
+        public virtual ICollection<Payroll> Payrolls { get; set; }
     }
 }

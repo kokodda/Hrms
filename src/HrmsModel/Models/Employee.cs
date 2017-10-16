@@ -49,5 +49,7 @@ namespace HrmsModel.Models
         public virtual ICollection<EmployeeLanguage> EmployeeLanguages { get; set; }
         public virtual ICollection<EmployeeDocument> EmployeeDocuments { get; set; }
         public virtual ICollection<EmployeeGroup> EmployeeGroups { get; set; }
+        public virtual ICollection<PayrollEmployee> PayrollEmployees { get; set; }
+        public virtual ICollection<EmployeeAttendance> EmployeeAttendances { get; set; }
     }
 }

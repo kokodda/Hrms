@@ -351,6 +351,25 @@ namespace HrmsModel.Data
                 _context.Calendars.Add(new Calendar { Name = "Company Official Calendar", OthName = "Company Official Calendar", EffectiveFromDate = DateTime.Now.Date, FirstWeekDay = "Saturday", FromTime = DateTime.Parse("08:30"), ThruTime = DateTime.Parse("16:30") });
                 _context.SaveChanges();
             }
+
+            //if(!_context.PayrollComponentTypes.Any())
+            //{
+            //    var payrollComponentTypes = new PayrollComponentType[]
+            //    {
+            //        new PayrollComponentType { Name = "Basic Salary", OthName = "Basic Salary", SysCode = "BASIC", SortOrder = 10, IsActive = true },
+            //        new PayrollComponentType { Name = "Allowances", OthName = "Allowances", SysCode = "ALLOWANCE", SortOrder = 20, IsActive = true },
+            //        new PayrollComponentType { Name = "Overtime1", OthName = "Overtime1", SysCode = "OT1", SortOrder = 30, IsActive = true },
+            //        new PayrollComponentType { Name = "Overtime2", OthName = "Overtime2", SysCode = "OT2", SortOrder = 40, IsActive = true },
+            //        new PayrollComponentType { Name = "Weekends and Holidays", OthName = "Weekends and Holidays", SysCode = "WEEKEND", SortOrder = 50, IsActive = true },
+            //        new PayrollComponentType { Name = "Bonus", OthName = "Bonus", SysCode = "BONUS", SortOrder = 60, IsActive = true },
+            //        new PayrollComponentType { Name = "Deduction", OthName = "Deduction", SysCode = "DEDUCTION", SortOrder = 70, IsActive = true },
+            //        new PayrollComponentType { Name = "Leave Componsation", OthName = "Leave Componsation", SysCode = "COMPONSATE", SortOrder = 80, IsActive = true },
+            //        new PayrollComponentType { Name = "Unpaid Leave", OthName = "Unpaid Leave", SysCode = "UNPAID", SortOrder = 90, IsActive = true }
+            //    };
+            //    foreach (PayrollComponentType x in payrollComponentTypes)
+            //        _context.PayrollComponentTypes.Add(x);
+            //    _context.SaveChanges();
+            //}
         }
     }
 }

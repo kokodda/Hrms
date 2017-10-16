@@ -27,6 +27,7 @@ namespace HrmsModel.Data
         public virtual DbSet<PromotionType> PromotionTypes { get; set; }
         public virtual DbSet<Governorate> Governorates { get; set; }
         public virtual DbSet<Nationality> Nationalities { get; set; }
+        public virtual DbSet<PayrollComponentType> PayrollComponentTypes { get; set; }
 
         public virtual DbSet<Calendar> Calendars { get; set; }
         public virtual DbSet<Holiday> Holidays { get; set; }
@@ -56,6 +57,10 @@ namespace HrmsModel.Data
         public virtual DbSet<GenericSubGroup> GenericSubGroups { get; set; }
         public virtual DbSet<EmployeeGroup> EmployeeGroups { get; set; }
         public virtual DbSet<EmployeePromotion> EmployeePromotions { get; set; }
+        public virtual DbSet<EmployeeAttendance> EmployeeAttendances { get; set; }
+        public virtual DbSet<Payroll> Payrolls { get; set; }
+        public virtual DbSet<PayrollEmployee> PayrollEmployees { get; set; }
+        public virtual DbSet<PayrollAddition> PayrollAdditions { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

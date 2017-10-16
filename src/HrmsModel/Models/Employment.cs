@@ -38,5 +38,6 @@ namespace HrmsModel.Models
         public virtual SalaryStep SalaryStep { get; set; }
         public virtual JobGrade JobGrade { get; set; }
         public virtual ICollection<EmployeePromotion> EmployeePromotions { get; set; }
+        public virtual ICollection<PayrollEmployee> PayrollEmployees { get; set; }
     }
 }
