@@ -1,0 +1,115 @@
+﻿@{
+    ViewData["Title"] = "Attendance";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid" style="padding:0px">
+    <h3>Attendance</h3>
+    <a href="#" onclick="addAttendance()" data-toggle="modal" data-target="#myModal"><small>Add New ...</small></a>
+    <hr />
+    <div class="row">
+        <div class="col-sm-9" id="listSection"></div>
+        <div class="col-sm-3"></div>
+    </div>
+    <div class="row">
+        <div class="col-sm-11" id="detailsSection"></div>
+        <div class="col-sm-1" id="detailsMenu">
+            <div><a href="#"><small>Incompleted</small></a></div>
+            <hr />
+            <label><small>Compliance%</small></label>
+            <ul class="list-unstyled" style="font-size:smaller">
+                <li><a href="#">90&mdash;95</a></li>
+                <li><a href="#">85&mdash;90</a></li>
+                <li><a href="#">80&mdash;85</a></li>
+                <li><a href="#">&lsaquo; 80</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+    @{ await Html.RenderPartialAsync("_PopupForm"); }
+    <script>
+        $(document).on('ready', function () {
+            $('#detailsMenu').hide();
+            attendancesList();
+        });
+
+        function showPopup() {
+            $('#popupResult').html(null).text(null);
+            $('.popupBtns').removeAttr('disabled');
+        }
+        function onPopupSubmit() {
+            $('#popupForm').submit();
+        }
+        function onSuccess() {
+            $('#popupResult').html('Successfully Updated.');
+            $('.popupBtns').attr('disabled', 'disabled');
+        }
+        function onFailure() {
+            $('#formResult').html('Failed to Update! Please Correct All Errors.');
+            $('.popupBtns').removeAttr('disabled');
+        }
+
+        function attendancesList() {
+            $.ajax({
+                url: '@Url.Action("AttendancesList", "Attendance")',
+                type: 'GET',
+                success: function (result) {
+                    $('#listSection').html(result);
+                }
+            });
+        }
+        function addAttendance() {
+            $.ajax({
+                url: '@Url.Action("AddAttendance", "Attendance")',
+                type: 'GET',
+                success: function (result) {
+                    $('#myModal-body').html(result);
+                    $('#myModal-label').html('Add New Attendance');
+                    showPopup();
+                }
+            });
+        }
+        function endorseAttendance(id) {
+            if (!confirm('Please Confirm! About to Endorse Attendance?')) {
+                return;
+            }
+            $.ajax({
+                url: '@Url.Action("EndorseAttendance", "Attendance")',
+                type: 'GET',
+                data: { id: id },
+                success: function (result) {
+                    $('#listSection').html(result);
+                }
+            });
+        }
+
+        //details
+        function attendanceDetails(id) {
+            $.ajax({
+                url: '@Url.Action("AttendanceDetails", "Attendance")',
+                type: 'GET',
+                data: { id: id },
+                success: function (result) {
+                    $('#detailsSection').html(result);
+                    $('#detailsMenu').show();
+                }
+            });
+        }
+        function editEmployeeAttendance(id) {
+            $.ajax({
+                url: '@Url.Action("EditEmployeeAttendance", "Attendance")',
+                type: 'GET',
+                data: { id: id },
+                success: function (result) {
+                    $('#myModal-body').html(result);
+                    $('#myModal-label').html('Edit Corrective Action');
+                    showPopup();
+                }
+            });
+        }
+    </script>
+}

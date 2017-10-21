@@ -77,8 +77,8 @@ namespace HrmsModel.Data
                 {
                     new LeaveType { Name = "Annual", OthName = "Annual", SysCode = "ANNUAL", SortOrder = 10, IsActive = true },
                     new LeaveType { Name = "Sick", OthName = "Sick", SysCode = "SICK", SortOrder = 20, IsActive = true },
-                    new LeaveType { Name = "Business Travel", OthName = "Business Travel", SysCode = "BUSINESS", SortOrder = 30, IsActive = true },
-                    new LeaveType { Name = "Half Day", OthName = "Half Day", SysCode = "HALF_DAY", SortOrder = 40, IsActive = true },
+                    new LeaveType { Name = "Half Day", OthName = "Half Day", SysCode = "HALF_DAY", SortOrder = 30, IsActive = true },
+                    new LeaveType { Name = "Business Travel", OthName = "Business Travel", SysCode = "BUSINESS", SortOrder = 40, IsActive = true },
                     new LeaveType { Name = "Unpaid", OthName = "Unpaid", SysCode = "UNPAID", SortOrder = 50, IsActive = true },
                     new LeaveType { Name = "Maternity", OthName = "Maternit", SysCode = "MATERNITY", SortOrder = 60, IsActive = true },
                     new LeaveType { Name = "Study", OthName = "Study", SysCode = "STUDY", SortOrder = 70, IsActive = true }
@@ -352,24 +352,38 @@ namespace HrmsModel.Data
                 _context.SaveChanges();
             }
 
-            //if(!_context.PayrollComponentTypes.Any())
-            //{
-            //    var payrollComponentTypes = new PayrollComponentType[]
-            //    {
-            //        new PayrollComponentType { Name = "Basic Salary", OthName = "Basic Salary", SysCode = "BASIC", SortOrder = 10, IsActive = true },
-            //        new PayrollComponentType { Name = "Allowances", OthName = "Allowances", SysCode = "ALLOWANCE", SortOrder = 20, IsActive = true },
-            //        new PayrollComponentType { Name = "Overtime1", OthName = "Overtime1", SysCode = "OT1", SortOrder = 30, IsActive = true },
-            //        new PayrollComponentType { Name = "Overtime2", OthName = "Overtime2", SysCode = "OT2", SortOrder = 40, IsActive = true },
-            //        new PayrollComponentType { Name = "Weekends and Holidays", OthName = "Weekends and Holidays", SysCode = "WEEKEND", SortOrder = 50, IsActive = true },
-            //        new PayrollComponentType { Name = "Bonus", OthName = "Bonus", SysCode = "BONUS", SortOrder = 60, IsActive = true },
-            //        new PayrollComponentType { Name = "Deduction", OthName = "Deduction", SysCode = "DEDUCTION", SortOrder = 70, IsActive = true },
-            //        new PayrollComponentType { Name = "Leave Componsation", OthName = "Leave Componsation", SysCode = "COMPONSATE", SortOrder = 80, IsActive = true },
-            //        new PayrollComponentType { Name = "Unpaid Leave", OthName = "Unpaid Leave", SysCode = "UNPAID", SortOrder = 90, IsActive = true }
-            //    };
-            //    foreach (PayrollComponentType x in payrollComponentTypes)
-            //        _context.PayrollComponentTypes.Add(x);
-            //    _context.SaveChanges();
-            //}
+            if (!_context.PayrollComponentTypes.Any())
+            {
+                var payrollComponentTypes = new PayrollComponentType[]
+                {
+                    new PayrollComponentType { Name = "Basic Salary", OthName = "Basic Salary", SysCode = "BASIC", SortOrder = 10, IsActive = true },
+                    new PayrollComponentType { Name = "Allowances", OthName = "Allowances", SysCode = "ALLOWANCE", SortOrder = 20, IsActive = true },
+                    new PayrollComponentType { Name = "Overtime1", OthName = "Overtime1", SysCode = "OT1", SortOrder = 30, IsActive = true },
+                    new PayrollComponentType { Name = "Overtime2", OthName = "Overtime2", SysCode = "OT2", SortOrder = 40, IsActive = true },
+                    new PayrollComponentType { Name = "Weekends and Holidays", OthName = "Weekends and Holidays", SysCode = "WEEKEND", SortOrder = 50, IsActive = true },
+                    new PayrollComponentType { Name = "Bonus", OthName = "Bonus", SysCode = "BONUS", SortOrder = 60, IsActive = true },
+                    new PayrollComponentType { Name = "Deduction", OthName = "Deduction", SysCode = "DEDUCTION", SortOrder = 70, IsActive = true },
+                    new PayrollComponentType { Name = "Leave Componsation", OthName = "Leave Componsation", SysCode = "COMPONSATE", SortOrder = 80, IsActive = true },
+                    new PayrollComponentType { Name = "Unpaid Leave", OthName = "Unpaid Leave", SysCode = "UNPAID", SortOrder = 90, IsActive = true }
+                };
+                foreach (PayrollComponentType x in payrollComponentTypes)
+                    _context.PayrollComponentTypes.Add(x);
+                _context.SaveChanges();
+            }
+
+            if (!_context.AttendanceActionTypes.Any())
+            {
+                var attendanceActionTypes = new AttendanceActionType[]
+                {
+                    new AttendanceActionType { Name = "Unprocessed", OthName = "Unprocessed", SysCode = "UNPROCESSED", SortOrder = 10, IsActive = true },
+                    new AttendanceActionType { Name = "Accept", OthName = "Accept", SysCode = "ACCEPT", SortOrder = 20, IsActive = true },
+                    new AttendanceActionType { Name = "Convert to Annual Leave", OthName = "Convert to Annual Leave", SysCode = "ANNUAL_LEAVE", SortOrder = 30, IsActive = true },
+                    new AttendanceActionType { Name = "Convert to Unpaid Leave", OthName = "Convert to Unpaid Leave", SysCode = "UNPAID_LEAVE", SortOrder = 40, IsActive = true }
+                };
+                foreach (AttendanceActionType x in attendanceActionTypes)
+                    _context.AttendanceActionTypes.Add(x);
+                _context.SaveChangesAsync();
+            }
         }
     }
 }

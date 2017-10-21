@@ -1,0 +1,36 @@
+﻿@using HrmsModel.Models;
+@model CarouselItem
+
+<label style="color:silver"><small>Add Carousel Item</small></label>
+<form role="form" id="popupForm" asp-controller="Admin" asp-action="AddCarouselItem" data-ajax="true" data-ajax-method="POST" data-ajax-update="#listSection" data-ajax-success="onCarouselSuccess" data-ajax-failure="onCarouselFailure">
+    <div class="form-inline">
+        <div class="form-group-sm">
+            <label class="control-label" asp-for="ImageName"><small>Image (*)</small></label>
+            <input type="text" asp-for="ImageName" id="imageName" class="form-control" data-toggle="modal" data-target="#photoModal" required />
+        </div>
+        <div class="form-group-sm">
+            <label class="control-label" asp-for="Caption"><small>Caption (*)</small></label>
+            <input type="text" asp-for="Caption" class="form-control" required />
+        </div>
+        <div class="form-group-sm">
+            <label class="control-label" asp-for="ImageText"><small>Text</small></label>
+            <input type="text" asp-for="ImageText" class="form-control" />
+        </div>
+        <div class="form-group-sm">
+            <label class="control-label" asp-for="OthCaption"><small>Caption Translated (*)</small></label>
+            <input type="text" asp-for="OthCaption" class="form-control" required />
+        </div>
+        <div class="form-group-sm">
+            <label class="control-label" asp-for="OthImageText"><small>Text Translated</small></label>
+            <input type="text" asp-for="OthImageText" class="form-control" />
+        </div>
+        <div class="form-group-sm">
+            <label class="control-label" asp-for="SortOrder"><small>Sort Order (*)</small></label>
+            <input type="number" asp-for="SortOrder" class="form-control" required />
+        </div>
+        <div class="form-group-sm">
+            <button type="submit" class="btn btn-xs btn-primary"><span class="glyphicon glyphicon-floppy-save" title="Save" tabindex="-1"></span></button>
+            <button type="button" class="btn btn-xs btn-danger" onclick="cancelCarouselItem()" title="Cancel" tabindex="-1"><span class="fa fa-remove"></span></button>
+        </div>
+    </div>
+</form>

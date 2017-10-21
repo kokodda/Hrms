@@ -35,7 +35,29 @@
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
+                    <li>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Organization <span class="caret"></span></a>
+                        <ul class="dropdown-menu" style="font-size:smaller">
+                            <li><a href="~/Organization/Index">Organization Chart</a></li>
+                            <li><a href="~/Positions/Index">Job Center</a></li>
+                            <li><a href="~/Governance/Index">Governance Center</a></li>
+                            <li><a href="~/Calendars/Index">Calendars</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="~/Statistics/HeadCount">Head Count</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Personnel <span class="caret"></span></a>
+                        <ul class="dropdown-menu" style="font-size:smaller">
+                            <li><a href="~/Recruitment/Index">Recruitment</a></li>
+                            <li><a href="~/Personnel/Index">Personnel</a></li>
+                            <li><a href="~/Groups/Index">Staff Groups</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="~/Attendance/Index">Attendance</a></li>
+                            <li><a href="~/Payrolls/Index">Payroll</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="~/Admin/Index">Admin</a></li>
                     <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
                 </ul>
                 @await Html.PartialAsync("_LoginPartial")

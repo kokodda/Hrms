@@ -1,0 +1,40 @@
+﻿@using HrmsModel.Models;
+@model IEnumerable<Attendance>
+
+<div class="container-fluid" style="padding:0px">
+    <div class="panel panel-default">
+        <div class="panel-heading"><label><small>In Process Attendance</small></label></div>
+        <div class="panel-body">
+            <table class="table table-hover table-condensed" style="font-size:smaller">
+                <thead>
+                    <tr>
+                        <th>Month</th>
+                        <th>Interval</th>
+                        <th>Total Days</th>
+                        <th>Required Attendance</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@string.Format("{0}", System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(item.Month)) &nbsp;@item.Year</td>
+                            <td>@string.Format("{0}", item.IsFullMonth ? "Full Previous Month" : (item.FromDate.Value.ToString("dd/MM") + " to " + item.ThruDate.Value.ToString("dd/MM")))</td>
+                            <td>22</td>
+                            <td>187 h</td>
+                            <td>
+                                <div class="btn-group-xs pull-right">
+                                    <a role="button" href="#" class="btn btn-xs" title="Load"><span class="fa fa-download"></span></a>
+                                    <a role="button" href="#" class="btn btn-xs" onclick="endorseAttendance(@item.Id)" title="Endorse"><span class="fa fa-check"></span></a>
+                                    <a role="button" href="#" class="btn btn-xs" title="Delete"><span class="fa fa-trash-o"></span></a>
+                                    <a role="button" href="#" class="btn btn-xs" onclick="attendanceDetails(@item.Id)" title="Details"><span class="fa fa-ellipsis-h"></span></a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

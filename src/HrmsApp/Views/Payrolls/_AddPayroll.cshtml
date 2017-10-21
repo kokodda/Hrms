@@ -1,0 +1,27 @@
+﻿@using HrmsModel.Models;
+@model Payroll
+
+<form role="form" id="popupForm" asp-controller="Payrolls" asp-action="AddPayroll" data-ajax="true" data-ajax-method="POST" data-ajax-update="#listSection" data-ajax-success="onSuccess" data-ajax-failure="onFailure">
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="Month"><small>Month (*)</small></label>
+        <input type="number" asp-for="Month" class="form-control" required />
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="Year"><small>Year (*)</small></label>
+        <input type="number" asp-for="Year" class="form-control" required />
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="SalaryScaleId"><small>Salary Scale</small></label>
+        <select class="form-control" asp-for="SalaryScaleId">
+            <option value="">Select from List ...</option>
+            @foreach (SelectListItem item in new SelectList(ViewBag.salaryScalesList, "Id", "Name"))
+            {
+                <option value="@item.Value">@item.Text</option>
+            }
+        </select>
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="Narration"><small>Narration</small></label>
+        <input type="text" asp-for="Narration" class="form-control fullwidth" />
+    </div>
+</form>

@@ -96,6 +96,68 @@ namespace HrmsApp.Data.Migrations.Model
                     b.ToTable("AllowanceTypes");
                 });
 
+            modelBuilder.Entity("HrmsModel.Models.Attendance", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime?>("FromDate")
+                        .HasColumnType("date");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValue(true);
+
+                    b.Property<bool>("IsEndorsed")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValue(false);
+
+                    b.Property<bool>("IsFullMonth")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValue(true);
+
+                    b.Property<int>("Month");
+
+                    b.Property<DateTime?>("ThruDate")
+                        .HasColumnType("date");
+
+                    b.Property<int>("Year");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Attendances");
+                });
+
+            modelBuilder.Entity("HrmsModel.Models.AttendanceActionType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValue(true);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100);
+
+                    b.Property<string>("OthName")
+                        .IsRequired()
+                        .HasMaxLength(100);
+
+                    b.Property<int>("SortOrder");
+
+                    b.Property<string>("SysCode")
+                        .IsRequired();
+
+                    b.HasKey("Id");
+
+                    b.HasAlternateKey("SysCode")
+                        .HasName("UK_AttendanceActionType_SysCode");
+
+                    b.ToTable("AttendanceActionTypes");
+                });
+
             modelBuilder.Entity("HrmsModel.Models.Calendar", b =>
                 {
                     b.Property<long>("Id")
@@ -238,6 +300,53 @@ namespace HrmsApp.Data.Migrations.Model
                     b.HasIndex("PositionId");
 
                     b.ToTable("Candidates");
+                });
+
+            modelBuilder.Entity("HrmsModel.Models.CarouselItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("BtnCaption")
+                        .HasMaxLength(100);
+
+                    b.Property<string>("BtnHref");
+
+                    b.Property<string>("Caption")
+                        .IsRequired()
+                        .HasMaxLength(450);
+
+                    b.Property<string>("ImageName")
+                        .IsRequired()
+                        .HasMaxLength(100);
+
+                    b.Property<string>("ImageText");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValue(true);
+
+                    b.Property<DateTime>("LastUpdated")
+                        .HasColumnType("date");
+
+                    b.Property<string>("OthBtnCaption")
+                        .HasMaxLength(100);
+
+                    b.Property<string>("OthCaption")
+                        .IsRequired()
+                        .HasMaxLength(450);
+
+                    b.Property<string>("OthImageText");
+
+                    b.Property<short>("SortOrder");
+
+                    b.Property<string>("UpdatedBy")
+                        .IsRequired()
+                        .HasMaxLength(100);
+
+                    b.HasKey("Id");
+
+                    b.ToTable("CarouselItems");
                 });
 
             modelBuilder.Entity("HrmsModel.Models.Competency", b =>
@@ -497,6 +606,48 @@ namespace HrmsApp.Data.Migrations.Model
                     b.HasIndex("NationalityId");
 
                     b.ToTable("Employees");
+                });
+
+            modelBuilder.Entity("HrmsModel.Models.EmployeeAttendance", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int>("AttendanceActionTypeId");
+
+                    b.Property<long>("AttendanceId");
+
+                    b.Property<int>("CompliancePercentage")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValue(100);
+
+                    b.Property<long>("EmployeeId");
+
+                    b.Property<int>("FactorValue")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValue(1);
+
+                    b.Property<int>("NbrDays")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValue(0);
+
+                    b.Property<int>("PayrollComponentTypeId");
+
+                    b.Property<int>("RequiredMinutes");
+
+                    b.Property<int>("TotalMinutes");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AttendanceActionTypeId");
+
+                    b.HasIndex("AttendanceId");
+
+                    b.HasIndex("EmployeeId");
+
+                    b.HasIndex("PayrollComponentTypeId");
+
+                    b.ToTable("EmployeeAttendances");
                 });
 
             modelBuilder.Entity("HrmsModel.Models.EmployeeDocument", b =>
@@ -1452,6 +1603,197 @@ namespace HrmsApp.Data.Migrations.Model
                     b.ToTable("OrgUnitTypes");
                 });
 
+            modelBuilder.Entity("HrmsModel.Models.Payroll", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<long?>("AttendanceId");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValue(true);
+
+                    b.Property<bool>("IsApproved")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValue(false);
+
+                    b.Property<bool>("IsEndorsed")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValue(false);
+
+                    b.Property<bool>("IsExported")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValue(false);
+
+                    b.Property<DateTime>("LastUpdated")
+                        .HasColumnType("date");
+
+                    b.Property<int>("Month");
+
+                    b.Property<string>("Narration")
+                        .HasMaxLength(256);
+
+                    b.Property<long?>("SalaryScaleId");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasMaxLength(100);
+
+                    b.Property<int>("Year");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AttendanceId");
+
+                    b.HasIndex("SalaryScaleId");
+
+                    b.ToTable("Payrolls");
+                });
+
+            modelBuilder.Entity("HrmsModel.Models.PayrollAddition", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<long?>("EmployeeId");
+
+                    b.Property<int>("FactorPercent");
+
+                    b.Property<int?>("FromJobGradeId");
+
+                    b.Property<int?>("GradeGroupId");
+
+                    b.Property<bool>("IsCompanyLevel")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValue(true);
+
+                    b.Property<string>("Narration")
+                        .HasMaxLength(256);
+
+                    b.Property<int>("PayrollComponentTypeId");
+
+                    b.Property<long>("PayrollId");
+
+                    b.Property<int?>("ThruJobGradeId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EmployeeId");
+
+                    b.HasIndex("FromJobGradeId");
+
+                    b.HasIndex("GradeGroupId");
+
+                    b.HasIndex("PayrollComponentTypeId");
+
+                    b.HasIndex("PayrollId");
+
+                    b.HasIndex("ThruJobGradeId");
+
+                    b.ToTable("PayrollAdditions");
+                });
+
+            modelBuilder.Entity("HrmsModel.Models.PayrollComponentType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValue(true);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100);
+
+                    b.Property<string>("OthName")
+                        .IsRequired()
+                        .HasMaxLength(100);
+
+                    b.Property<int>("SortOrder");
+
+                    b.Property<string>("SysCode")
+                        .IsRequired();
+
+                    b.HasKey("Id");
+
+                    b.HasAlternateKey("SysCode")
+                        .HasName("UK_PayrollComponentType_SysCode");
+
+                    b.ToTable("PayrollComponentTypes");
+                });
+
+            modelBuilder.Entity("HrmsModel.Models.PayrollDeduction", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<long>("EmployeeId");
+
+                    b.Property<bool>("IsPercentage")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValue(false);
+
+                    b.Property<string>("Narration")
+                        .HasMaxLength(256);
+
+                    b.Property<int>("NbrDays")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValue(0);
+
+                    b.Property<int>("PayrollComponentTypeId");
+
+                    b.Property<long>("PayrollId");
+
+                    b.Property<int>("Value")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValue(0);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EmployeeId");
+
+                    b.HasIndex("PayrollComponentTypeId");
+
+                    b.HasIndex("PayrollId");
+
+                    b.ToTable("PayrollDeductions");
+                });
+
+            modelBuilder.Entity("HrmsModel.Models.PayrollEmployee", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int>("Amount");
+
+                    b.Property<long>("EmployeeId");
+
+                    b.Property<long>("EmploymentId");
+
+                    b.Property<DateTime?>("FromDate")
+                        .HasColumnType("date");
+
+                    b.Property<int>("PayrollComponentTypeId");
+
+                    b.Property<long>("PayrollId");
+
+                    b.Property<DateTime?>("ThruDate")
+                        .HasColumnType("date");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EmployeeId");
+
+                    b.HasIndex("EmploymentId");
+
+                    b.HasIndex("PayrollComponentTypeId");
+
+                    b.HasIndex("PayrollId");
+
+                    b.ToTable("PayrollEmployees");
+                });
+
             modelBuilder.Entity("HrmsModel.Models.Position", b =>
                 {
                     b.Property<long>("Id")
@@ -1792,6 +2134,27 @@ namespace HrmsApp.Data.Migrations.Model
                         .HasForeignKey("NationalityId");
                 });
 
+            modelBuilder.Entity("HrmsModel.Models.EmployeeAttendance", b =>
+                {
+                    b.HasOne("HrmsModel.Models.AttendanceActionType", "AttendanceActionType")
+                        .WithMany("EmployeeAttendances")
+                        .HasForeignKey("AttendanceActionTypeId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("HrmsModel.Models.Attendance", "Attendance")
+                        .WithMany("EmployeeAttendances")
+                        .HasForeignKey("AttendanceId");
+
+                    b.HasOne("HrmsModel.Models.Employee", "Employee")
+                        .WithMany("EmployeeAttendances")
+                        .HasForeignKey("EmployeeId");
+
+                    b.HasOne("HrmsModel.Models.PayrollComponentType", "PayrollComponentType")
+                        .WithMany("EmployeeAttendances")
+                        .HasForeignKey("PayrollComponentTypeId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
             modelBuilder.Entity("HrmsModel.Models.EmployeeDocument", b =>
                 {
                     b.HasOne("HrmsModel.Models.DocumentType", "DocumentType")
@@ -1995,6 +2358,78 @@ namespace HrmsApp.Data.Migrations.Model
                     b.HasOne("HrmsModel.Models.StandardTitleType", "StandardTitleType")
                         .WithMany("OrgUnits")
                         .HasForeignKey("StandardTitleTypeId");
+                });
+
+            modelBuilder.Entity("HrmsModel.Models.Payroll", b =>
+                {
+                    b.HasOne("HrmsModel.Models.Attendance", "Attendance")
+                        .WithMany("Payrolls")
+                        .HasForeignKey("AttendanceId");
+
+                    b.HasOne("HrmsModel.Models.SalaryScale", "SalaryScale")
+                        .WithMany("Payrolls")
+                        .HasForeignKey("SalaryScaleId");
+                });
+
+            modelBuilder.Entity("HrmsModel.Models.PayrollAddition", b =>
+                {
+                    b.HasOne("HrmsModel.Models.Employee", "Employee")
+                        .WithMany("PayrollAdditions")
+                        .HasForeignKey("EmployeeId");
+
+                    b.HasOne("HrmsModel.Models.JobGrade", "FromJobGrade")
+                        .WithMany("FromPayrollAdditions")
+                        .HasForeignKey("FromJobGradeId");
+
+                    b.HasOne("HrmsModel.Models.GradeGroup", "GradeGroup")
+                        .WithMany("PayrollAdditions")
+                        .HasForeignKey("GradeGroupId");
+
+                    b.HasOne("HrmsModel.Models.PayrollComponentType", "PayrollComponentType")
+                        .WithMany("PayrollAdditions")
+                        .HasForeignKey("PayrollComponentTypeId");
+
+                    b.HasOne("HrmsModel.Models.Payroll", "Payroll")
+                        .WithMany("PayrollAdditions")
+                        .HasForeignKey("PayrollId");
+
+                    b.HasOne("HrmsModel.Models.JobGrade", "ThruJobGrade")
+                        .WithMany("ThruPayrollAdditions")
+                        .HasForeignKey("ThruJobGradeId");
+                });
+
+            modelBuilder.Entity("HrmsModel.Models.PayrollDeduction", b =>
+                {
+                    b.HasOne("HrmsModel.Models.Employee", "Employee")
+                        .WithMany("PayrollDeductions")
+                        .HasForeignKey("EmployeeId");
+
+                    b.HasOne("HrmsModel.Models.PayrollComponentType", "PayrollComponentType")
+                        .WithMany("PayrollDeductions")
+                        .HasForeignKey("PayrollComponentTypeId");
+
+                    b.HasOne("HrmsModel.Models.Payroll", "Payroll")
+                        .WithMany("PayrollDeductions")
+                        .HasForeignKey("PayrollId");
+                });
+
+            modelBuilder.Entity("HrmsModel.Models.PayrollEmployee", b =>
+                {
+                    b.HasOne("HrmsModel.Models.Employee", "Employee")
+                        .WithMany("PayrollEmployees")
+                        .HasForeignKey("EmployeeId");
+
+                    b.HasOne("HrmsModel.Models.Employment", "Employment")
+                        .WithMany("PayrollEmployees")
+                        .HasForeignKey("EmploymentId");
+
+                    b.HasOne("HrmsModel.Models.PayrollComponentType", "PayrollComponentType")
+                        .WithMany("PayrollEmployees")
+                        .HasForeignKey("PayrollComponentTypeId");
+
+                    b.HasOne("HrmsModel.Models.Payroll", "Payroll")
+                        .WithMany("PayrollEmployees")
+                        .HasForeignKey("PayrollId");
                 });
 
             modelBuilder.Entity("HrmsModel.Models.Position", b =>

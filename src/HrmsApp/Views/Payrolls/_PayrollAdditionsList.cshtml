@@ -1,0 +1,74 @@
+﻿@using HrmsModel.Models;
+@model IEnumerable<PayrollAddition>
+
+<div class="container-fluid" style="padding:0px">
+    @if (Model.Where(b => !b.EmployeeId.HasValue).Count() != 0)
+    {
+        <label style="color:silver"><small>Global Additions</small></label>
+        <div class="row">
+            <div class="col-sm-11 col-sm-offset-1">
+                <table class="table table-hover table-condensed" style="font-size:smaller">
+                    <thead>
+                        <tr>
+                            <th>Component</th>
+                            <th>Factor%</th>
+                            <th>Company</th>
+                            <th>Grade Group</th>
+                            <th>From Job Grade</th>
+                            <th>Thru Job Grade</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Where(b => !b.EmployeeId.HasValue))
+                        {
+                            <tr>
+                                <td>@item.PayrollComponentType.Name</td>
+                                <td>@item.FactorPercent</td>
+                                <td><input type="checkbox" asp-for="@item.IsCompanyLevel" readonly disabled /></td>
+                                <td>@string.Format("{0}", item.GradeGroupId.HasValue ? item.GradeGroup.Name : null)</td>
+                                <td>@string.Format("{0}", item.FromJobGradeId.HasValue ? item.FromJobGrade.Name : null)</td>
+                                <td>@string.Format("{0}", item.ThruJobGradeId.HasValue ? item.ThruJobGrade.Name : null)</td>
+                                <td>
+                                    <a role="button" href="#" onclick="deletePayrollAddition(@item.Id)" class="btn pull-right" title="Remove"><span class="fa fa-trash"></span></a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+    
+    @if (Model.Where(b => b.EmployeeId.HasValue).Count() != 0)
+    {
+        <label style="color:silver"><small>Individual Additions</small></label>
+        <div class="row">
+            <div class="col-sm-11 col-sm-offset-1">
+                <table class="table table-hover table-condensed" style="font-size:smaller">
+                    <thead>
+                        <tr>
+                            <th>Employee</th>
+                            <th>Component</th>
+                            <th>Factor%</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Where(b => b.EmployeeId.HasValue))
+                        {
+                            <tr>
+                                <td>@item.Employee.FirstName &nbsp;@item.Employee.FatherName &nbsp;@item.Employee.FamilyName</td>
+                                <td>@item.PayrollComponentType.Name</td>
+                                <td>@item.FactorPercent</td>
+                                <td>
+                                    <a role="button" href="#" onclick="deletePayrollAddition(@item.Id)" class="btn pull-right" title="Remove"><span class="fa fa-trash"></span></a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+</div>

@@ -1,0 +1,24 @@
+﻿@using HrmsModel.Models;
+@model IEnumerable<EmployeeViewModel>
+
+<div class="container-fluid" style="padding:0px">
+    <label style="color:silver"><small>Welcome on Board</small></label>
+    @foreach (var item in Model)
+    {
+        string photo;
+        if (item.Employee.Photo != null) { photo = "data:image/png;base64," + Convert.ToBase64String(item.Employee.Photo); }
+        else { photo = string.Format("{0}/unknown.png", "/images"); }
+        <div class="media">
+            <div class="media-left">
+                <img class="img" width="90" height="100" src="@photo" />
+            </div>
+            <div class="media-body">
+                <h4 class="media-heading">@item.EmployeeName</h4>
+                <h5 style="color:silver;font-weight:bold">
+                    <span id="posName">@item.PositionName : @item.OrgUnitName</span>
+                </h5>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+            </div>
+        </div>
+    }
+</div>

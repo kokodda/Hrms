@@ -1,0 +1,26 @@
+﻿@using HrmsModel.Models;
+@model IEnumerable<Attendance>
+
+<form role="form" id="popupForm" asp-controller="Payrolls" asp-action="LinkAttendance" data-ajax="true" data-ajax-method="POST" data-ajax-update="#listSection" data-ajax-success="onSuccess" data-ajax-failure="onFailure">
+    <input type="hidden" name="payrollId" id="payrollId" />
+    <div class="form-group-sm">
+        @if (Model.Count() != 0)
+        {
+            <label class="control-label"><small>Completed Attendance (*)</small></label>
+        }
+        else
+        {
+            <label style="color:silver"><small>List Contains NO Attendance to Link with Payroll.</small></label>
+        }
+        @foreach(var item in Model)
+        {
+            <div>
+                <input type="radio" name="attendanceId" value="@item.Id" />&nbsp;
+                <span>
+                    <label><small>@string.Format("{0}", System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(item.Month)) &nbsp;@item.Year</small></label>&nbsp;&raquo;&nbsp;
+                    <small>@string.Format("{0}", item.IsFullMonth ? "Previous Full Month" : (item.FromDate.Value.ToString("dd/MM") + " to " + item.ThruDate.Value.ToString("dd/MM")))</small>
+                </span>
+            </div>
+        }
+    </div>
+</form>

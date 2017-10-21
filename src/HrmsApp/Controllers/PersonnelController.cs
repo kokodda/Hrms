@@ -200,9 +200,9 @@ namespace HrmsApp.Controllers
         public async Task<IActionResult> EditEmployee(Employee item)
         {
             var model = await _context.Employees.Include(b => b.Governorate).Include(b => b.Nationality).SingleOrDefaultAsync(b => b.Id == item.Id);
-            item.LastUpdated = DateTime.Now.Date;
-            item.UpdatedBy = "user";
             await TryUpdateModelAsync(model);
+            model.LastUpdated = DateTime.Now.Date;
+            model.UpdatedBy = "user";
 
             await _context.SaveChangesAsync();
             return PartialView("_PersonalData", model);

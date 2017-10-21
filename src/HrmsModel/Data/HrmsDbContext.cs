@@ -28,6 +28,7 @@ namespace HrmsModel.Data
         public virtual DbSet<Governorate> Governorates { get; set; }
         public virtual DbSet<Nationality> Nationalities { get; set; }
         public virtual DbSet<PayrollComponentType> PayrollComponentTypes { get; set; }
+        public virtual DbSet<AttendanceActionType> AttendanceActionTypes { get; set; }
 
         public virtual DbSet<Calendar> Calendars { get; set; }
         public virtual DbSet<Holiday> Holidays { get; set; }
@@ -57,10 +58,13 @@ namespace HrmsModel.Data
         public virtual DbSet<GenericSubGroup> GenericSubGroups { get; set; }
         public virtual DbSet<EmployeeGroup> EmployeeGroups { get; set; }
         public virtual DbSet<EmployeePromotion> EmployeePromotions { get; set; }
+        public virtual DbSet<Attendance> Attendances { get; set; }
         public virtual DbSet<EmployeeAttendance> EmployeeAttendances { get; set; }
         public virtual DbSet<Payroll> Payrolls { get; set; }
         public virtual DbSet<PayrollEmployee> PayrollEmployees { get; set; }
         public virtual DbSet<PayrollAddition> PayrollAdditions { get; set; }
+        public virtual DbSet<PayrollDeduction> PayrollDeductions { get; set; }
+        public virtual DbSet<CarouselItem> CarouselItems { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -148,6 +152,20 @@ namespace HrmsModel.Data
             modelBuilder.Entity<PromotionType>().Property(b => b.OthName).IsRequired().HasMaxLength(100);
             modelBuilder.Entity<PromotionType>().Property(b => b.IsActive).HasDefaultValue(true);
             modelBuilder.Entity<PromotionType>().ToTable("PromotionTypes");
+
+            modelBuilder.Entity<PayrollComponentType>().HasKey(b => b.Id);
+            modelBuilder.Entity<PayrollComponentType>().HasAlternateKey(b => b.SysCode).HasName("UK_PayrollComponentType_SysCode");
+            modelBuilder.Entity<PayrollComponentType>().Property(b => b.Name).IsRequired().HasMaxLength(100);
+            modelBuilder.Entity<PayrollComponentType>().Property(b => b.OthName).IsRequired().HasMaxLength(100);
+            modelBuilder.Entity<PayrollComponentType>().Property(b => b.IsActive).HasDefaultValue(true);
+            modelBuilder.Entity<PayrollComponentType>().ToTable("PayrollComponentTypes");
+
+            modelBuilder.Entity<AttendanceActionType>().HasKey(b => b.Id);
+            modelBuilder.Entity<AttendanceActionType>().HasAlternateKey(b => b.SysCode).HasName("UK_AttendanceActionType_SysCode");
+            modelBuilder.Entity<AttendanceActionType>().Property(b => b.Name).IsRequired().HasMaxLength(100);
+            modelBuilder.Entity<AttendanceActionType>().Property(b => b.OthName).IsRequired().HasMaxLength(100);
+            modelBuilder.Entity<AttendanceActionType>().Property(b => b.IsActive).HasDefaultValue(true);
+            modelBuilder.Entity<AttendanceActionType>().ToTable("AttendanceActionTypes");
 
             modelBuilder.Entity<Governorate>().HasKey(b => b.Id);
             modelBuilder.Entity<Governorate>().Property(b => b.Name).IsRequired().HasMaxLength(100);
@@ -501,6 +519,75 @@ namespace HrmsModel.Data
             modelBuilder.Entity<HolidayVariation>().Property(b => b.IsComponsated).HasDefaultValue(false);
             modelBuilder.Entity<HolidayVariation>().Property(b => b.IsActive).HasDefaultValue(true);
             modelBuilder.Entity<HolidayVariation>().ToTable("HolidayVariations");
+
+            modelBuilder.Entity<Attendance>().HasKey(b => b.Id);
+            modelBuilder.Entity<Attendance>().Property(b => b.IsFullMonth).HasDefaultValue(true);
+            modelBuilder.Entity<Attendance>().Property(b => b.FromDate).HasColumnType("date");
+            modelBuilder.Entity<Attendance>().Property(b => b.ThruDate).HasColumnType("date");
+            modelBuilder.Entity<Attendance>().Property(b => b.IsEndorsed).HasDefaultValue(false);
+            modelBuilder.Entity<Attendance>().Property(b => b.IsActive).HasDefaultValue(true);
+            modelBuilder.Entity<Attendance>().ToTable("Attendances");
+
+            modelBuilder.Entity<EmployeeAttendance>().HasKey(b => b.Id);
+            modelBuilder.Entity<EmployeeAttendance>().HasOne(b => b.Employee).WithMany(b => b.EmployeeAttendances).HasForeignKey(b => b.EmployeeId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<EmployeeAttendance>().HasOne(b => b.Attendance).WithMany(b => b.EmployeeAttendances).HasForeignKey(b => b.AttendanceId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<EmployeeAttendance>().Property(b => b.FactorValue).HasDefaultValue(1);
+            modelBuilder.Entity<EmployeeAttendance>().Property(b => b.CompliancePercentage).HasDefaultValue(100);
+            modelBuilder.Entity<EmployeeAttendance>().Property(b => b.NbrDays).HasDefaultValue(0);
+            modelBuilder.Entity<EmployeeAttendance>().ToTable("EmployeeAttendances");
+
+            modelBuilder.Entity<Payroll>().HasKey(b => b.Id);
+            modelBuilder.Entity<Payroll>().HasOne(b => b.Attendance).WithMany(b => b.Payrolls).HasForeignKey(b => b.AttendanceId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Payroll>().HasOne(b => b.SalaryScale).WithMany(b => b.Payrolls).HasForeignKey(b => b.SalaryScaleId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Payroll>().Property(b => b.Narration).HasMaxLength(256);
+            modelBuilder.Entity<Payroll>().Property(b => b.IsActive).HasDefaultValue(true);
+            modelBuilder.Entity<Payroll>().Property(b => b.IsApproved).HasDefaultValue(false);
+            modelBuilder.Entity<Payroll>().Property(b => b.IsEndorsed).HasDefaultValue(false);
+            modelBuilder.Entity<Payroll>().Property(b => b.IsExported).HasDefaultValue(false);
+            modelBuilder.Entity<Payroll>().Property(b => b.LastUpdated).HasColumnType("date");
+            modelBuilder.Entity<Payroll>().Property(b => b.UpdatedBy).HasMaxLength(100);
+            modelBuilder.Entity<Payroll>().ToTable("Payrolls");
+
+            modelBuilder.Entity<PayrollEmployee>().HasKey(b => b.Id);
+            modelBuilder.Entity<PayrollEmployee>().HasOne(b => b.Payroll).WithMany(b => b.PayrollEmployees).HasForeignKey(b => b.PayrollId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<PayrollEmployee>().HasOne(b => b.Employee).WithMany(b => b.PayrollEmployees).HasForeignKey(b => b.EmployeeId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<PayrollEmployee>().HasOne(b => b.Employment).WithMany(b => b.PayrollEmployees).HasForeignKey(b => b.EmploymentId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<PayrollEmployee>().HasOne(b => b.PayrollComponentType).WithMany(b => b.PayrollEmployees).HasForeignKey(b => b.PayrollComponentTypeId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<PayrollEmployee>().Property(b => b.FromDate).HasColumnType("date");
+            modelBuilder.Entity<PayrollEmployee>().Property(b => b.ThruDate).HasColumnType("date");
+            modelBuilder.Entity<PayrollEmployee>().ToTable("PayrollEmployees");
+
+            modelBuilder.Entity<PayrollAddition>().HasKey(b => b.Id);
+            modelBuilder.Entity<PayrollAddition>().HasOne(b => b.Payroll).WithMany(b => b.PayrollAdditions).HasForeignKey(b => b.PayrollId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<PayrollAddition>().HasOne(b => b.Employee).WithMany(b => b.PayrollAdditions).HasForeignKey(b => b.EmployeeId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<PayrollAddition>().HasOne(b => b.GradeGroup).WithMany(b => b.PayrollAdditions).HasForeignKey(b => b.GradeGroupId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<PayrollAddition>().HasOne(b => b.FromJobGrade).WithMany(b => b.FromPayrollAdditions).HasForeignKey(b => b.FromJobGradeId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<PayrollAddition>().HasOne(b => b.ThruJobGrade).WithMany(b => b.ThruPayrollAdditions).HasForeignKey(b => b.ThruJobGradeId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<PayrollAddition>().HasOne(b => b.PayrollComponentType).WithMany(b => b.PayrollAdditions).HasForeignKey(b => b.PayrollComponentTypeId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<PayrollAddition>().Property(b => b.IsCompanyLevel).HasDefaultValue(true);
+            modelBuilder.Entity<PayrollAddition>().Property(b => b.Narration).HasMaxLength(256);
+            modelBuilder.Entity<PayrollAddition>().ToTable("PayrollAdditions");
+
+            modelBuilder.Entity<PayrollDeduction>().HasKey(b => b.Id);
+            modelBuilder.Entity<PayrollDeduction>().HasOne(b => b.Payroll).WithMany(b => b.PayrollDeductions).HasForeignKey(b => b.PayrollId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<PayrollDeduction>().HasOne(b => b.Employee).WithMany(b => b.PayrollDeductions).HasForeignKey(b => b.EmployeeId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<PayrollDeduction>().HasOne(b => b.PayrollComponentType).WithMany(b => b.PayrollDeductions).HasForeignKey(b => b.PayrollComponentTypeId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<PayrollDeduction>().Property(b => b.NbrDays).HasDefaultValue(0);
+            modelBuilder.Entity<PayrollDeduction>().Property(b => b.Value).HasDefaultValue(0);
+            modelBuilder.Entity<PayrollDeduction>().Property(b => b.IsPercentage).HasDefaultValue(false);
+            modelBuilder.Entity<PayrollDeduction>().Property(b => b.Narration).HasMaxLength(256);
+            modelBuilder.Entity<PayrollDeduction>().ToTable("PayrollDeductions");
+
+            modelBuilder.Entity<CarouselItem>().HasKey(b => b.Id);
+            modelBuilder.Entity<CarouselItem>().Property(b => b.ImageName).IsRequired().HasMaxLength(100);
+            modelBuilder.Entity<CarouselItem>().Property(b => b.Caption).IsRequired().HasMaxLength(450);
+            modelBuilder.Entity<CarouselItem>().Property(b => b.OthCaption).IsRequired().HasMaxLength(450);
+            modelBuilder.Entity<CarouselItem>().Property(b => b.BtnCaption).HasMaxLength(100);
+            modelBuilder.Entity<CarouselItem>().Property(b => b.OthBtnCaption).HasMaxLength(100);
+            modelBuilder.Entity<CarouselItem>().Property(b => b.LastUpdated).HasColumnType("date");
+            modelBuilder.Entity<CarouselItem>().Property(b => b.UpdatedBy).IsRequired().HasMaxLength(100);
+            modelBuilder.Entity<CarouselItem>().Property(b => b.IsActive).HasDefaultValue(true);
+            modelBuilder.Entity<CarouselItem>().ToTable("CarouselItems");
         }
     }
 }

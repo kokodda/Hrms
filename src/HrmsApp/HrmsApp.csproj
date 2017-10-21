@@ -69,6 +69,7 @@
     <Folder Include="Data\Migrations\Model\" />
     <Folder Include="wwwroot\files\JDs\" />
     <Folder Include="wwwroot\files\Personnel\" />
+    <Folder Include="wwwroot\carousels\" />
   </ItemGroup>
 
 </Project>

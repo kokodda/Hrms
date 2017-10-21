@@ -1,0 +1,43 @@
+﻿@using HrmsModel.Models;
+@model IEnumerable<Payroll>
+
+<div class="container-fluid" style="padding:0px">
+    <div class="panel panel-default">
+        <div class="panel-heading"><small><label>In Process Payrolls</label></small></div>
+        <div class="panel-body">
+            <table class="table table-hover table-condensed" style="font-size:smaller">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Month</th>
+                        <th>Salary Scale</th>
+                        <th>Attendance</th>
+                        <th>Status</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach(var item in Model)
+                    {
+                        <tr>
+                            <th><input type="radio" onclick="selectPayroll(@item.Id)" /></th>
+                            <td>@string.Format("{0}", System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(item.Month)) &nbsp;@item.Year</td>
+                            <td>@item.SalaryScale.Name</td>
+                            <td>@string.Format("{0}", item.AttendanceId.HasValue ? (System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(item.Attendance.Month) + " " + item.Attendance.Year) : "Not Linked")</td>
+                            <td>@string.Format("{0}", item.IsExported ? "Exported" : (item.IsApproved ? "Approved" : "Initiated"))</td>
+                            <td>
+                                <div class="btn-group-xs pull-right">
+                                    <a role="button" href="#" class="btn btn-xs" onclick="linkAttendance(@item.Id)" data-toggle="modal" data-target="#myModal" title="Link Attendance"><span class="fa fa-clock-o"></span></a>
+                                    <a role="button" href="#" class="btn btn-xs" title="Generate"><span class="glyphicon glyphicon-cog"></span></a>
+                                    <a role="button" href="#" class="btn btn-xs" title="Preview"><span class="fa fa-eye"></span></a>
+                                    <a role="button" href="#" class="btn btn-xs" title="Print"><span class="fa fa-print"></span></a>
+                                </div>
+                            </td>
+                        </tr>
+
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,40 @@
+﻿@using HrmsModel.Models;
+@model IEnumerable<PayrollDeduction>
+
+<div class="container-fluid" style="padding:0px">
+    @if (Model.Count() != 0)
+    {
+        <label style="color:silver"><small>Individual Deductions</small></label>
+        <div class="row">
+            <div class="col-sm-11 col-sm-offset-1">
+                <table class="table table-hover table-condensed" style="font-size:smaller">
+                    <thead>
+                        <tr>
+                            <th>Employee</th>
+                            <th>Component</th>
+                            <th>Number of Days</th>
+                            <th>Deduction Value</th>
+                            <th>Value Type</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.Employee.FirstName &nbsp;@item.Employee.FatherName &nbsp;@item.Employee.FamilyName</td>
+                                <td>@item.PayrollComponentType.Name</td>
+                                <td>@item.NbrDays</td>
+                                <td>@item.Value</td>
+                                <td>@string.Format("{0}", item.IsPercentage ? "%" : "Amount")</td>
+                                <td>
+                                    <a role="button" href="#" onclick="deletePayrollDeduction(@item.Id)" class="btn pull-right" title="Remove"><span class="fa fa-trash"></span></a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+</div>

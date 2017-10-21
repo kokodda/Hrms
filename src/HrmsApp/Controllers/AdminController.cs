@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 using HrmsModel.Models;
 using HrmsModel.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using System.IO;
 
 namespace HrmsApp.Controllers
 {
@@ -13,11 +16,13 @@ namespace HrmsApp.Controllers
     {
         private readonly HrmsDbContext _context;
         private readonly ILookupServices _lookup;
+        private readonly IHostingEnvironment _environment;
 
-        public AdminController(HrmsDbContext context, ILookupServices lookup)
+        public AdminController(HrmsDbContext context, ILookupServices lookup, IHostingEnvironment environment)
         {
             _context = context;
             _lookup = lookup;
+            _environment = environment;
         }
 
         public IActionResult Index()
@@ -66,6 +71,12 @@ namespace HrmsApp.Controllers
                     break;
                 case "PromotionType":
                     model = _context.PromotionTypes.ToList<ILookup>();
+                    break;
+                case "PayrollComponentType":
+                    model = _context.PayrollComponentTypes.ToList<ILookup>();
+                    break;
+                case "AttendanceActionType":
+                    model = _context.AttendanceActionTypes.ToList<ILookup>();
                     break;
                 case "Governorate":
                     var x1 = _context.Governorates.ToList();
@@ -145,6 +156,16 @@ namespace HrmsApp.Controllers
                     _context.SaveChanges();
                     _lookup.Refresh<PromotionType>();
                     break;
+                case "PayrollComponentType":
+                    _context.PayrollComponentTypes.SingleOrDefault(b => b.Id == id).IsActive = status;
+                    _context.SaveChanges();
+                    _lookup.Refresh<PayrollComponentType>();
+                    break;
+                case "AttendanceActionType":
+                    _context.AttendanceActionTypes.SingleOrDefault(b => b.Id == id).IsActive = status;
+                    _context.SaveChanges();
+                    _lookup.Refresh<AttendanceActionType>();
+                    break;
                 case "Governorate":
                     _context.Governorates.SingleOrDefault(b => b.Id == id).IsActive = status;
                     _context.SaveChanges();
@@ -157,6 +178,73 @@ namespace HrmsApp.Controllers
             return RedirectToAction("DictionaryList", new { typeName = typeName });
         }
 
+        //carousel
+        public async Task<IActionResult> CarouselItemsList()
+        {
+            var model = _context.CarouselItems;
+            return PartialView("_CarouselItemsList", await model.ToListAsync());
+        }
 
+        public IActionResult AddCarouselItem()
+        {
+            return PartialView("_AddCarouselItem");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddCarouselItem(CarouselItem item)
+        {
+            item.LastUpdated = DateTime.Now.Date;
+            item.UpdatedBy = "user";
+            _context.CarouselItems.Add(item);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("CarouselItemsList");
+        }
+
+        public async Task<IActionResult> EditCarouselItem(long id)
+        {
+            var model = await _context.CarouselItems.SingleOrDefaultAsync(b => b.Id == id);
+            return PartialView("_EditCarouselItem", model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditCarouselItem(CarouselItem item)
+        {
+            var model = await _context.CarouselItems.SingleOrDefaultAsync(b => b.Id == item.Id);
+            await TryUpdateModelAsync(model);
+            model.LastUpdated = DateTime.Now.Date;
+            model.UpdatedBy = "user";
+            await _context.SaveChangesAsync();
+            return RedirectToAction("CarouselItemsList");
+        }
+
+        //uploads
+        [HttpPost]
+        public async Task<IActionResult> fileUpload(ICollection<IFormFile> files)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var file = files.FirstOrDefault();
+                    if (file.Length > 0)
+                    {
+                        var uploadsFolder = Path.Combine(_environment.ContentRootPath, @"wwwroot\carousels");
+                        DirectoryInfo di = new DirectoryInfo(Path.GetFullPath(uploadsFolder));
+                        using (var fileStream = new FileStream(Path.Combine(uploadsFolder, file.FileName), FileMode.Create))
+                        {
+                            await file.CopyToAsync(fileStream);
+                        }
+                    }
+                    return Json("Successfull");
+                }
+                catch (Exception e)
+                {
+                    return Json("error! Failed to Upload Files. Please re-try later." + e.Message);
+                }
+            }
+            return Json("error! Input File(s) are corrupted. Please re-enter files.");
+        }
     }
 }

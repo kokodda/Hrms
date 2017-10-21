@@ -2,6 +2,7 @@
     ViewData["Title"] = "Admin";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<link href="~/lib/bootstrap-fileinput/css/fileinput.css" media="all" rel="stylesheet" type="text/css" />
 
 <div class="container-fluid">
     <br />
@@ -21,22 +22,67 @@
                 <li><a href="javascript:getDictionary('QualificationType');"><small>Employee Qualification Types</small></a></li>
                 <li><a href="javascript:getDictionary('LanguageType');"><small>Employee Language Types</small></a></li>
                 <li><a href="javascript:getDictionary('PromotionType');"><small>Employee Promotion Types</small></a></li>
+                <li><a href="javascript:getDictionary('PayrollComponentType');"><small>Payroll Component Types</small></a></li>
+                <li><a href="javascript:getDictionary('AttendanceActionType');"><small>Attendance Corrective Action Types</small></a></li>
                 <li><a href="javascript:getDictionary('Nationality');"><small>Employee Nationalities List</small></a></li>
                 <li><a href="javascript:getDictionary('Governorate');"><small>Governorates List</small></a></li>
             </ul>
             <hr />
-            
+            <div>
+                <a href="javascript:carouselItemsList();"><small>Carousel Items</small></a>
+            </div>
         </div>
         <div class="col-sm-9" id="listSection"></div>
     </div>
 </div>
 
+<div class="modal fade" id="photoModal" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" id="modalClose" data-dismiss="modal">&times;</button>
+                <div class="modal-title">Image Upload</div>
+            </div>
+            <div class="modal-body" id="popupFormBody">
+                <label class="control-label">Select Image</label>
+                <input type="file" name="files" accept="image/*" class="file-loading" id="inputPhotos" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default btn-xs pull-right" onclick="onFileInputClearClick('inputPhotos')" data-dismiss="modal">Cancel</button> &nbsp; &nbsp;
+                <small><span class="pull-left" id="popupResult1"></span></small>
+            </div>
+        </div>
+    </div>
+</div>
+
 @section Scripts
 {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     @{ await Html.RenderPartialAsync("_PopupForm"); }
+    <script src="~/lib/bootstrap-fileinput/js/fileinput.min.js"></script>
     <script>
         $(document).on('ready', function () {
-
+            $("#inputPhotos").fileinput({
+                uploadAsync: false,
+                showUpload: true,
+                showRemove: true,
+                multiple: false,
+                previewFileType: "image",
+                browseClass: "btn btn-success",
+                browseLabel: "Browse",
+                browseIcon: "<i class=\"glyphicon glyphicon-file\"></i> ",
+                removeClass: "btn btn-danger",
+                removeLabel: "Cancel",
+                removeIcon: "<i class=\"glyphicon glyphicon-trash\"></i> ",
+                uploadClass: "btn btn-info",
+                uploadLabel: "Upload",
+                uploadIcon: "<i class=\"glyphicon glyphicon-upload\"></i> ",
+                uploadUrl: '@Url.Action("fileUpload", "Admin")'
+            });
+            $('#inputPhotos').on('filebatchuploadsuccess', function (event, data, previewId, index) {
+                $('#popupResult1').html('Image Successfully Uploaded.');
+                $('#imageName').val(data.filenames);
+            });
         });
 
         function showPopup() {
@@ -74,6 +120,46 @@
                     $('#listSection').html(result);
                 }
             });
+        }
+
+        //carousel
+        function carouselItemsList() {
+            $.ajax({
+                url: '@Url.Action("CarouselItemsList", "Admin")',
+                type: 'GET',
+                success: function (result) {
+                    $('#listSection').html(result);
+                }
+            });
+        }
+        function addCarouselItem() {
+            $.ajax({
+                url: '@Url.Action("AddCarouselItem", "Admin")',
+                type: 'GET',
+                success: function (result) {
+                    $('#carouselItemSection').html(result);
+                    $("#inputPhotos").html(null);
+                }
+            });
+        }
+        function editCarouselItem(id) {
+            $.ajax({
+                url: '@Url.Action("EditCarouselItem", "Admin")',
+                type: 'GET',
+                data: { id: id },
+                success: function (result) {
+                    $('#carouselItemSection').html(result);
+                }
+            });
+        }
+        function cancelCarouselItem() {
+            $('#carouselItemSection').html(null);
+        }
+        function onCarouselSuccess() {
+            $('#carouselItemSection').html(null);
+        }
+        function onCarouselFailure() {
+            alert("Error! Failed to Save Carousel Item.");
         }
     </script>    
 }

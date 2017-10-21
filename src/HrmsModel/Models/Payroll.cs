@@ -11,6 +11,7 @@ namespace HrmsModel.Models
         public int Year { get; set; }
         public int Month { get; set; }
         public long? SalaryScaleId { get; set; }
+        public long? AttendanceId { get; set; }
         public string Narration { get; set; }
         public bool IsApproved { get; set; }
         public bool IsExported { get; set; }
@@ -20,8 +21,9 @@ namespace HrmsModel.Models
         public string UpdatedBy { get; set; }
 
         public virtual SalaryScale SalaryScale { get; set; }
+        public virtual Attendance Attendance { get; set; }
         public virtual ICollection<PayrollEmployee> PayrollEmployees { get; set; }
         public virtual ICollection<PayrollAddition> PayrollAdditions { get; set; }
-        public virtual ICollection<EmployeeAttendance> EmployeeAttendances { get; set; }
+        public virtual ICollection<PayrollDeduction> PayrollDeductions { get; set; }
     }
 }

@@ -1,0 +1,27 @@
+﻿@using HrmsModel.Models;
+@model Attendance
+
+<form role="form" id="popupForm" asp-controller="Attendance" asp-action="AddAttendance" data-ajax="true" data-ajax-method="POST" data-ajax-update="#listSection" data-ajax-success="onSuccess" data-ajax-failure="onFailure">
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="Month"><small>For Month (*)</small></label>
+        <input type="number" asp-for="Month" class="form-control" required />
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="Year"><small>For Year (*)</small></label>
+        <input type="number" asp-for="Year" class="form-control" required />
+    </div>
+    <div class="input-group-sm">
+        <label class="control-label" asp-for="IsFullMonth">
+            <input type="checkbox" asp-for="IsFullMonth" checked />
+            <span><small>Is Full Month (Previous)</small></span>
+        </label>
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="FromDate"><small>From Date</small></label>
+        <input type="date" asp-for="FromDate" class="form-control" />
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="ThruDate"><small>Thru Date</small></label>
+        <input type="date" asp-for="ThruDate" class="form-control" />
+    </div>
+</form>

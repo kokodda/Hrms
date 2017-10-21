@@ -51,5 +51,7 @@ namespace HrmsModel.Models
         public virtual ICollection<EmployeeGroup> EmployeeGroups { get; set; }
         public virtual ICollection<PayrollEmployee> PayrollEmployees { get; set; }
         public virtual ICollection<EmployeeAttendance> EmployeeAttendances { get; set; }
+        public virtual ICollection<PayrollAddition> PayrollAdditions { get; set; }
+        public virtual ICollection<PayrollDeduction> PayrollDeductions { get; set; }
     }
 }

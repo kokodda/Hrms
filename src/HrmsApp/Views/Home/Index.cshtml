@@ -3,27 +3,37 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="jumbotron">
-    <h2>HRMS</h2>
-</div>
+<div id="carouselSection"></div>
 <div class="row">
-    <div class="col-sm-2">
-        <div>
-            <ul class="list-unstyled">
-                <li><a href="~/Admin/Index">Admin</a></li>
-                <li><a href="~/Organization/Index">Organization</a></li>
-                <li><a href="~/Positions/Index">Job Center</a></li>
-                <li><a href="~/Governance/Index">Governance Center</a></li>
-                <li><a href="~/Personnel/Index">Personnel</a></li>
-                <li><a href="~/Groups/Index">Staff Groups</a></li>
-                <li><a href="~/Recruitment/Index">Recruitment</a></li>
-                <li><a href="~/Calendars/Index">Calendars</a></li>
-                <li><a href="~/Statistics/HeadCount">Head Count</a></li>
-            </ul>
+    <br />
+    <div class="col-sm-2" style="text-align:center">
+        <div class="panel panel-default">
+            <div class="panel-heading"><label><small>Happy Birthday</small></label></div>
+            <div class="panel-body">
+                Bruce Willis
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading"><label><small>Farewell</small></label></div>
+            <div class="panel-body">
+                Salman Salem
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading"><label><small>Congradulations</small></label></div>
+            <div class="panel-body">
+                New Born, New Diploma, Promotion
+            </div>
         </div>
     </div>
-    <div class="col-sm-7"></div>
+    <div class="col-sm-7" id="welcomeSection"></div>
     <div class="col-sm-3">
+        <div class="btn-group-lg">
+            <a href="/Home/AddLeaveRequest" class="btn btn-lg" title="Leave Request"><span class="fa fa-calendar" style="color:dodgerblue;font-size:48px"></span></a>
+            <a href="/Home/EditContacts" class="btn btn-lg" title="Update Contacts"><span class="fa fa-mobile-phone" style="color:palevioletred;font-size:48px"></span></a>
+            <a href="#" class="btn btn-lg" title="Transportation Request"><span class="fa fa-car" style="color:forestgreen;font-size:48px"></span></a>
+        </div>
+        <br />
         <div id="holidaysSection"></div>
         <div id="leaveSection"></div>
     </div>
@@ -33,6 +43,14 @@
 {
     <script>
         $(document).on('ready', function () {
+            $.ajax({
+                url: '@Url.Action("Carousel", "Home")',
+                type: 'GET',
+                success: function (result) {
+                    $('#carouselSection').html(result);
+                    $('#my-carousel').carousel();
+                }
+            });
             $.ajax({
                 url: '@Url.Action("HolidaysList", "Home")',
                 type: 'GET',
@@ -45,6 +63,13 @@
                 type: 'GET',
                 success: function (result) {
                     $('#leaveSection').html(result);
+                }
+            });
+            $.ajax({
+                url: '@Url.Action("Welcome", "Home")',
+                type: 'GET',
+                success: function (result) {
+                    $('#welcomeSection').html(result);
                 }
             });
         })

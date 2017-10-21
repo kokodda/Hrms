@@ -26,5 +26,7 @@ namespace HrmsModel.Models
         public virtual ICollection<Employment> Employments { get; set; }
         public virtual ICollection<Position> Positions { get; set; }
         public virtual ICollection<EmployeePromotion> EmployeePromotions { get; set; }
+        public virtual ICollection<PayrollAddition> FromPayrollAdditions { get; set; }
+        public virtual ICollection<PayrollAddition> ThruPayrollAdditions { get; set; }
     }
 }

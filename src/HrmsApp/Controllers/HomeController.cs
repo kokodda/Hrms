@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using HrmsModel.Models;
 using HrmsModel.Data;
+using HrmsApp.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace HrmsApp.Controllers
@@ -12,14 +13,23 @@ namespace HrmsApp.Controllers
     public class HomeController : Controller
     {
         private readonly HrmsDbContext _context;
-        public HomeController(HrmsDbContext context)
+        private readonly ILookupServices _lookup;
+
+        public HomeController(HrmsDbContext context, ILookupServices lookup)
         {
             _context = context;
+            _lookup = lookup;
         }
 
         public IActionResult Index()
         {
             return View();
+        }
+
+        public async Task<IActionResult> Carousel()
+        {
+            var model = _context.CarouselItems.Where(b => b.IsActive).OrderBy(b => b.SortOrder);
+            return PartialView("_Carousel", await model.ToListAsync());
         }
 
         public IActionResult About()
@@ -103,6 +113,49 @@ namespace HrmsApp.Controllers
             var model = await _context.EmployeeLeaves.Include(b => b.Employee).ThenInclude(b => b.Employments).ThenInclude(b => b.OrgUnit)
                                         .Where(b => b.FromDate == DateTime.Today.Date && !b.IsCancelled).ToListAsync();
             return View(model);
+        }
+
+        public async Task<IActionResult> Welcome()
+        {
+            List<EmployeeViewModel> model = new List<EmployeeViewModel>();
+            var x = await _context.Employments.Include(b => b.Employee).Include(b => b.OrgUnit).Include(b => b.Position)
+                                    .Where(b => b.IsActive).Take(5).ToListAsync();
+            foreach(var x1 in x)
+            {
+                EmployeeViewModel item = new EmployeeViewModel();
+                item.Employee = x1.Employee;
+                item.EmployeeName = x1.Employee.FirstName + " " + x1.Employee.FatherName + " " + x1.Employee.FamilyName;
+                item.OrgUnitName = x1.OrgUnit.Name;
+                item.PositionName = x1.PositionId.HasValue ? x1.Position.Name : (x1.IsHead ? x1.OrgUnit.HeadPositionName : x1.JobName);
+                model.Add(item);
+            }
+            return PartialView("_Welcome", model);
+        }
+
+        public async Task<IActionResult> EditContacts()
+        {
+            var model = await _context.Employees.FirstOrDefaultAsync(b => b.IsActive);
+            ViewBag.governoratesList = await _context.Governorates.Where(b => b.IsActive).ToListAsync();
+            return View("EditContacts", model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditContacts(Employee item)
+        {
+            var model = await _context.Employees.SingleOrDefaultAsync(b => b.Id == item.Id);
+            await TryUpdateModelAsync(model);
+            model.LastUpdated = DateTime.Now.Date;
+            model.UpdatedBy = "user";
+            await _context.SaveChangesAsync();
+
+            return Content("Thank You for Updating Your Contacts.", "text/html");
+        }
+
+        public IActionResult AddLeaveRequest()
+        {
+            ViewBag.leaveTypesList = _lookup.GetLookupItems<LeaveType>();
+            return View("AddLeaveRequest");
         }
     }
 }

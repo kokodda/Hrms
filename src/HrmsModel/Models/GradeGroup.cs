@@ -18,5 +18,6 @@ namespace HrmsModel.Models
         public virtual ICollection<Competency> Competencies { get; set; }
         public virtual ICollection<LeavePolicy> LeavePolicies { get; set; }
         public virtual ICollection<AllowancePolicy> AllowancePolicies { get; set; }
+        public virtual ICollection<PayrollAddition> PayrollAdditions { get; set; }
     }
 }

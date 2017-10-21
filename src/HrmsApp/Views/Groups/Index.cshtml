@@ -77,8 +77,20 @@
                 type: 'GET',
                 success: function (result) {
                     $('#myModal-body').html(result);
-                    $('#myModal-label').html('Add Group');
+                    $('#myModal-label').html('Add Sub Group');
                     $('#groupId').val(id);
+                    showPopup();
+                }
+            });
+        }
+        function editSubGroup(id) {
+            $.ajax({
+                url: '@Url.Action("EditSubGroup", "Groups")',
+                type: 'GET',
+                data: { id: id },
+                success: function (result) {
+                    $('#myModal-body').html(result);
+                    $('#myModal-label').html('Edit Sub Group');
                     showPopup();
                 }
             });

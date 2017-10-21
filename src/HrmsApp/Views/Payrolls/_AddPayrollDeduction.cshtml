@@ -1,0 +1,44 @@
+﻿@using HrmsModel.Models;
+@model PayrollDeduction
+
+<form role="form" id="popupForm" asp-controller="Payrolls" asp-action="AddPayrollDeduction" data-ajax="true" data-ajax-method="POST" data-ajax-update="#deductionsSection" data-ajax-success="onSuccess" data-ajax-failure="onFailure">
+    <input type="hidden" asp-for="PayrollId" id="payrollId" />
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="EmployeeId"><small>Employee (*)</small></label>
+        <select class="form-control" asp-for="EmployeeId">
+            <option value="">Select from List ...</option>
+            @foreach (SelectListItem item in new SelectList(ViewBag.employeesList, "Id", "FirstName"))
+            {
+                <option value="@item.Value">@item.Text</option>
+            }
+        </select>
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="PayrollComponentTypeId"><small>Payroll Component (*)</small></label>
+        <select class="form-control" asp-for="PayrollComponentTypeId">
+            <option value="">Select from List ...</option>
+            @foreach (SelectListItem item in new SelectList(ViewBag.payrollComponentTypesList, "Id", "Name"))
+            {
+                <option value="@item.Value">@item.Text</option>
+            }
+        </select>
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="NbrDays"><small>Number of Days</small></label>
+        <input type="number" asp-for="NbrDays" class="form-control" />
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="Value"><small>Deduction Value</small></label>
+        <input type="number" asp-for="Value" class="form-control" />
+    </div>
+    <div class="input-group-sm">
+        <label class="control-label" asp-for="IsPercentage">
+            <input type="checkbox" asp-for="IsPercentage" />
+            <span><small>Is Percentage?</small></span>
+        </label>
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="Narration"><small>Narration</small></label>
+        <input type="text" asp-for="Narration" class="form-control fullwidth" />
+    </div>
+</form>

@@ -1,0 +1,209 @@
+﻿@{
+    ViewData["Title"] = "Payroll";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid" style="padding:0px">
+    <h3>Payroll Index</h3>
+    <hr />
+    <div class="row">
+        <div class="col-sm-10">
+            <div id="listSection"></div>
+            <div>
+                <div id="additionsSection"></div>
+                <div id="deductionsSection"></div>
+            </div>
+        </div>
+        <div class="col-sm-2">
+            <div>
+                <a href="#" onclick="addPayroll()" data-toggle="modal" data-target="#myModal"><small>New Payroll ...</small></a>
+            </div>
+            <br />
+            <label><small>New Payroll Addition</small></label>
+            <ul class="list-unstyled" style="font-size:smaller">
+                <li><a href="#" onclick="javascript:addPayrollAddition('ORG');" data-toggle="modal" data-target="#myModal">Company Level</a></li>
+                <li><a href="#" onclick="javascript:addPayrollAddition('GRADE_GROUP');" data-toggle="modal" data-target="#myModal">Grade Group Level</a></li>
+                <li><a href="#" onclick="javascript:addPayrollAddition('JOB_GRADE');" data-toggle="modal" data-target="#myModal">Job Grade Level</a></li>
+                <li><a href="#" onclick="javascript:addPayrollAddition('INDIVIDUAL');" data-toggle="modal" data-target="#myModal">Individual Level</a></li>
+            </ul>
+            <div>
+                <a href="#" onclick="javascript: addPayrollDeduction();" data-toggle="modal" data-target="#myModal"><small>Individual Deduction</small></a>
+            </div>
+            <hr />
+            <ul class="list-unstyled" style="font-size:smaller">
+                <li><a href="javascript: updatePayroll('Approve');">Approve</a></li>
+                <li><a href="javascript: updatePayroll('Cancel');">Cancel</a></li>
+                <li><a href="javascript: updatePayroll('Export');">Export</a></li>
+                <li><a href="javascript: updatePayroll('Endorse');">Endorse</a></li>
+                <li><a href="#">Generate Accruals</a></li>
+            </ul>
+            <hr />
+            <ul class="list-unstyled" style="font-size:smaller">
+                <li><a href="#">SMS Pay Slips</a></li>
+                <li><a href="#">Email Pay Slips</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+@Html.Hidden("payrollIdHF")
+@section Scripts
+{
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+    @{ await Html.RenderPartialAsync("_PopupForm"); }
+    <script>
+        $(document).on('ready', function () {
+            payrollsList();
+        });
+
+        function showPopup() {
+            $('#popupResult').html(null).text(null);
+            $('.popupBtns').removeAttr('disabled');
+        }
+        function onPopupSubmit() {
+            $('#popupForm').submit();
+        }
+        function onSuccess() {
+            $('#popupResult').html('Successfully Updated.');
+            $('.popupBtns').attr('disabled', 'disabled');
+        }
+        function onFailure() {
+            $('#formResult').html('Failed to Update! Please Correct All Errors.');
+            $('.popupBtns').removeAttr('disabled');
+        }
+
+        function payrollsList() {
+            $.ajax({
+                url: '@Url.Action("PayrollsList", "Payrolls")',
+                type: 'GET',
+                success: function (result) {
+                    $('#listSection').html(result);
+                }
+            });
+        }
+        function addPayroll() {
+            $.ajax({
+                url: '@Url.Action("AddPayroll", "Payrolls")',
+                type: 'GET',
+                success: function (result) {
+                    $('#myModal-body').html(result);
+                    $('#myModal-label').html('Add New Payroll');
+                    showPopup();
+                }
+            });
+        }
+        function selectPayroll(id) {
+            $('#payrollIdHF').val(id);
+            payrollAdditionsList();
+            payrollDeductionsList();
+        }
+        function updatePayroll(status) {
+            if (!confirm('Please Confirm! About to ' + status + ' Payroll?')) {
+                return;
+            }
+            $.ajax({
+                url: '@Url.Action("UpdatePayroll", "Payrolls")',
+                type: 'GET',
+                data: { id: $('#payrollIdHF').val(), newStatus: status },
+                success: function (result) {
+                    $('#listSection').html(result);
+                }
+            });
+        }
+        function linkAttendance(id) {
+            $.ajax({
+                url: '@Url.Action("LinkAttendance", "Payrolls")',
+                type: 'GET',
+                success: function (result) {
+                    $('#myModal-body').html(result);
+                    $('#myModal-label').html('Link to Attendance');
+                    $('#payrollId').val(id);
+                    showPopup();
+                }
+            });
+        }
+
+        //payroll additions
+        function payrollAdditionsList() {
+            $.ajax({
+                url: '@Url.Action("PayrollAdditionsList", "Payrolls")',
+                type: 'GET',
+                data: { id: $('#payrollIdHF').val() },
+                success: function (result) {
+                    $('#additionsSection').html(result);
+                }
+            });
+        }
+        function addPayrollAddition(level) {
+            if (!$('#payrollIdHF').val()) {
+                alert('Please Select Payroll.')
+                return;
+            }
+            $.ajax({
+                url: '@Url.Action("AddPayrollAddition", "Payrolls")',
+                type: 'GET',
+                data: { level: level },
+                success: function (result) {
+                    $('#myModal-body').html(result);
+                    $('#myModal-label').html('New Payroll Addition');
+                    $('#payrollId').val($('#payrollIdHF').val());
+                    showPopup();
+                }
+            });
+        }
+        function deletePayrollAddition(id) {
+            if (!confirm('Please Confirm! About to Delete Payroll Addition?')) {
+                return;
+            }
+            $.ajax({
+                url: '@Url.Action("DeletePayrollAddition", "Payrolls")',
+                type: 'GET',
+                data: { id: id },
+                success: function (result) {
+                    $('#additionsSection').html(result);
+                }
+            });
+        }
+
+        //payroll deductions
+        function payrollDeductionsList() {
+            $.ajax({
+                url: '@Url.Action("PayrollDeductionsList", "Payrolls")',
+                type: 'GET',
+                data: { id: $('#payrollIdHF').val() },
+                success: function (result) {
+                    $('#deductionsSection').html(result);
+                }
+            });
+        }
+        function addPayrollDeduction() {
+            if (!$('#payrollIdHF').val()) {
+                alert('Please Select Payroll.')
+                return;
+            }
+            $.ajax({
+                url: '@Url.Action("AddPayrollDeduction", "Payrolls")',
+                type: 'GET',
+                success: function (result) {
+                    $('#myModal-body').html(result);
+                    $('#myModal-label').html('New Payroll Deduction');
+                    $('#payrollId').val($('#payrollIdHF').val());
+                    showPopup();
+                }
+            });
+        }
+        function deletePayrollDeduction(id) {
+            if (!confirm('Please Confirm! About to Delete Payroll Deduction?')) {
+                return;
+            }
+            $.ajax({
+                url: '@Url.Action("DeletePayrollDeduction", "Payrolls")',
+                type: 'GET',
+                data: { id: id },
+                success: function (result) {
+                    $('#deductionsSection').html(result);
+                }
+            });
+        }
+    </script>
+}

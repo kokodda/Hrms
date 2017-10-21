@@ -1,0 +1,41 @@
+﻿@using HrmsApp.Models;
+@model IEnumerable<EmployeeAttendanceViewModel>
+
+<div class="container-fluid" style="padding:0px">
+    <table class="table table-hover table-condensed" style="font-size:smaller">
+        <thead>
+            <tr>
+                <th>Employee</th>
+                <th>Required</th>
+                <th>Attendance</th>
+                <th>Compliance%</th>
+                <th>Overtime1</th>
+                <th>Overtime2</th>
+                <th>Weekends</th>
+                <th>Corrective Action</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var item in Model)
+            {
+                <tr>
+                    <td>@item.EmployeeName</td>
+                    <td>@item.RequiredMinutes</td>
+                    <td>@item.AttendanceMinutes</td>
+                    <td>@item.CompliancePercentage</td>
+                    <td>@item.Overtime1Minutes</td>
+                    <td>@item.Overtime2Minutes</td>
+                    <td>@item.WeekendMinutes</td>
+                    <td>@item.AttendanceActionTypeName</td>
+                    <td>
+                        <div class="btn-group-xs pull-right">
+                            <a role="button" href="#" class="btn btn-xs" onclick="editEmployeeAttendance(@item.Id)" data-toggle="modal" data-target="#myModal" title="Edit"><span class="glyphicon glyphicon-pencil"></span></a>
+                            <a role="button" href="#" class="btn btn-xs" title="Send To Upper"><span class="fa fa-send"></span></a>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

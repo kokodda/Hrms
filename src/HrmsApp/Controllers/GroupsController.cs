@@ -68,6 +68,22 @@ namespace HrmsApp.Controllers
             return RedirectToAction("SubGroupsList", new { id = item.GenericGroupId });
         }
 
+        public async Task<IActionResult> EditSubGroup(long id)
+        {
+            var model = await _context.GenericSubGroups.SingleOrDefaultAsync(b => b.Id == id);
+            return PartialView("_EditSubGroup", model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditSubGroup(GenericSubGroup item)
+        {
+            var model = await _context.GenericSubGroups.SingleOrDefaultAsync(b => b.Id == item.Id);
+            await TryUpdateModelAsync(model);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("SubGroupsList", new { id = model.GenericGroupId });
+        }
+
         //members
         public async Task<IActionResult> MembersList(int id)
         {
