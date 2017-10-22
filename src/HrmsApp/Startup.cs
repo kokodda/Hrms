@@ -16,6 +16,9 @@ using HrmsModel.Data;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.AspNetCore.Http;
 using System.IO;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore.Design;
+using HrmsApp.Data.Migrations;
 
 namespace HrmsApp
 {
@@ -24,9 +27,9 @@ namespace HrmsApp
         public Startup(IHostingEnvironment env)
         {
             var builder = new ConfigurationBuilder()
-                .SetBasePath(env.ContentRootPath)
-                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true);
+                    .SetBasePath(env.ContentRootPath)
+                    .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                    .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true);
 
             //if (env.IsDevelopment())
             //{
@@ -85,7 +88,7 @@ namespace HrmsApp
             //    FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot\files"))
             //});
 
-            app.UseIdentity();
+            app.UseAuthentication();
 
             // Add external authentication middleware below. To configure them please see http://go.microsoft.com/fwlink/?LinkID=532715
 

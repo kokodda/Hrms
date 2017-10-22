@@ -65,6 +65,7 @@ namespace HrmsModel.Data
         public virtual DbSet<PayrollAddition> PayrollAdditions { get; set; }
         public virtual DbSet<PayrollDeduction> PayrollDeductions { get; set; }
         public virtual DbSet<CarouselItem> CarouselItems { get; set; }
+        public virtual DbSet<SiteContent> SiteContents { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -588,6 +589,16 @@ namespace HrmsModel.Data
             modelBuilder.Entity<CarouselItem>().Property(b => b.UpdatedBy).IsRequired().HasMaxLength(100);
             modelBuilder.Entity<CarouselItem>().Property(b => b.IsActive).HasDefaultValue(true);
             modelBuilder.Entity<CarouselItem>().ToTable("CarouselItems");
+
+            modelBuilder.Entity<SiteContent>().HasKey(b => b.Id);
+            modelBuilder.Entity<SiteContent>().Property(b => b.Name).IsRequired().HasMaxLength(100);
+            modelBuilder.Entity<SiteContent>().Property(b => b.ContentType).IsRequired().HasMaxLength(100);
+            modelBuilder.Entity<SiteContent>().Property(b => b.Caption).IsRequired().HasMaxLength(100);
+            modelBuilder.Entity<SiteContent>().Property(b => b.OthCaption).HasMaxLength(100);
+            modelBuilder.Entity<SiteContent>().Property(b => b.LastUpdated).HasColumnType("date");
+            modelBuilder.Entity<SiteContent>().Property(b => b.UpdatedBy).IsRequired().HasMaxLength(100);
+            modelBuilder.Entity<SiteContent>().Property(b => b.IsActive).HasDefaultValue(true);
+            modelBuilder.Entity<SiteContent>().ToTable("SiteContents");
         }
     }
 }
