@@ -28,8 +28,9 @@ namespace HrmsApp.Controllers
             _lookup = lookup;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(string list = "Vacancies")
         {
+            ViewBag.list = list;
             ViewBag.orgUnitTypesList = _lookup.GetLookupItems<OrgUnitType>();
             return View();
         }
@@ -188,43 +189,90 @@ namespace HrmsApp.Controllers
             ViewBag.employmentTypesList = _lookup.GetLookupItems<EmploymentType>();
             ViewBag.qualificationTypesList = _lookup.GetLookupItems<QualificationType>().Where(b => b.SysCode != "DOMAIN_EXPERIENCE" && b.SysCode != "OTHER_EXPERIENCE");
             ViewBag.experienceTypesList = _lookup.GetLookupItems<QualificationType>().Where(b => b.SysCode == "DOMAIN_EXPERIENCE" || b.SysCode == "OTHER_EXPERIENCE");
-            return View();
+            return View("AddCandidate");
+        }
+
+        public async Task<IActionResult> EditCandidate(long id)
+        {
+            var model = await _context.Candidates.Include(b => b.OrgUnit).Include(b => b.Position).SingleOrDefaultAsync(b => b.Id == id);
+            ViewBag.orgUnitName = model.OrgUnit.Name;
+            ViewBag.isUnassigned = false;
+            if (model.PositionId.HasValue && !model.IsHead)
+                ViewBag.positionName = model.Position.Name;
+            else if (!model.PositionId.HasValue && model.IsHead)
+                ViewBag.positionName = model.OrgUnit.HeadPositionName;
+            else
+            {
+                ViewBag.positionName = "Unassigned Position";
+                ViewBag.isUnassigned = true;
+            }
+            ViewBag.positionId = model.PositionId;
+            ViewBag.isHead = model.IsHead.ToString();
+            ViewBag.orgUnitId = model.OrgUnitId;
+            ViewBag.nationalitiesList = await _context.Nationalities.Where(b => b.IsActive).ToListAsync();
+            ViewBag.governoratesList = await _context.Governorates.Where(b => b.IsActive).ToListAsync();
+            ViewBag.employmentTypesList = _lookup.GetLookupItems<EmploymentType>();
+            ViewBag.qualificationTypesList = _lookup.GetLookupItems<QualificationType>().Where(b => b.SysCode != "DOMAIN_EXPERIENCE" && b.SysCode != "OTHER_EXPERIENCE");
+            ViewBag.experienceTypesList = _lookup.GetLookupItems<QualificationType>().Where(b => b.SysCode == "DOMAIN_EXPERIENCE" || b.SysCode == "OTHER_EXPERIENCE");
+            return View("AddCandidate", model);
         }
 
         [HttpPost]
         public async Task<IActionResult> AddCandidate([FromBody] dynamic data)
         {
-            Candidate item = new Candidate();
-            item.AppForm = JsonConvert.SerializeObject(data);
-            item.OrgUnitId = data.OrgUnitId;
-            item.PositionId = data.PositionId;
-            item.IsHead = data.IsHead;
-            item.FirstName = data.FirstName;
-            item.FamilyName = data.FamilyName;
-            item.FatherName = data.FatherName;
-            item.MotherName = data.MotherName;
-            item.OthFirstName = data.OthFirstName;
-            item.OthFamilyName = data.OthFamilyName;
-            item.OthFatherName = data.OthFatherName;
-            item.OthMotherName = data.OthMotherName;
-            item.BirthDate = data.BirthDate;
-            item.IsMale = data.IsMale;
-            item.IsMilitaryExempted = data.IsMilitaryExempted;
-            item.MaritalStatus = data.MaritalStatus;
-            item.NationalityId = data.NationalityId;
-            item.GovernorateId = data.GovernorateId;
-            item.Phone = data.Phone;
-            item.HomePhone1 = data.HomePhone1;
-            item.HomePhone2 = data.HomePhone2;
-            item.Email = data.Email;
-            item.Address = data.Address;
-            item.PermenantAddress = data.PermenantAddress;
+            if(data.Id != "")
+            {
+                long id = long.Parse(data.Id.ToString());
+                var model = await _context.Candidates.SingleOrDefaultAsync(b => b.Id == id);
+                await TryUpdateModelAsync(model);
+                model.AppForm = JsonConvert.SerializeObject(data);
+                model.LastUpdated = DateTime.Now.Date;
+                model.UpdatedBy = "user";
+            }
+            else
+            {
+                Candidate item = new Candidate();
+                item.AppForm = JsonConvert.SerializeObject(data);
+                item.OrgUnitId = data.OrgUnitId;
+                if (data.PositionId != "")
+                    item.PositionId = long.Parse(data.PositionId.ToString());
+                item.IsHead = data.IsHead;
+                item.FirstName = data.FirstName;
+                item.FamilyName = data.FamilyName;
+                item.FatherName = data.FatherName;
+                item.MotherName = data.MotherName;
+                item.OthFirstName = data.OthFirstName;
+                item.OthFamilyName = data.OthFamilyName;
+                item.OthFatherName = data.OthFatherName;
+                item.OthMotherName = data.OthMotherName;
+                item.BirthDate = data.BirthDate;
+                item.IsMale = data.IsMale;
+                item.IsMilitaryExempted = data.IsMilitaryExempted;
+                item.MaritalStatus = data.MaritalStatus;
+                item.NationalityId = data.NationalityId;
+                item.GovernorateId = data.GovernorateId;
+                item.Phone = data.Phone;
+                item.HomePhone1 = data.HomePhone1;
+                item.HomePhone2 = data.HomePhone2;
+                item.Email = data.Email;
+                item.Address = data.Address;
+                item.PermenantAddress = data.PermenantAddress;
 
-            item.LastUpdated = DateTime.Now.Date;
-            item.UpdatedBy = "user";
-            _context.Candidates.Add(item);
+                item.LastUpdated = DateTime.Now.Date;
+                item.UpdatedBy = "user";
+                _context.Candidates.Add(item);
+            }
+            
             await _context.SaveChangesAsync();
             return Json("Candidate is Successfully Saved.");
+        }
+
+        public async Task<IActionResult> RemoveCandidate(long id)
+        {
+            var item = await _context.Candidates.SingleOrDefaultAsync(b => b.Id == id);
+            _context.Candidates.Remove(item);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("CandidatesList");
         }
     }
 }

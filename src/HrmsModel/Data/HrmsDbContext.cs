@@ -327,6 +327,10 @@ namespace HrmsModel.Data
             modelBuilder.Entity<Candidate>().Property(b => b.Email).IsRequired(false).HasMaxLength(50);
             modelBuilder.Entity<Candidate>().Property(b => b.Address).IsRequired(false).HasMaxLength(256);
             modelBuilder.Entity<Candidate>().Property(b => b.PermenantAddress).IsRequired(false).HasMaxLength(256);
+            modelBuilder.Entity<Candidate>().Property(b => b.IsSubmitted).HasDefaultValue(false);
+            modelBuilder.Entity<Candidate>().Property(b => b.IsApproved).HasDefaultValue(false);
+            modelBuilder.Entity<Candidate>().Property(b => b.SubmittedDate).HasColumnType("date");
+            modelBuilder.Entity<Candidate>().Property(b => b.ApprovedDate).HasColumnType("date");
             modelBuilder.Entity<Candidate>().Property(b => b.LastUpdated).HasColumnType("date");
             modelBuilder.Entity<Candidate>().Property(b => b.UpdatedBy).IsRequired().HasMaxLength(100);
             modelBuilder.Entity<Candidate>().ToTable("Candidates");

@@ -34,6 +34,11 @@ namespace HrmsModel.Models
         public int GovernorateId { get; set; }
         public string Address { get; set; }
         public string PermenantAddress { get; set; }
+        public int? FinalScore { get; set; }
+        public bool IsSubmitted { get; set; }
+        public DateTime? SubmittedDate { get; set; }
+        public bool IsApproved { get; set; }
+        public DateTime? ApprovedDate { get; set; }
         public DateTime LastUpdated { get; set; }
         public string UpdatedBy { get; set; }
 

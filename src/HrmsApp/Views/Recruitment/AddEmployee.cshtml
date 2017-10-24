@@ -191,9 +191,14 @@
     </form>
 </div>
 
+<input type="hidden" id="isUnassignedHF" value="@ViewBag.isUnassigned" />
 <script>
     function back() {
-        var url = '@Url.Action("Index", "Recruitment")';
-        window.location.href = url;
+        var list = "Vacancies";
+        if ($('#isUnassignedHF').val()) {
+            list = "OrgUnits";
+        }
+        var url = '@Url.Action("Index", "Recruitment", new { list = "_list" })';
+        window.location.href = url.replace("_list", list);
     }
 </script>

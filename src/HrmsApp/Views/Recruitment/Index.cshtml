@@ -16,6 +16,7 @@
     <div id="listSection"></div>
 </div>
 
+<input type="hidden" id="listHF" value="@ViewBag.list" />
 @Html.Hidden("filterHF", "VACANCY")
 @Html.Hidden("orgUnitTypeIdHF")
 
@@ -23,7 +24,13 @@
 {
     <script>
         $(document).on('ready', function () {
-            vacanciesList();
+            if ($('#listHF').val() === "Candidates") {
+                candidatesList();
+            } else if ($('#listHF').val() === "Vacancies") {
+                vacanciesList();
+            } else {
+                orgUnitsList();
+            }
         })
 
         function vacanciesList() {
@@ -79,6 +86,23 @@
         function addCandidate(buId, posId, isHead) {
             var url = '@Html.Raw(Url.Action("AddCandidate", "Recruitment", new { buId = "_buId", posId = "_posId", isHead = "_isHead" }))';
             window.location.href = url.replace("_buId", buId).replace("_posId", posId).replace("_isHead", isHead);
+        }
+        function editCandidate(id) {
+            var url = '@Url.Action("EditCandidate", "Recruitment", new { id = "_id" })';
+            window.location.href = url.replace("_id", id);
+        }
+        function removeCandidate(id) {
+            if (!confirm("Please Confirm! About to Permenantly Remove Candidate?")) {
+                return;
+            }
+            $.ajax({
+                url: '@Url.Action("RemoveCandidate", "Recruitment")',
+                type: 'GET',
+                data: { id: id },
+                success: function (result) {
+                    $('#listSection').html(result);
+                }
+            });
         }
     </script>
 }
