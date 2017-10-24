@@ -1,0 +1,41 @@
+﻿@using HrmsModel.Models;
+@model IEnumerable<SiteContent>
+
+<div class="container-fluid" style="padding:0px">
+    <div style="color:silver">Documents &amp; Media</div>
+    <hr />
+    <table class="table table-hover table-condensed">
+        <thead>
+            <tr>
+                <th><small>Type</small></th>
+                <th><small>Item Name</small></th>
+                <th><small>Caption</small></th>
+                <th><small>Caption Translated</small></th>
+                <th><small>Url</small></th>
+                <th><small>Is Active</small></th>
+                <th>
+                    <a role="button" href="#" class="btn btn-xs pull-right" onclick="addSiteContent()" data-toggle="modal" data-target="#myModal" title="Add"><span class="fa fa-plus"></span></a>
+                </th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td><small>@item.ContentType</small></td>
+                    <td><small>@item.Name</small></td>
+                    <td><small>@item.Caption</small></td>
+                    <td><small>@item.OthCaption</small></td>
+                    <td><small>@item.Url</small></td>
+                    <td><input type="checkbox" asp-for="@item.IsActive" disabled readonly /></td>
+                    <td>
+                        <div class="btn-group-xs pull-right">
+                            <a role="button" href="#" class="btn btn-xs" onclick="editSiteContent(@item.Id)" data-toggle="modal" data-target="#myModal" title="Edit"><span class="glyphicon glyphicon-pencil"></span></a>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

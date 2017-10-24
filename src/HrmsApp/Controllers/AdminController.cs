@@ -219,6 +219,47 @@ namespace HrmsApp.Controllers
             return RedirectToAction("CarouselItemsList");
         }
 
+        //site contents
+        public async Task<IActionResult> SiteContentsList()
+        {
+            var model = _context.SiteContents.Where(b => b.IsActive);
+            return PartialView("_SiteContentsList", await model.ToListAsync());
+        }
+
+        public IActionResult AddSiteContent()
+        {
+            return PartialView("_AddSiteContent");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddSiteContent(SiteContent item)
+        {
+            item.LastUpdated = DateTime.Now.Date;
+            item.UpdatedBy = "user";
+            await _context.SiteContents.AddAsync(item);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("SiteContentsList");
+        }
+
+        public async Task<IActionResult> EditSiteContent(long id)
+        {
+            var model = await _context.SiteContents.SingleOrDefaultAsync(b => b.Id == id);
+            return PartialView("_EditSiteContent", model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditSiteContent(SiteContent item)
+        {
+            var model = await _context.SiteContents.SingleOrDefaultAsync(b => b.Id == item.Id);
+            await TryUpdateModelAsync(model);
+            model.LastUpdated = DateTime.Now.Date;
+            model.UpdatedBy = "user";
+            await _context.SaveChangesAsync();
+            return RedirectToAction("SiteContentsList");
+        }
+
         //uploads
         [HttpPost]
         public async Task<IActionResult> fileUpload(ICollection<IFormFile> files)

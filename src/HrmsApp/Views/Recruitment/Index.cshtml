@@ -104,5 +104,18 @@
                 }
             });
         }
+        function hireCandidate(id) {
+            if (!confirm("Please Confirm! About to Approve Candidate and Proceed for Hiring?")) {
+                return;
+            }
+            $.ajax({
+                url: '@Url.Action("ApproveCandidate", "Recruitment")',
+                type: 'GET',
+                data: { id: id },
+                success: function (result) {
+                    $('#listSection').html(result);
+                }
+            });
+        }
     </script>
 }

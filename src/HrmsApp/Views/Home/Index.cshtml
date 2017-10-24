@@ -7,16 +7,7 @@
 <div class="row">
     <br />
     <div class="col-sm-2" style="text-align:center">
-        <div class="panel panel-default">
-            <div class="panel-heading"><label><small>Library</small></label></div>
-            <div class="panel-body">
-                <div><a href="#"><small>Workers Bylaw</small></a></div>
-                <div><a href="#"><small>Code of Conduct</small></a></div>
-                <div><a href="#"><small>Safety Policy</small></a></div>
-                <br />
-                <div><a href="#"><small>Read More ...</small></a></div>
-            </div>
-        </div>
+        <div id="librarySection"></div>
         <div class="panel panel-default">
             <div class="panel-heading"><label><small>Happy Birthday</small></label></div>
             <div class="panel-body">
@@ -76,6 +67,13 @@
                 }
             });
             $.ajax({
+                url: '@Url.Action("HomeLibrary", "Home")',
+                type: 'GET',
+                success: function (result) {
+                    $('#librarySection').html(result);
+                }
+            });
+            $.ajax({
                 url: '@Url.Action("Welcome", "Home")',
                 type: 'GET',
                 success: function (result) {
@@ -83,5 +81,17 @@
                 }
             });
         })
+        function getContent(cType, cName, cUrl) {
+            if (cType === "Document") {
+                var url = '/files/SiteContents/Documents/' + cName;
+                window.location.href = url;
+            } else {
+                window.location.href = cUrl;
+            }
+        }
+        function getLibrary(id) {
+            var url = '@Url.Action("Library", "Home")';
+            window.location.href = url;
+        }
     </script>
 }

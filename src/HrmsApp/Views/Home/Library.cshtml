@@ -1,0 +1,34 @@
+﻿@using HrmsModel.Models;
+@model IEnumerable<SiteContent>
+
+@{
+    ViewData["Title"] = "Home Page";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h3>Library</h3>
+<hr />
+
+<div class="container-fluid" style="padding:0px">
+    @foreach (string cType in Model.Select(b => b.ContentType).Distinct())
+    {
+        <label style="color:silver">@string.Format("{0}", cType + "s")</label>
+        <div class="col-sm-offset-1">
+            @foreach (var item in Model.Where(b => b.ContentType == cType))
+            {
+                <div><a href="#" onclick="getContent('@item.ContentType', '@item.Name', '@item.Url')" target="_blank"><small>@item.Caption</small></a></div>
+            }
+        </div>
+    }
+</div>
+
+<script>
+    function getContent(cType, cName, cUrl) {
+        if (cType === "Document") {
+            var url = '/files/SiteContents/Documents/' + cName;
+            window.location.href = url;
+        } else {
+            window.location.href = cUrl;
+        }
+    }
+</script>

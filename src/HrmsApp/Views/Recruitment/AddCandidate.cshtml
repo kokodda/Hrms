@@ -56,7 +56,8 @@
                     <input type="hidden" asp-for="IsHead" value="@ViewBag.isHead" />
                 }
                 <input type="hidden" name="Version" value="1.0" />
-                <input type="submit" id="submit-form" name="submit" class="hidden" />
+                <input type="hidden" name="SubmitType" id="submitHF" value="save" />
+                <input type="submit" id="submit-form" class="hidden" />
 
                 <section id="personalDataSection">
                     <div>
@@ -299,6 +300,9 @@
                     </div>
                     <br />
                     <div>
+                        <small><input asp-for="FinalScore" class="form-control" placeholder="Final Score" /></small>
+                    </div>
+                    <div>
                         <small><input name="FinalResult" value="@json.FinalResult" class="form-control fullwidth" placeholder="Final Result" /></small>
                     </div>
                 </section>
@@ -310,7 +314,7 @@
 @section Scripts
 {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-    <script src="~/lib/jquery-serializeJSON/lib/jquery.serializeJSON.js"></script>
+    <script src="~/lib/jquery.serializeJSON/jquery.serializeJSON.js"></script>
     <script>
         $(document).on('ready', function () {
             $('#candidateForm').validate({ // initialize the plugin
@@ -332,20 +336,22 @@
         function onSubmitClick(validate) {
             if (validate) {
                 if (confirm('Please Confirm! About to Validate and Submit Form?')) {
-                    $('#submit-form').val('submit').click();
+                    $('#submitHF').val('submit');
+                    $('#submit-form').click();
                 } else {
                     return false;
                 }
             }
             else {
-                $('#submit-form').val('save').click();
+                $('#submitHF').val('save');
+                $('#submit-form').click();
             }
         }
 
         //obtain form data as json
         const handleFormSubmit = event => {
             event.preventDefault();
-
+            
             //validate form
             if ($('#submit-form').val() === 'submit') {
                 $('#candidateForm').validate();
@@ -356,10 +362,10 @@
             }
 
             var data = $('#candidateForm').serializeJSON();
-
+            
             // ...this is where we’d actually post the form data...
             $.ajax({
-                url: '@Url.Action("AddCandidate", "Recruitment")',
+                url: '@Url.Action("SaveCandidate", "Recruitment")',
                 type: 'POST',
                 dataType: "json",
                 headers: {

@@ -28,9 +28,11 @@
                 <li><a href="javascript:getDictionary('Governorate');"><small>Governorates List</small></a></li>
             </ul>
             <hr />
-            <div>
-                <a href="javascript:carouselItemsList();"><small>Carousel Items</small></a>
-            </div>
+            <label><small>Site Contents</small></label>
+            <ul class="list-unstyled">
+                <li><a href="javascript:carouselItemsList();"><small>Carousel Items</small></a></li>
+                <li><a href="javascript:siteContentsList();"><small>Documents &amp; Media</small></a></li>
+            </ul>
         </div>
         <div class="col-sm-9" id="listSection"></div>
     </div>
@@ -160,6 +162,40 @@
         }
         function onCarouselFailure() {
             alert("Error! Failed to Save Carousel Item.");
+        }
+
+        //site contents
+        function siteContentsList() {
+            $.ajax({
+                url: '@Url.Action("SiteContentsList", "Admin")',
+                type: 'GET',
+                success: function (result) {
+                    $('#listSection').html(result);
+                }
+            });
+        }
+        function addSiteContent() {
+            $.ajax({
+                url: '@Url.Action("AddSiteContent", "Admin")',
+                type: 'GET',
+                success: function (result) {
+                    $('#myModal-body').html(result);
+                    $('#myModal-label').html('Add Document / Media');
+                    showPopup();
+                }
+            });
+        }
+        function editSiteContent(id) {
+            $.ajax({
+                url: '@Url.Action("EditSiteContent", "Admin")',
+                type: 'GET',
+                data: { id: id },
+                success: function (result) {
+                    $('#myModal-body').html(result);
+                    $('#myModal-label').html('Edit Site Content');
+                    showPopup();
+                }
+            });
         }
     </script>    
 }

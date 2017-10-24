@@ -1,0 +1,34 @@
+﻿@using HrmsModel.Models;
+@model SiteContent
+
+<form role="form" id="popupForm" asp-controller="Admin" asp-action="AddSiteContent" data-ajax="true" data-ajax-method="POST" data-ajax-update="#listSection" data-ajax-success="onSuccess" data-ajax-failure="onFailure">
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="ContentType"><small>Content Type (*)</small></label>
+        <select class="form-control" asp-for="ContentType" required>
+            <option value="">Select from List ...</option>
+            <option value="Document">Document</option>
+            <option value="Video">External Video</option>
+            <option value="Link">External Link</option>
+        </select>
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="Name"><small>Name (*)</small></label>
+        <input type="text" asp-for="Name" class="form-control" required />
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="Caption"><small>Caption (*)</small></label>
+        <input type="text" asp-for="Caption" class="form-control" required />
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="OthCaption"><small>Caption Translated</small></label>
+        <input type="text" asp-for="OthCaption" class="form-control" />
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="Details"><small>Comment</small></label>
+        <input type="text" asp-for="Details" class="form-control" />
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="Url"><small>Url</small></label>
+        <input type="text" asp-for="Url" class="form-control" />
+    </div>
+</form>

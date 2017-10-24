@@ -157,5 +157,17 @@ namespace HrmsApp.Controllers
             ViewBag.leaveTypesList = _lookup.GetLookupItems<LeaveType>();
             return View("AddLeaveRequest");
         }
+
+        public async Task<IActionResult> Library()
+        {
+            var model = _context.SiteContents.Where(b => b.IsActive).OrderByDescending(b => b.LastUpdated);
+            return View(await model.ToListAsync());
+        }
+
+        public async Task<IActionResult> HomeLibrary()
+        {
+            var model = _context.SiteContents.Where(b => b.ContentType == "Document" && b.IsActive).OrderByDescending(b => b.LastUpdated).Take(3);
+            return PartialView("_HomeLibrary", await model.ToListAsync());
+        }
     }
 }

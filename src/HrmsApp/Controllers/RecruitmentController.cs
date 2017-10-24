@@ -60,7 +60,8 @@ namespace HrmsApp.Controllers
 
         public async Task<IActionResult> CandidatesList()
         {
-            var model = _context.Candidates.Include(b => b.OrgUnit).ThenInclude(b => b.OrgUnitType).OrderBy(b => b.OrgUnit.OrgUnitType.SortOrder).ThenBy(b => b.OrgUnit.SortOrder);
+            var model = _context.Candidates.Include(b => b.OrgUnit).ThenInclude(b => b.OrgUnitType).Where(b => !b.IsApproved)
+                                .OrderBy(b => b.OrgUnit.OrgUnitType.SortOrder).ThenBy(b => b.OrgUnit.SortOrder);
             return PartialView("_CandidatesList", await model.ToListAsync());
         }
 
@@ -218,21 +219,28 @@ namespace HrmsApp.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddCandidate([FromBody] dynamic data)
+        public async Task<IActionResult> SaveCandidate([FromBody] dynamic data)
         {
-            if(data.Id != "")
+            string appForm = JsonConvert.SerializeObject(data);
+            string submit = data.SubmitType.ToString();
+            if (data.Id != "")
             {
                 long id = long.Parse(data.Id.ToString());
                 var model = await _context.Candidates.SingleOrDefaultAsync(b => b.Id == id);
                 await TryUpdateModelAsync(model);
-                model.AppForm = JsonConvert.SerializeObject(data);
+                if (submit == "submit")
+                {
+                    model.IsSubmitted = true;
+                    model.SubmittedDate = DateTime.Now.Date;
+                }
+                model.AppForm = appForm;
                 model.LastUpdated = DateTime.Now.Date;
                 model.UpdatedBy = "user";
             }
             else
             {
                 Candidate item = new Candidate();
-                item.AppForm = JsonConvert.SerializeObject(data);
+                item.AppForm = appForm;
                 item.OrgUnitId = data.OrgUnitId;
                 if (data.PositionId != "")
                     item.PositionId = long.Parse(data.PositionId.ToString());
@@ -257,12 +265,17 @@ namespace HrmsApp.Controllers
                 item.Email = data.Email;
                 item.Address = data.Address;
                 item.PermenantAddress = data.PermenantAddress;
-
+                item.FinalScore = data.FinalScore;
+                if (submit == "submit")
+                {
+                    item.IsSubmitted = true;
+                    item.SubmittedDate = DateTime.Now.Date;
+                }
                 item.LastUpdated = DateTime.Now.Date;
                 item.UpdatedBy = "user";
                 _context.Candidates.Add(item);
             }
-            
+
             await _context.SaveChangesAsync();
             return Json("Candidate is Successfully Saved.");
         }
@@ -271,6 +284,15 @@ namespace HrmsApp.Controllers
         {
             var item = await _context.Candidates.SingleOrDefaultAsync(b => b.Id == id);
             _context.Candidates.Remove(item);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("CandidatesList");
+        }
+
+        public async Task<IActionResult> ApproveCandidate(long id)
+        {
+            var item = await _context.Candidates.SingleOrDefaultAsync(b => b.Id == id);
+            item.IsApproved = true;
+            //to-do: create employee object and employement like the one in addEmployee action above.
             await _context.SaveChangesAsync();
             return RedirectToAction("CandidatesList");
         }

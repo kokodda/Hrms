@@ -1,0 +1,16 @@
+﻿@using HrmsModel.Models;
+@model IEnumerable<SiteContent>
+
+<div class="panel panel-default">
+    <div class="panel-heading"><label><small>Library</small></label></div>
+    <div class="panel-body">
+        @foreach (var item in Model)
+        {
+            <div><a href="#" onclick="getContent('@item.ContentType', '@item.Name', '@item.Url')" target="_blank"><small>@item.Caption</small></a></div>
+        }
+        <div><a href="#"><small>Code of Conduct</small></a></div>
+        <div><a href="#"><small>Safety Policy</small></a></div>
+        <br />
+        <div><a href="#" onclick="getLibrary()"><small>Read More ...</small></a></div>
+    </div>
+</div>

@@ -18,7 +18,9 @@
                     <th><small>Reporting To</small></th>
                     <th><small>Phone</small></th>
                     <th><small>email</small></th>
-                    <th><small>Posted Date</small></th>
+                    <th><small>Submitted?</small></th>
+                    <th><small>Submitted Date</small></th>
+                    <th><small>Final Score</small></th>
                     <th><small>Approved?</small></th>
                     <th></th>
                 </tr>
@@ -29,16 +31,25 @@
                     <tr>
                         <td><small>@item.FirstName &nbsp; @item.FatherName &nbsp; @item.FamilyName</small></td>
                         <td><small>@item.OrgUnit.Name</small></td>
-                        <td><small>@string.Format("{0}", item.Position != null ? item.Position.Name : "Un Assigned")</small></td>
+                        <td><small>@string.Format("{0}", item.Position != null ? item.Position.Name : (item.IsHead ? item.OrgUnit.HeadPositionName : "Un Assigned"))</small></td>
                         <td><small></small></td>
                         <td><small>@item.Phone</small></td>
                         <td><small>@item.Email</small></td>
-                        <td><small></small></td>
+                        <td><input type="checkbox" asp-for="@item.IsSubmitted" readonly disabled /></td>
+                        <td><small>@string.Format("{0}", item.SubmittedDate.HasValue ? item.SubmittedDate.Value.ToString("dd-MM-yyyy") : null)</small></td>
+                        <th><small>@item.FinalScore</small></th>
+                        <td><input type="checkbox" asp-for="@item.IsApproved" readonly disabled /></td>
                         <td><small></small></td>
                         <td>
                             <div class="btn-group-xs pull-right">
-                                <a role="button" href="#" class="btn btn-xs" onclick="editCandidate(@item.Id)" data-toggle="modal" data-target="#myModal" title="Edit"><span class="glyphicon glyphicon-pencil"></span></a>
-                                <a role="button" href="#" class="btn btn-xs" onclick="removeCandidate(@item.Id)" data-toggle="modal" data-target="#myModal" title="Remove"><span class="fa fa-trash-o"></span></a>
+                                @if (!item.IsSubmitted && !item.IsApproved)
+                                {
+                                    <a role="button" href="#" class="btn btn-xs" onclick="editCandidate(@item.Id)" data-toggle="modal" data-target="#myModal" title="Edit"><span class="glyphicon glyphicon-pencil"></span></a>
+                                }
+                                @if (!item.IsApproved)
+                                {
+                                    <a role="button" href="#" class="btn btn-xs" onclick="removeCandidate(@item.Id)" data-toggle="modal" data-target="#myModal" title="Remove"><span class="fa fa-trash-o"></span></a>
+                                }
                                 <a role="button" href="#" class="btn btn-xs" onclick="hireCandidate(@item.Id)" data-toggle="modal" data-target="#myModal" title="Hire"><span class="fa fa-user"></span></a>
                             </div>
                         </td>
