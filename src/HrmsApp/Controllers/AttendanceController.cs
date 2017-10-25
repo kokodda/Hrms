@@ -41,7 +41,7 @@ namespace HrmsApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddAttendance(Attendance item)
         {
-            _context.Attendances.Add(item);
+            await _context.Attendances.AddAsync(item);
             await _context.SaveChangesAsync();
             return RedirectToAction("AttendancesList");
         }

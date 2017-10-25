@@ -319,7 +319,6 @@ namespace HrmsModel.Data
             modelBuilder.Entity<Candidate>().Property(b => b.OthFatherName).IsRequired(false).HasMaxLength(50);
             modelBuilder.Entity<Candidate>().Property(b => b.OthMotherName).IsRequired(false).HasMaxLength(50);
             modelBuilder.Entity<Candidate>().Property(b => b.BirthDate).HasColumnType("date");
-            modelBuilder.Entity<Candidate>().Property(b => b.IsMale).HasDefaultValue(true);
             modelBuilder.Entity<Candidate>().Property(b => b.MaritalStatus).IsRequired().HasMaxLength(50);
             modelBuilder.Entity<Candidate>().Property(b => b.Phone).IsRequired().HasMaxLength(50);
             modelBuilder.Entity<Candidate>().Property(b => b.HomePhone1).IsRequired().HasMaxLength(50);
@@ -347,7 +346,6 @@ namespace HrmsModel.Data
             modelBuilder.Entity<Employee>().Property(b => b.OthFatherName).IsRequired(false).HasMaxLength(50);
             modelBuilder.Entity<Employee>().Property(b => b.OthMotherName).IsRequired(false).HasMaxLength(50);
             modelBuilder.Entity<Employee>().Property(b => b.BirthDate).HasColumnType("date");
-            modelBuilder.Entity<Employee>().Property(b => b.IsMale).HasDefaultValue(true);
             modelBuilder.Entity<Employee>().Property(b => b.MaritalStatus).IsRequired().HasMaxLength(50);
             modelBuilder.Entity<Employee>().Property(b => b.BloodGroup).IsRequired(false).HasMaxLength(50);
             modelBuilder.Entity<Employee>().Property(b => b.Phone).IsRequired().HasMaxLength(50);
@@ -357,6 +355,7 @@ namespace HrmsModel.Data
             modelBuilder.Entity<Employee>().Property(b => b.Address).IsRequired(false).HasMaxLength(256);
             modelBuilder.Entity<Employee>().Property(b => b.PermenantAddress).IsRequired(false).HasMaxLength(256);
             modelBuilder.Entity<Employee>().Property(b => b.JoinDate).HasColumnType("date");
+            modelBuilder.Entity<Employee>().Property(b => b.ResignationDate).HasColumnType("date");
             modelBuilder.Entity<Employee>().Property(b => b.LastUpdated).HasColumnType("date");
             modelBuilder.Entity<Employee>().Property(b => b.UpdatedBy).IsRequired().HasMaxLength(100);
             modelBuilder.Entity<Employee>().Property(b => b.IsActive).HasDefaultValue(false);
@@ -526,7 +525,6 @@ namespace HrmsModel.Data
             modelBuilder.Entity<HolidayVariation>().ToTable("HolidayVariations");
 
             modelBuilder.Entity<Attendance>().HasKey(b => b.Id);
-            modelBuilder.Entity<Attendance>().Property(b => b.IsFullMonth).HasDefaultValue(true);
             modelBuilder.Entity<Attendance>().Property(b => b.FromDate).HasColumnType("date");
             modelBuilder.Entity<Attendance>().Property(b => b.ThruDate).HasColumnType("date");
             modelBuilder.Entity<Attendance>().Property(b => b.IsEndorsed).HasDefaultValue(false);
@@ -569,7 +567,6 @@ namespace HrmsModel.Data
             modelBuilder.Entity<PayrollAddition>().HasOne(b => b.FromJobGrade).WithMany(b => b.FromPayrollAdditions).HasForeignKey(b => b.FromJobGradeId).OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<PayrollAddition>().HasOne(b => b.ThruJobGrade).WithMany(b => b.ThruPayrollAdditions).HasForeignKey(b => b.ThruJobGradeId).OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<PayrollAddition>().HasOne(b => b.PayrollComponentType).WithMany(b => b.PayrollAdditions).HasForeignKey(b => b.PayrollComponentTypeId).OnDelete(DeleteBehavior.Restrict);
-            modelBuilder.Entity<PayrollAddition>().Property(b => b.IsCompanyLevel).HasDefaultValue(true);
             modelBuilder.Entity<PayrollAddition>().Property(b => b.Narration).HasMaxLength(256);
             modelBuilder.Entity<PayrollAddition>().ToTable("PayrollAdditions");
 
@@ -595,7 +592,7 @@ namespace HrmsModel.Data
             modelBuilder.Entity<CarouselItem>().ToTable("CarouselItems");
 
             modelBuilder.Entity<SiteContent>().HasKey(b => b.Id);
-            modelBuilder.Entity<SiteContent>().Property(b => b.Name).IsRequired().HasMaxLength(100);
+            modelBuilder.Entity<SiteContent>().Property(b => b.Name).HasMaxLength(100);
             modelBuilder.Entity<SiteContent>().Property(b => b.ContentType).IsRequired().HasMaxLength(100);
             modelBuilder.Entity<SiteContent>().Property(b => b.Caption).IsRequired().HasMaxLength(100);
             modelBuilder.Entity<SiteContent>().Property(b => b.OthCaption).HasMaxLength(100);

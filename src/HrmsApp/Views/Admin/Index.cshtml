@@ -57,10 +57,12 @@
     </div>
 </div>
 
+@Html.Hidden("contentIdHF")
 @section Scripts
 {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     @{ await Html.RenderPartialAsync("_PopupForm"); }
+    @{ await Html.RenderPartialAsync("_FileUploadPopup"); }
     <script src="~/lib/bootstrap-fileinput/js/fileinput.min.js"></script>
     <script>
         $(document).on('ready', function () {
@@ -79,13 +81,46 @@
                 uploadClass: "btn btn-info",
                 uploadLabel: "Upload",
                 uploadIcon: "<i class=\"glyphicon glyphicon-upload\"></i> ",
-                uploadUrl: '@Url.Action("fileUpload", "Admin")'
+                uploadUrl: '@Url.Action("PhotoUpload", "Admin")'
             });
             $('#inputPhotos').on('filebatchuploadsuccess', function (event, data, previewId, index) {
                 $('#popupResult1').html('Image Successfully Uploaded.');
                 $('#imageName').val(data.filenames);
             });
+
+            $("#inputFiles").fileinput({
+                uploadAsync: false,
+                showUpload: true,
+                showRemove: true,
+                multiple: false,
+                previewFileType: "file",
+                browseClass: "btn btn-success",
+                browseLabel: "Browse",
+                browseIcon: "<i class=\"glyphicon glyphicon-file\"></i> ",
+                removeClass: "btn btn-danger",
+                removeLabel: "Remove",
+                removeIcon: "<i class=\"glyphicon glyphicon-trash\"></i> ",
+                uploadClass: "btn btn-info",
+                uploadLabel: "Upload",
+                uploadIcon: "<i class=\"glyphicon glyphicon-upload\"></i> ",
+                uploadUrl: '@Url.Action("fileUpload", "Admin")'
+            });
+            $('#inputFiles').on('filebatchuploadsuccess', function (event, data, previewId, index) {
+                $('#filePopupResult').html('File Successfully Uploaded.');
+                $.ajax({
+                    url: '@Url.Action("UploadSiteContent", "Admin")',
+                    type: 'GET',
+                    data: { id: $('#contentIdHF').val(), fileName: data.filenames[0] },
+                    success: function (result) {
+                        $('#listSection').html(result);
+                    }
+                });
+            });
         });
+
+        function onFileInputClearClick(ed) {
+            $('#' + ed).fileinput('clear');
+        }
 
         function showPopup() {
             $('#popupResult').html(null).text(null);
@@ -196,6 +231,9 @@
                     showPopup();
                 }
             });
+        }
+        function uploadSiteContent(id) {
+            $('#contentIdHF').val(id);
         }
     </script>    
 }

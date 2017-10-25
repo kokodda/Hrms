@@ -24,7 +24,7 @@
             {
                 <tr>
                     <td><small>@item.ContentType</small></td>
-                    <td><small>@item.Name</small></td>
+                    <td><small>@string.Format("{0}", item.ContentType == "Document" ? (string.IsNullOrEmpty(item.Name) ? "Upload File" : item.Name) : null)</small></td>
                     <td><small>@item.Caption</small></td>
                     <td><small>@item.OthCaption</small></td>
                     <td><small>@item.Url</small></td>
@@ -32,6 +32,10 @@
                     <td>
                         <div class="btn-group-xs pull-right">
                             <a role="button" href="#" class="btn btn-xs" onclick="editSiteContent(@item.Id)" data-toggle="modal" data-target="#myModal" title="Edit"><span class="glyphicon glyphicon-pencil"></span></a>
+                            @if (item.ContentType == "Document")
+                            {
+                                <a role="button" href="#" class="btn btn-xs" onclick="uploadSiteContent(@item.Id)" data-toggle="modal" data-target="#filePopupForm" title="Upload"><span class="fa fa-upload"></span></a>
+                            }
                         </div>
                     </td>
                 </tr>

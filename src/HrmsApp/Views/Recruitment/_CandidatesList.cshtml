@@ -28,8 +28,9 @@
             <tbody>
                 @foreach (var item in Model)
                 {
+                    string othName = item.OthFirstName + " " + item.OthFatherName + " " + item.OthFamilyName;
                     <tr>
-                        <td><small>@item.FirstName &nbsp; @item.FatherName &nbsp; @item.FamilyName</small></td>
+                        <td title="@othName"><small>@item.FirstName&nbsp;@item.FamilyName</small></td>
                         <td><small>@item.OrgUnit.Name</small></td>
                         <td><small>@string.Format("{0}", item.Position != null ? item.Position.Name : (item.IsHead ? item.OrgUnit.HeadPositionName : "Un Assigned"))</small></td>
                         <td><small></small></td>

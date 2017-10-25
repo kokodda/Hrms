@@ -25,7 +25,7 @@
                     <td><small>@item.Employee.JoinDate.ToString("dd-MM-yyyy")</small></td>
                     <td><small>@item.OrgUnitName</small></td>
                     <td><small>@item.PositionName</small></td>
-                    <td><small>@item.DateInPosition.ToString("dd-MM-yyyy")</small></td>
+                    <td><small>@string.Format("{0}", item.Employee.ResignationDate.HasValue ? ("Resigned - " + item.Employee.ResignationDate.Value.ToString("dd-MM-yyyy")) : item.DateInPosition.ToString("dd-MM-yyyy"))</small></td>
                     <td>
                         <a role="button" href="#" class="btn btn-xs" onclick="getEmployee(@item.Employee.Id)" title="More"><span class="glyphicon glyphicon-option-horizontal"></span></a>
                     </td>

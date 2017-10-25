@@ -7,6 +7,10 @@ namespace HrmsModel.Models
 {
     public class Employee
     {
+        public Employee()
+        {
+            EmployeeAttendances = new HashSet<EmployeeAttendance>();
+        }
         public long Id { get; set; }
         public string EmpUid { get; set; }
         public string FirstName { get; set; }
@@ -34,6 +38,7 @@ namespace HrmsModel.Models
         public string Brief { get; set; }
         public string OthBrief { get; set; }
         public DateTime JoinDate { get; set; }
+        public DateTime? ResignationDate { get; set; }
         public bool IsActive { get; set; }
         public DateTime LastUpdated { get; set; }
         public string UpdatedBy { get; set; }

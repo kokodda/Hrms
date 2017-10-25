@@ -260,15 +260,26 @@ namespace HrmsApp.Controllers
             return RedirectToAction("SiteContentsList");
         }
 
+        public async Task<IActionResult> UploadSiteContent(long id, string fileName)
+        {
+            var item = await _context.SiteContents.SingleOrDefaultAsync(b => b.Id == id);
+            item.Name = fileName;
+            item.LastUpdated = DateTime.Now.Date;
+            item.UpdatedBy = "user";
+            await _context.SaveChangesAsync();
+            return RedirectToAction("SiteContentsList");
+        }
+
         //uploads
         [HttpPost]
-        public async Task<IActionResult> fileUpload(ICollection<IFormFile> files)
+        public async Task<IActionResult> PhotoUpload(ICollection<IFormFile> files)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
                     var file = files.FirstOrDefault();
+                    string fileName;
                     if (file.Length > 0)
                     {
                         var uploadsFolder = Path.Combine(_environment.ContentRootPath, @"wwwroot\carousels");
@@ -276,6 +287,7 @@ namespace HrmsApp.Controllers
                         using (var fileStream = new FileStream(Path.Combine(uploadsFolder, file.FileName), FileMode.Create))
                         {
                             await file.CopyToAsync(fileStream);
+                            fileName = file.FileName;
                         }
                     }
                     return Json("Successfull");
@@ -286,6 +298,38 @@ namespace HrmsApp.Controllers
                 }
             }
             return Json("error! Input File(s) are corrupted. Please re-enter files.");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> fileUpload(ICollection<IFormFile> files)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    string fileName;
+                    foreach (var file in files)
+                    {
+                        if (file.Length > 0)
+                        {
+                            var uploadsFolder = Path.Combine(_environment.ContentRootPath, @"wwwroot\files\SiteContents\Documents");
+                            DirectoryInfo di = new DirectoryInfo(Path.GetFullPath(uploadsFolder));
+
+                            using (var fileStream = new FileStream(Path.Combine(uploadsFolder, file.FileName), FileMode.Create))
+                            {
+                                await file.CopyToAsync(fileStream);
+                                fileName = file.FileName;
+                            }
+                        }
+                    }
+                    return Json("Successfull");
+                }
+                catch
+                {
+                    return Json("Upload Failed! Please Try Again Later.");
+                }
+            }
+            return Json("Upload Failed! Please Try Again Later.");
         }
     }
 }
