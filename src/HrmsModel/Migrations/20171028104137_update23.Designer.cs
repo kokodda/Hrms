@@ -11,9 +11,10 @@ using System;
 namespace HrmsModel.Migrations
 {
     [DbContext(typeof(HrmsDbContext))]
-    partial class HrmsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20171028104137_update23")]
+    partial class update23
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1564,6 +1565,8 @@ namespace HrmsModel.Migrations
 
                     b.Property<long?>("ReportingToOrgUnitId");
 
+                    b.Property<int?>("SalaryStepId");
+
                     b.Property<int>("SortOrder");
 
                     b.Property<int?>("StandardTitleTypeId");
@@ -1577,6 +1580,8 @@ namespace HrmsModel.Migrations
                     b.HasIndex("JobGradeId");
 
                     b.HasIndex("OrgUnitTypeId");
+
+                    b.HasIndex("SalaryStepId");
 
                     b.HasIndex("StandardTitleTypeId");
 
@@ -2475,6 +2480,11 @@ namespace HrmsModel.Migrations
                     b.HasOne("HrmsModel.Models.OrgUnitType", "OrgUnitType")
                         .WithMany("OrgUnits")
                         .HasForeignKey("OrgUnitTypeId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("HrmsModel.Models.SalaryStep", "SalaryStep")
+                        .WithMany("OrgUnits")
+                        .HasForeignKey("SalaryStepId")
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("HrmsModel.Models.StandardTitleType", "StandardTitleType")

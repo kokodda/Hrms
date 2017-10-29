@@ -1,0 +1,37 @@
+﻿@using HrmsModel.Models;
+@model IEnumerable<Remuneration>
+
+<div class="container-fluid" style="padding:0px">
+    <div>
+        <label><small>Remuneration History</small></label>
+    </div>
+    <hr />
+    <table class="table table-hover table-condensed" style="font-size:smaller">
+        <thead>
+            <tr>
+                <th>Effective Date</th>
+                <th>Job</th>
+                <th>Basic Salary</th>
+                <th>Allowance</th>
+                <th>Value</th>
+                <th>%</th>
+                <th>Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.FromDate.ToShortDateString()</td>
+                    <td>@string.Format("{0}", item.Employment.IsHead ? item.Employment.OrgUnit.HeadPositionName : (item.Employment.PositionId.HasValue ? item.Employment.Position.Name : item.Employment.JobName))</td>
+                    <td>@item.Employment.BasicSalary</td>
+                    <td>@item.AllowanceType.Name</td>
+                    <td>@item.AllowanceValue</td>
+                    <td><input type="checkbox" asp-for="@item.IsPercentage" readonly disabled /></td>
+                    <td>@string.Format("{0}", item.IsPercentage ? item.AllowanceValue * item.Employment.BasicSalary / 100 : item.AllowanceValue)</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+

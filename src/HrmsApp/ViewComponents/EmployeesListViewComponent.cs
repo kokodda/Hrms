@@ -91,7 +91,7 @@ namespace HrmsApp.ViewComponents
                         item.StandardTitleName = titlesList.Find(b => b.Id == emp.OrgUnit.StandardTitleTypeId).Name;
                     }
                 }
-                else if (!emp.IsHead && emp.PositionId.HasValue)
+                else
                 {
                     item.PositionId = emp.Position.Id;
                     item.PositionName = emp.Position.Name;
@@ -100,11 +100,6 @@ namespace HrmsApp.ViewComponents
                         item.StandardTitleCode = titlesList.Find(b => b.Id == emp.Position.StandardTitleTypeId).SysCode;
                         item.StandardTitleName = titlesList.Find(b => b.Id == emp.Position.StandardTitleTypeId).Name;
                     }
-                }
-                else
-                {
-                    item.PositionId = null;
-                    item.PositionName = emp.JobName;
                 }
                 if (emp.SalaryScaleTypeId.HasValue)
                 {

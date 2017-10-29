@@ -1,0 +1,32 @@
+﻿@using HrmsModel.Models;
+@model IEnumerable<EmployeePromotion>
+
+<div class="container-fluid" style="padding:0px">
+    <div>
+        <label><small>Career History</small></label>
+    </div>
+    <br />
+    <table class="table table-condensed">
+        <thead>
+            <tr>
+                <th><small>Transaction</small></th>
+                <th><small>Effective</small></th>
+                <th><small>Org Unit</small></th>
+                <th><small>Position</small></th>
+                <th><small>Job Grade</small></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td><small>@item.PromotionType.Name</small></td>
+                    <td><small>@item.EffectiveFromDate.ToString("dd-MM-yyyy")</small></td>
+                    <td><small>@item.Employment.OrgUnit.Name</small></td>
+                    <td><small>@string.Format("{0}", item.Employment.IsHead ? item.Employment.OrgUnit.HeadPositionName : (item.Employment.PositionId.HasValue ? item.Employment.Position.Name : item.Employment.JobName))</small></td>
+                    <td><small>@string.Format("{0}", item.JobGrade != null ? item.JobGrade.Name : null)</small></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

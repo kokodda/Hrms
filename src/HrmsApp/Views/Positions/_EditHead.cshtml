@@ -78,16 +78,6 @@
             }
         </select>
     </div>
-    <div class="form-group-sm">
-        <label class="control-label" asp-for="SalaryStepId"><small>Salary Step</small></label>
-        <select class="form-control" asp-for="SalaryStepId">
-            <option value="">Select from List ...</option>
-            @foreach (SelectListItem item in new SelectList(ViewBag.salaryStepsList, "Id", "Name"))
-            {
-                <option value="@item.Value">@item.Text</option>
-            }
-        </select>
-    </div>
     <div class="input-group-sm">
         <label class="control-label" asp-for="IsVacant">
             <input type="checkbox" asp-for="IsVacant" />

@@ -36,7 +36,7 @@ namespace HrmsApp.Controllers
         //org units heads
         public async Task<IActionResult> HeadsList(int? id)
         {
-            var model = _context.OrgUnits.Include(b => b.JobGrade).Include(b => b.SalaryStep).Include(b => b.StandardTitleType).Include(b => b.OrgUnitType)
+            var model = _context.OrgUnits.Include(b => b.JobGrade).Include(b => b.StandardTitleType).Include(b => b.OrgUnitType)
                                         .Where(b => (!id.HasValue || b.OrgUnitTypeId == id) && b.IsActive)
                                         .OrderBy(b => b.OrgUnitType.SortOrder).ThenBy(b => b.SortOrder);
             return PartialView("_HeadsList", await model.ToListAsync());
@@ -47,7 +47,6 @@ namespace HrmsApp.Controllers
             var model = await _context.OrgUnits.SingleOrDefaultAsync(b => b.Id == id);
             ViewBag.orgUnitsList = await _context.OrgUnits.ToListAsync();
             ViewBag.jobGradesList = await _context.JobGrades.Where(b => b.IsActive).OrderBy(b => b.SortOrder).ToListAsync();
-            ViewBag.salaryStepsList = await _context.SalarySteps.Where(b => b.IsActive).ToListAsync();
             ViewBag.standardTitlesList = _lookup.GetLookupItems<StandardTitleType>();
             return PartialView("_EditHead", model);
         }
@@ -113,7 +112,7 @@ namespace HrmsApp.Controllers
         public async Task<IActionResult> PositionsList(int? id)
         {
             //id is the org unit type id used for filter
-            var model = _context.Positions.Include(b => b.JobGrade).Include(b => b.SalaryStep).Include(b => b.StandardTitleType)
+            var model = _context.Positions.Include(b => b.JobGrade).Include(b => b.StandardTitleType)
                                         .Include(b => b.OrgUnit).ThenInclude(b => b.OrgUnitType).Include(b => b.Employments)
                                         .Where(b => (!id.HasValue || b.OrgUnit.OrgUnitTypeId == id) && b.OrgUnit.IsActive && b.IsActive)
                                         .OrderBy(b => b.OrgUnit.OrgUnitType.SortOrder).ThenBy(b => b.OrgUnit.SortOrder);
@@ -126,7 +125,6 @@ namespace HrmsApp.Controllers
             ViewBag.orgUnitsList = await _context.OrgUnits.Where(b => !id.HasValue || b.OrgUnitTypeId == id).ToListAsync();
             ViewBag.standardTitlesList = _lookup.GetLookupItems<StandardTitleType>();
             ViewBag.jobGradesList = await _context.JobGrades.Where(b => b.IsActive).ToListAsync();
-            ViewBag.salaryStepsList = await _context.SalarySteps.Where(b => b.IsActive).ToListAsync();
             return PartialView("_AddPosition");
         }
 
@@ -148,7 +146,6 @@ namespace HrmsApp.Controllers
             var model = await _context.Positions.SingleOrDefaultAsync(b => b.Id == id);
             ViewBag.orgUnitsList = await _context.OrgUnits.ToListAsync();
             ViewBag.jobGradesList = await _context.JobGrades.Where(b => b.IsActive).OrderBy(b => b.SortOrder).ToListAsync();
-            ViewBag.salaryStepsList = await _context.SalarySteps.Where(b => b.IsActive).ToListAsync();
             ViewBag.standardTitlesList = _lookup.GetLookupItems<StandardTitleType>();
             return PartialView("_EditPosition", model);
         }

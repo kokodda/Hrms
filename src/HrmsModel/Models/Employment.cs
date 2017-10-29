@@ -14,8 +14,6 @@ namespace HrmsModel.Models
         public bool IsHead { get; set; }
         public bool IsActing { get; set; }
         public long? PositionId { get; set; }
-        public string JobName { get; set; }
-        public string OthJobName { get; set; }
         public DateTime FromDate { get; set; }
         public DateTime? ThruDate { get; set; }
         public int? JobGradeId { get; set; }
@@ -39,5 +37,6 @@ namespace HrmsModel.Models
         public virtual JobGrade JobGrade { get; set; }
         public virtual ICollection<EmployeePromotion> EmployeePromotions { get; set; }
         public virtual ICollection<PayrollEmployee> PayrollEmployees { get; set; }
+        public virtual ICollection<Remuneration> Remunerations { get; set; }
     }
 }

@@ -95,4 +95,23 @@
             <span><small>Is Military Service Exempted? (*)</small></span>
         </label>
     </div>
+    <br />
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="BankId"><small>Bank</small></label>
+        <select class="form-control" asp-for="BankId">
+            <option value="">Select from List ...</option>
+            @foreach (SelectListItem item in new SelectList(ViewBag.banksList, "Id", "Name"))
+            {
+                <option value="@item.Value">@item.Text</option>
+            }
+        </select>
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="Branch"><small>Branch</small></label>
+        <input type="text" asp-for="Branch" class="form-control" />
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="IBAN"><small>IBAN</small></label>
+        <input type="text" asp-for="IBAN" class="form-control" />
+    </div>
 </form>

@@ -2,8 +2,8 @@
 @model Employment
 @{ 
     string jobDisabled = (Model.PositionId.HasValue || Model.IsHead) ? "disabled" : null;
-    string gradeDisabled = Model.JobGradeId.HasValue ? "disabled" : null;
-    string stepDisabled = Model.PositionId.HasValue ? "disabled" : null;
+    string gradeDisabled = (Model.BasicSalary != 0 || Model.JobGradeId.HasValue) ? "disabled" : null;
+    string stepDisabled = (Model.BasicSalary != 0 || Model.SalaryStepId.HasValue) ? "disabled" : null;
     string salaryDisabled = (Model.BasicSalary != 0 || (Model.JobGradeId.HasValue && Model.SalaryStepId.HasValue)) ? "disabled" : null;
 }
 

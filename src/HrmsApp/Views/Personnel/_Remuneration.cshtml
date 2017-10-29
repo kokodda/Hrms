@@ -1,0 +1,78 @@
+﻿@using HrmsModel.Models;
+@model IEnumerable<Remuneration>
+
+@{
+    string remunerationType = "Current Remuneration doesn't follow a Grading System";
+    if (ViewBag.isGoverned)
+    {
+        remunerationType = "Remuneration Adhere to the Grading System";
+    }
+    int basicSalary = ViewBag.basicSalary;
+    int total = basicSalary;
+}
+
+<div class="container-fluid" style="padding:0px">
+    <div>
+        <label><small>Remuneration</small></label>
+    </div>
+    <div>
+        <span style="color:silver"><small>(@remunerationType)</small></span>
+    </div>
+    <hr />
+    <div>
+        <label><small>Basic Salary: </small>@basicSalary</label>
+    </div>
+    @if (Model == null)
+    {
+        <table class="table table-condensed" style="font-size:smaller">
+            <tbody class="pull-left">
+                @foreach (string item in ViewBag.remunerationList)
+                {
+                    string[] str = item.Split('|');
+                    total += int.Parse(str[2]);
+                    <tr class="row">
+                        <td style="padding-left:0px"><label>@str[1]:</label></td>
+                        <td>@str[2]</td>
+                    </tr>
+                    
+                }
+            </tbody>
+        </table>
+        <hr />
+        <div><small><label>Total Remuneration:</label></small>&nbsp;<label>@total</label></div>
+    }
+    else
+    {
+        <table class="table table-condensed" style="font-size:smaller">
+            <thead>
+                <tr>
+                    <th>Allowance</th>
+                    <th>Value</th>
+                    <th>Is Percent</th>
+                    <th>Amount</th>
+                    <th>Effective Date</th>
+                    <th>
+                        <a href="#" class="btn btn-xs" onclick="addAllowance(@ViewBag.employmentId)" data-toggle="modal" data-target="#myModal" title="Add Allowance"><span class="glyphicon glyphicon-plus"></span></a>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    int amount = item.IsPercentage ? (item.AllowanceValue * basicSalary / 100) : item.AllowanceValue;
+                    total += amount;
+                    <tr>
+                        <td>@item.AllowanceType.Name</td>
+                        <td>@item.AllowanceValue</td>
+                        <td><input type="checkbox" asp-for="@item.IsPercentage" readonly disabled /></td>
+                        <td>@amount</td>
+                        <td>@item.FromDate.ToShortDateString()</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <hr />
+        <div><small><label>Total Remuneration:</label></small>&nbsp;<label>@total</label></div>
+    }
+</div>
+

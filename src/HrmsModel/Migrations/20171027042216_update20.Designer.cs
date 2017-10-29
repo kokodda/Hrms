@@ -11,9 +11,10 @@ using System;
 namespace HrmsModel.Migrations
 {
     [DbContext(typeof(HrmsDbContext))]
-    partial class HrmsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20171027042216_update20")]
+    partial class update20
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -180,9 +181,12 @@ namespace HrmsModel.Migrations
                     b.Property<int>("SortOrder");
 
                     b.Property<string>("SysCode")
-                        .HasMaxLength(10);
+                        .IsRequired();
 
                     b.HasKey("Id");
+
+                    b.HasAlternateKey("SysCode")
+                        .HasName("UK_Bank_SysCode");
 
                     b.ToTable("Banks");
                 });
@@ -1019,6 +1023,36 @@ namespace HrmsModel.Migrations
                     b.ToTable("EmployeeQualifications");
                 });
 
+            modelBuilder.Entity("HrmsModel.Models.EmployeeSalary", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int?>("AllowanceTypeId");
+
+                    b.Property<int?>("BasicSalary");
+
+                    b.Property<int>("CurrencyCode");
+
+                    b.Property<long>("EmployeeId");
+
+                    b.Property<long>("EmployeePromotionId");
+
+                    b.Property<long>("EmploymentId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AllowanceTypeId");
+
+                    b.HasIndex("EmployeeId");
+
+                    b.HasIndex("EmployeePromotionId");
+
+                    b.HasIndex("EmploymentId");
+
+                    b.ToTable("EmployeeSalaries");
+                });
+
             modelBuilder.Entity("HrmsModel.Models.Employment", b =>
                 {
                     b.Property<long>("Id")
@@ -1068,7 +1102,13 @@ namespace HrmsModel.Migrations
 
                     b.Property<int?>("JobGradeId");
 
+                    b.Property<string>("JobName")
+                        .HasMaxLength(100);
+
                     b.Property<long>("OrgUnitId");
+
+                    b.Property<string>("OthJobName")
+                        .HasMaxLength(100);
 
                     b.Property<long?>("PositionId");
 
@@ -1564,6 +1604,8 @@ namespace HrmsModel.Migrations
 
                     b.Property<long?>("ReportingToOrgUnitId");
 
+                    b.Property<int?>("SalaryStepId");
+
                     b.Property<int>("SortOrder");
 
                     b.Property<int?>("StandardTitleTypeId");
@@ -1577,6 +1619,8 @@ namespace HrmsModel.Migrations
                     b.HasIndex("JobGradeId");
 
                     b.HasIndex("OrgUnitTypeId");
+
+                    b.HasIndex("SalaryStepId");
 
                     b.HasIndex("StandardTitleTypeId");
 
@@ -1846,6 +1890,8 @@ namespace HrmsModel.Migrations
 
                     b.Property<long?>("ReportingToOrgUnitId");
 
+                    b.Property<int?>("SalaryStepId");
+
                     b.Property<int?>("StandardTitleTypeId");
 
                     b.Property<int>("TotalVacant")
@@ -1861,6 +1907,8 @@ namespace HrmsModel.Migrations
                     b.HasIndex("JobGradeId");
 
                     b.HasIndex("OrgUnitId");
+
+                    b.HasIndex("SalaryStepId");
 
                     b.HasIndex("StandardTitleTypeId");
 
@@ -1925,51 +1973,6 @@ namespace HrmsModel.Migrations
                         .HasName("UK_QualificationType_SysCode");
 
                     b.ToTable("QualificationTypes");
-                });
-
-            modelBuilder.Entity("HrmsModel.Models.Remuneration", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<int?>("AllowanceTypeId");
-
-                    b.Property<int>("AllowanceValue");
-
-                    b.Property<int>("BasicSalary");
-
-                    b.Property<long>("EmployeeId");
-
-                    b.Property<long>("EmploymentId");
-
-                    b.Property<DateTime>("FromDate")
-                        .HasColumnType("date");
-
-                    b.Property<bool>("IsActive")
-                        .ValueGeneratedOnAdd()
-                        .HasDefaultValue(true);
-
-                    b.Property<bool>("IsPercentage");
-
-                    b.Property<DateTime>("LastUpdated")
-                        .HasColumnType("date");
-
-                    b.Property<string>("Narration")
-                        .HasMaxLength(256);
-
-                    b.Property<string>("UpdatedBy")
-                        .IsRequired()
-                        .HasMaxLength(100);
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AllowanceTypeId");
-
-                    b.HasIndex("EmployeeId");
-
-                    b.HasIndex("EmploymentId");
-
-                    b.ToTable("Remunerations");
                 });
 
             modelBuilder.Entity("HrmsModel.Models.SalaryScale", b =>
@@ -2380,6 +2383,29 @@ namespace HrmsModel.Migrations
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 
+            modelBuilder.Entity("HrmsModel.Models.EmployeeSalary", b =>
+                {
+                    b.HasOne("HrmsModel.Models.AllowanceType", "AllowanceType")
+                        .WithMany("EmployeeSalaries")
+                        .HasForeignKey("AllowanceTypeId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("HrmsModel.Models.Employee", "Employee")
+                        .WithMany("EmployeeSalaries")
+                        .HasForeignKey("EmployeeId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("HrmsModel.Models.EmployeePromotion", "EmployeePromotion")
+                        .WithMany("EmployeeSalaries")
+                        .HasForeignKey("EmployeePromotionId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("HrmsModel.Models.Employment", "Employment")
+                        .WithMany("EmployeeSalaries")
+                        .HasForeignKey("EmploymentId")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
             modelBuilder.Entity("HrmsModel.Models.Employment", b =>
                 {
                     b.HasOne("HrmsModel.Models.Employee", "Employee")
@@ -2475,6 +2501,11 @@ namespace HrmsModel.Migrations
                     b.HasOne("HrmsModel.Models.OrgUnitType", "OrgUnitType")
                         .WithMany("OrgUnits")
                         .HasForeignKey("OrgUnitTypeId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("HrmsModel.Models.SalaryStep", "SalaryStep")
+                        .WithMany("OrgUnits")
+                        .HasForeignKey("SalaryStepId")
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("HrmsModel.Models.StandardTitleType", "StandardTitleType")
@@ -2582,27 +2613,14 @@ namespace HrmsModel.Migrations
                         .HasForeignKey("OrgUnitId")
                         .OnDelete(DeleteBehavior.Restrict);
 
+                    b.HasOne("HrmsModel.Models.SalaryStep", "SalaryStep")
+                        .WithMany("Positions")
+                        .HasForeignKey("SalaryStepId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("HrmsModel.Models.StandardTitleType", "StandardTitleType")
                         .WithMany("Positions")
                         .HasForeignKey("StandardTitleTypeId")
-                        .OnDelete(DeleteBehavior.Restrict);
-                });
-
-            modelBuilder.Entity("HrmsModel.Models.Remuneration", b =>
-                {
-                    b.HasOne("HrmsModel.Models.AllowanceType", "AllowanceType")
-                        .WithMany("Remunerations")
-                        .HasForeignKey("AllowanceTypeId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("HrmsModel.Models.Employee", "Employee")
-                        .WithMany("Remunerations")
-                        .HasForeignKey("EmployeeId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("HrmsModel.Models.Employment", "Employment")
-                        .WithMany("Remunerations")
-                        .HasForeignKey("EmploymentId")
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 

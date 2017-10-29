@@ -78,6 +78,9 @@ namespace HrmsApp.Controllers
                 case "AttendanceActionType":
                     model = _context.AttendanceActionTypes.ToList<ILookup>();
                     break;
+                case "Bank":
+                    model = _context.Banks.ToList<ILookup>();
+                    break;
                 case "Governorate":
                     var x1 = _context.Governorates.ToList();
                     foreach (var x in x1)
@@ -169,6 +172,11 @@ namespace HrmsApp.Controllers
                 case "Governorate":
                     _context.Governorates.SingleOrDefault(b => b.Id == id).IsActive = status;
                     _context.SaveChanges();
+                    break;
+                case "Bank":
+                    _context.Banks.SingleOrDefault(b => b.Id == id).IsActive = status;
+                    _context.SaveChanges();
+                    _lookup.Refresh<Bank>();
                     break;
                 case "Nationality":
                     _context.Nationalities.SingleOrDefault(b => b.Id == id).IsActive = status;

@@ -8,7 +8,6 @@
     <div class="btn-group">
         <button class="btn btn-xs btn-primary" onclick="vacanciesList()"><small>Vacancies</small></button>
         <button class="btn btn-xs btn-default" onclick="candidatesList()"><small>Candidates</small></button>
-        <button class="btn btn-xs btn-default" onclick="orgUnitsList()"><small>Business Units</small></button>
     </div>
     <hr />
     <div id="headsSection"></div>
@@ -17,21 +16,37 @@
 </div>
 
 <input type="hidden" id="listHF" value="@ViewBag.list" />
-@Html.Hidden("filterHF", "VACANCY")
-@Html.Hidden("orgUnitTypeIdHF")
+@*@Html.Hidden("filterHF", "VACANCY")
+@Html.Hidden("orgUnitTypeIdHF")*@
 
 @section Scripts
 {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+    @{ await Html.RenderPartialAsync("_PopupForm"); }
     <script>
         $(document).on('ready', function () {
             if ($('#listHF').val() === "Candidates") {
                 candidatesList();
-            } else if ($('#listHF').val() === "Vacancies") {
-                vacanciesList();
             } else {
-                orgUnitsList();
+                vacanciesList();
             }
         })
+
+        function showPopup() {
+            $('#popupResult').html(null).text(null);
+            $('.popupBtns').removeAttr('disabled');
+        }
+        function onPopupSubmit() {
+            $('#popupForm').submit();
+        }
+        function onSuccess() {
+            $('#popupResult').html('Successfully Updated.');
+            $('.popupBtns').attr('disabled', 'disabled');
+        }
+        function onFailure() {
+            $('#formResult').html('Failed to Update! Please Correct All Errors.');
+            $('.popupBtns').removeAttr('disabled');
+        }
 
         function vacanciesList() {
             $('#candidatesSection').html(null);
@@ -53,17 +68,6 @@
         function candidatesList() {
             $.ajax({
                 url: '@Url.Action("CandidatesList", "Recruitment")',
-                type: 'GET',
-                success: function (result) {
-                    $('#headsSection').html(null);
-                    $('#positionsSection').html(null);
-                    $('#listSection').html(result);
-                }
-            });
-        }
-        function orgUnitsList() {
-            $.ajax({
-                url: '@Url.Action("OrgUnitsList", "Recruitment")',
                 type: 'GET',
                 success: function (result) {
                     $('#headsSection').html(null);
@@ -105,15 +109,14 @@
             });
         }
         function hireCandidate(id) {
-            if (!confirm("Please Confirm! About to Approve Candidate and Proceed for Hiring?")) {
-                return;
-            }
             $.ajax({
-                url: '@Url.Action("ApproveCandidate", "Recruitment")',
+                url: '@Url.Action("HireCandidate", "Recruitment")',
                 type: 'GET',
                 data: { id: id },
                 success: function (result) {
-                    $('#listSection').html(result);
+                    $('#myModal-body').html(result);
+                    $('#myModal-label').html('Finalize Hiring Information');
+                    showPopup();
                 }
             });
         }

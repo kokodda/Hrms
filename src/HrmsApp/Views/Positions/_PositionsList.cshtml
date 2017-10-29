@@ -11,7 +11,6 @@
                 <th><small>Title</small></th>
                 <th><small>Job Code</small></th>
                 <th><small>Grade</small></th>
-                <th><small>Step</small></th>
                 <th><small>JD</small></th>
                 <th><small>Occupation</small></th>
                 <th><small>Vacancy</small></th>
@@ -28,7 +27,6 @@
                     <td><small>@string.Format("{0}", item.StandardTitleType == null ? null : item.StandardTitleType.Name)</small></td>
                     <td><small>@item.JobCode</small></td>
                     <td><small>@string.Format("{0}", item.JobGrade == null ? null : item.JobGrade.Code)</small></td>
-                    <td><small>@string.Format("{0}", item.SalaryStep == null ? null : item.SalaryStep.Code)</small></td>
                     <td>
                         <a href="#" class="btn btn-xs" onclick="positionJDUpload(@item.Id)" data-toggle="modal" data-target="#filePopupForm" title="Upload"><span class="fa fa-upload"></span></a>
                         @if(!string.IsNullOrEmpty(item.JobDescription))

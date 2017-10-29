@@ -8,7 +8,7 @@
     <br />
     <div><small><label>Job Grade: </label>&nbsp;<span id="jobGrade">@string.Format("{0}", Model.JobGradeId.HasValue ? Model.JobGradeCode : "NA")</span></small></div>
     <div><small><label>Salary Step: </label>&nbsp;<span id="salaryStep">@string.Format("{0}", Model.SalaryStepId.HasValue ? Model.SalaryStepCode : "NA")</span></small></div>
-    <div><small><label>Salary Scale: </label>&nbsp;<span id="salaryScale">@string.Format("{0}", Model.SalaryScaleTypeId.HasValue ? Model.SalaryScaleTypeName : "NA")</span></small></div>
+    <div><small><label>Salary Scale: </label>&nbsp;<span id="salaryScale">@string.Format("{0}", Model.IsPayrollExcluded ? "Payroll Excluded" : (Model.SalaryScaleTypeId.HasValue ? Model.SalaryScaleTypeName : "NA"))</span></small></div>
     <br />
     <div><small><label>Attendance: </label>&nbsp;<span id="attendance">@string.Format("{0}", Model.IsAttendRequired ? "Required" : "Not Required")</span></small></div>
     <div><small><label>OverTime: </label>&nbsp;<span id="overtime">@string.Format("{0}", Model.IsOverTimeAllowed ? "Allowed" : "Not Allowed")</span></small></div>

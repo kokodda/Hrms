@@ -2,16 +2,15 @@
 @model IEnumerable<EmployeePromotion>
 
 <div class="container-fluid" style="padding:0px">
-    <div>
-        <label><small>Career History</small></label>&nbsp;
-        <span></span><a href="#" onclick="showPromo()" id="showCtrl" title="Show"><span class="fa fa-chevron-down"></span></a>
-        <span></span><a href="#"  id="hideCtrl" hidden onclick="hidePromo()" title="Hide"><span class="fa fa-chevron-up"></span></a>
-    </div>
+    @if (Model.Count() != 0)
+    {
+        <label><small>Pending Changes</small></label>
+    }
     <br />
-    <div id="promo" class="hidden">
+    <div>
         @foreach (var pos in Model.Select(b => b.Employment).Distinct())
         {
-            <div class="panel panel-default">
+            <div class="panel panel-danger">
                 <div class="panel-heading">
                     <label><small>Unit:</small></label> &nbsp; <small>@pos.OrgUnit.Name</small> &mdash; <label><small>Position:</small></label> &nbsp;
                     <small>@string.Format("{0}", pos.IsHead ? pos.OrgUnit.HeadPositionName : (pos.PositionId.HasValue ? pos.Position.Name : pos.JobName))</small>

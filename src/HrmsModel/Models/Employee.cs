@@ -34,6 +34,9 @@ namespace HrmsModel.Models
         public int GovernorateId { get; set; }
         public string Address { get; set; }
         public string PermenantAddress { get; set; }
+        public int? BankId { get; set; }
+        public string Branch { get; set; }
+        public string IBAN { get; set; }
         public byte[] Photo { get; set; }
         public string Brief { get; set; }
         public string OthBrief { get; set; }
@@ -48,7 +51,7 @@ namespace HrmsModel.Models
         public virtual ICollection<Employment> Employments { get; set; }
         public virtual ICollection<EmployeeLeave> EmployeeLeaves { get; set; }
         public virtual ICollection<EmployeeLeaveBalance> EmployeeLeaveBalances { get; set; }
-        public virtual ICollection<EmployeeSalary> EmployeeSalaries { get; set; }
+        public virtual ICollection<Remuneration> Remunerations { get; set; }
         public virtual ICollection<EmployeeQualification> EmployeeQualifications { get; set; }
         public virtual ICollection<EmployeeFamily> EmployeeFamilies { get; set; }
         public virtual ICollection<EmployeeLanguage> EmployeeLanguages { get; set; }

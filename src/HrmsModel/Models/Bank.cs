@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace HrmsModel.Models
 {
-    public class AllowanceType : ILookup
+    public class Bank : ILookup
     {
         public int Id { get; set; }
         public string Name { get; set; }
@@ -13,8 +13,5 @@ namespace HrmsModel.Models
         public string SysCode { get; set; }
         public int SortOrder { get; set; }
         public bool IsActive { get; set; }
-
-        public virtual ICollection<AllowancePolicy> AllowancePolicies { get; set; }
-        public virtual ICollection<Remuneration> Remunerations { get; set; }
     }
 }

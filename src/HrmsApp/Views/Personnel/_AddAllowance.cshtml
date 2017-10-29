@@ -1,0 +1,36 @@
+﻿@using HrmsModel.Models;
+@model Remuneration
+
+<form role="form" id="popupForm" asp-controller="Personnel" asp-action="AddAllowance" data-ajax="true" data-ajax-method="POST" data-ajax-update="#listSection" data-ajax-success="onSuccess" data-ajax-failure="onFailure">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" asp-for="EmployeeId" id="employeeId" />
+    <input type="hidden" asp-for="EmploymentId" id="employmentId" />
+    <div class="form-group-sm">
+        <label asp-for="AllowanceTypeId" class="control-label"><small>Allowance Type (*)</small></label>
+        <select asp-for="AllowanceTypeId" class="form-control" required>
+            <option value="">Select from List ...</option>
+            @foreach (SelectListItem x in new SelectList(ViewBag.allowanceTypesList, "Id", "Name"))
+            {
+                <option value="@x.Value">@x.Text</option>
+            }
+        </select>
+    </div>
+    <div class="form-group-sm">
+        <label asp-for="AllowanceValue" class="control-label"><small>Allowance Value (*)</small></label>
+        <input type="number" asp-for="AllowanceValue" class="form-control" required />
+    </div>
+    <div class="input-group-sm">
+        <label class="control-label" asp-for="IsPercentage">
+            <input type="checkbox" asp-for="IsPercentage" checked />
+            <span><small>Is Percentage?</small></span>
+        </label>
+    </div>
+    <div class="form-group-sm">
+        <label asp-for="FromDate" class="control-label"><small>From Date (*)</small></label>
+        <input type="date" asp-for="FromDate" class="form-control" required />
+    </div>
+    <div class="form-group-sm">
+        <label asp-for="Narration" class="control-label"><small>Narration</small></label>
+        <input type="text" asp-for="Narration" class="form-control" />
+    </div>
+</form>

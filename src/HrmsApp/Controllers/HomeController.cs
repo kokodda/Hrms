@@ -126,7 +126,7 @@ namespace HrmsApp.Controllers
                 item.Employee = x1.Employee;
                 item.EmployeeName = x1.Employee.FirstName + " " + x1.Employee.FatherName + " " + x1.Employee.FamilyName;
                 item.OrgUnitName = x1.OrgUnit.Name;
-                item.PositionName = x1.PositionId.HasValue ? x1.Position.Name : (x1.IsHead ? x1.OrgUnit.HeadPositionName : x1.JobName);
+                item.PositionName = x1.PositionId.HasValue ? x1.Position.Name : (x1.IsHead ? x1.OrgUnit.HeadPositionName : null);
                 model.Add(item);
             }
             return PartialView("_Welcome", model);

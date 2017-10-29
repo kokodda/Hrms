@@ -2,19 +2,17 @@
 @model IEnumerable<Employment>
 
 <div class="container-fluid" style="padding:0px">
-    <label><small>Current Occupation</small></label>
     @*genuin position*@
+    <label><small>Main Occupation &mdash; Genuin</small></label>
     @{
         var gen = Model.FirstOrDefault(b => !b.IsActing);
-        string isHead = gen.IsHead ? "Unit Head - " : null;
-        string job = isHead + (gen.IsActing ? " Acting" : " Genuin");
+        string job = gen.IsHead ? gen.OrgUnit.HeadPositionName : gen.Position.Name;
     }
-    @Html.Hidden("jobGradeHF", gen.JobGradeId.HasValue ? gen.JobGrade.Code : "NA")
     <div class="panel panel-default">
         <div class="panel-heading">
             <div class="row">
                 <div class="col-sm-10">
-                    <label id="posName_gen"><small>@string.Format("{0}", gen.IsHead ? gen.OrgUnit.HeadPositionName : (gen.PositionId.HasValue ? gen.Position.Name : gen.JobName))</small></label>
+                    <label id="posName_gen"><small>@job</small></label>
                     <span class="pull-right"><small><label>Date in Position: </label><span id="dateInPosition_gen">@gen.FromDate.ToString("dd-MM-yyyy")</span></small></span>
                 </div>
                 <div class="col-sm-2">
@@ -35,24 +33,27 @@
                 <div class="col-sm-4"><small><label>Overtime:</label>&nbsp;<span id="overtime_gen">@string.Format("{0}", gen.IsOverTimeAllowed ? "Allowed" : "Not Allowed")</span></small></div>
             </div>
             <div class="row">
-                <div class="col-sm-4"><small><label>Salary Scale:</label>&nbsp;<span id="salaryScale_gen">@string.Format("{0}", gen.SalaryScaleTypeId.HasValue ? gen.SalaryScaleType.Name : "NA")</span></small></div>
-                <div class="col-sm-2"><small><label>Salary Step:</label>&nbsp;<span id="salaryStep_gen">@string.Format("{0}", gen.SalaryStepId.HasValue ? gen.SalaryStep.Code : "NA")</span></small></div>
-                <div class="col-sm-2"><small><label>Salary:</label>&nbsp;@string.Format("{0}", gen.IsHead ? (gen.JobGradeId.HasValue ? "Grade Related" : gen.BasicSalary.ToString()) : (gen.PositionId.HasValue ? (gen.Position.JobGradeId.HasValue ? "Grade Related" : gen.BasicSalary.ToString()) : gen.BasicSalary.ToString()))</small></div>
-                <div class="col-sm-3"><small><label>Payroll Excluded?</label>&nbsp;<input type="checkbox" asp-for="@gen.IsPayrollExcluded" readonly disabled /></small></div>
+                <div class="col-sm-4"><small><label>Job Grade:</label>&nbsp;<span id="jobGrade_gen">@string.Format("{0}", gen.JobGradeId.HasValue ? gen.JobGrade.Code : "NA")</span></small></div>
+                <div class="col-sm-4"><small><label>Salary Step:</label>&nbsp;<span id="salaryStep_gen">@string.Format("{0}", gen.SalaryStepId.HasValue ? gen.SalaryStep.Code : "NA")</span></small></div>
+                <div class="col-sm-4"><small><label>Salary Scale:</label>&nbsp;<span id="salaryScale_gen">@string.Format("{0}", gen.IsPayrollExcluded ? "Payroll Excluded" : (gen.SalaryScaleTypeId.HasValue ? gen.SalaryScaleType.Name : "NA"))</span></small></div>
             </div>
         </div>
     </div>
 
     @*acting positions*@
-    @foreach (var item in Model.Where(b => b.Id != gen.Id))
+    <label><small>Other Occupations &mdash; Acting</small></label>
+    @if (Model.Where(b => b.IsActing).Count() == 0)
     {
-        isHead = item.IsHead ? "Unit Head - " : null;
-        job = isHead + (item.IsActing ? " Acting" : " Genuin");
+        <p><label style="color:silver"><small>No Other Occupations</small></label></p>
+    }
+    @foreach (var item in Model.Where(b => b.IsActing))
+    {
+        job = gen.IsHead ? gen.OrgUnit.HeadPositionName : gen.Position.Name;
         <div class="panel panel-default">
             <div class="panel-heading">
                 <div class="row">
                     <div class="col-sm-10">
-                        <label><small>@string.Format("{0}", item.IsHead ? item.OrgUnit.HeadPositionName : (item.PositionId.HasValue ? item.Position.Name : item.JobName))</small></label>
+                        <label><small>@job</small></label>
                         <span class="pull-right"><small><label>Date in Position: </label>@item.FromDate.ToString("dd-MM-yyyy")</small></span>
                     </div>
                     <div class="col-sm-2">

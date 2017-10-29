@@ -29,6 +29,7 @@ namespace HrmsModel.Data
         public virtual DbSet<Nationality> Nationalities { get; set; }
         public virtual DbSet<PayrollComponentType> PayrollComponentTypes { get; set; }
         public virtual DbSet<AttendanceActionType> AttendanceActionTypes { get; set; }
+        public virtual DbSet<Bank> Banks { get; set; }
 
         public virtual DbSet<Calendar> Calendars { get; set; }
         public virtual DbSet<Holiday> Holidays { get; set; }
@@ -53,7 +54,7 @@ namespace HrmsModel.Data
         public virtual DbSet<EmployeeLeaveBalance> EmployeeLeaveBalances { get; set; }
         public virtual DbSet<Employment> Employments { get; set; }
         public virtual DbSet<EmployeeQualification> EmployeeQualifications { get; set; }
-        public virtual DbSet<EmployeeSalary> EmployeeSalaries { get; set; }
+        public virtual DbSet<Remuneration> Remunerations { get; set; }
         public virtual DbSet<GenericGroup> GenericGroups { get; set; }
         public virtual DbSet<GenericSubGroup> GenericSubGroups { get; set; }
         public virtual DbSet<EmployeeGroup> EmployeeGroups { get; set; }
@@ -180,6 +181,13 @@ namespace HrmsModel.Data
             modelBuilder.Entity<Nationality>().Property(b => b.IsActive).HasDefaultValue(true);
             modelBuilder.Entity<Nationality>().ToTable("Nationalities");
 
+            modelBuilder.Entity<Bank>().HasKey(b => b.Id);
+            modelBuilder.Entity<Bank>().Property(b => b.SysCode).HasMaxLength(10);
+            modelBuilder.Entity<Bank>().Property(b => b.Name).IsRequired().HasMaxLength(100);
+            modelBuilder.Entity<Bank>().Property(b => b.OthName).IsRequired().HasMaxLength(100);
+            modelBuilder.Entity<Bank>().Property(b => b.IsActive).HasDefaultValue(true);
+            modelBuilder.Entity<Bank>().ToTable("Banks");
+
             modelBuilder.Entity<CompetencyCategory>().HasKey(b => b.Id);
             modelBuilder.Entity<CompetencyCategory>().Property(b => b.Name).IsRequired().HasMaxLength(100);
             modelBuilder.Entity<CompetencyCategory>().Property(b => b.OthName).IsRequired(false).HasMaxLength(100);
@@ -261,7 +269,6 @@ namespace HrmsModel.Data
             modelBuilder.Entity<OrgUnit>().HasKey(b => b.Id);
             modelBuilder.Entity<OrgUnit>().HasOne(b => b.OrgUnitType).WithMany(b => b.OrgUnits).HasForeignKey(b => b.OrgUnitTypeId).OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<OrgUnit>().HasOne(b => b.JobGrade).WithMany(b => b.OrgUnits).HasForeignKey(b => b.JobGradeId).OnDelete(DeleteBehavior.Restrict);
-            modelBuilder.Entity<OrgUnit>().HasOne(b => b.SalaryStep).WithMany(b => b.OrgUnits).HasForeignKey(b => b.SalaryStepId).OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<OrgUnit>().HasOne(b => b.StandardTitleType).WithMany(b => b.OrgUnits).HasForeignKey(b => b.StandardTitleTypeId).OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<OrgUnit>().Property(b => b.Code).IsRequired().HasMaxLength(100);
             modelBuilder.Entity<OrgUnit>().Property(b => b.Name).IsRequired().HasMaxLength(100);
@@ -279,7 +286,6 @@ namespace HrmsModel.Data
             modelBuilder.Entity<Position>().HasKey(b => b.Id);
             modelBuilder.Entity<Position>().HasOne(b => b.OrgUnit).WithMany(b => b.Positions).HasForeignKey(b => b.OrgUnitId).OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<Position>().HasOne(b => b.JobGrade).WithMany(b => b.Positions).HasForeignKey(b => b.JobGradeId).OnDelete(DeleteBehavior.Restrict);
-            modelBuilder.Entity<Position>().HasOne(b => b.SalaryStep).WithMany(b => b.Positions).HasForeignKey(b => b.SalaryStepId).OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<Position>().HasOne(b => b.StandardTitleType).WithMany(b => b.Positions).HasForeignKey(b => b.StandardTitleTypeId).OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<Position>().Property(b => b.Name).HasMaxLength(100);
             modelBuilder.Entity<Position>().Property(b => b.OthName).HasMaxLength(100);
@@ -354,6 +360,8 @@ namespace HrmsModel.Data
             modelBuilder.Entity<Employee>().Property(b => b.Email).IsRequired(false).HasMaxLength(50);
             modelBuilder.Entity<Employee>().Property(b => b.Address).IsRequired(false).HasMaxLength(256);
             modelBuilder.Entity<Employee>().Property(b => b.PermenantAddress).IsRequired(false).HasMaxLength(256);
+            modelBuilder.Entity<Employee>().Property(b => b.Branch).HasMaxLength(100);
+            modelBuilder.Entity<Employee>().Property(b => b.IBAN).HasMaxLength(100);
             modelBuilder.Entity<Employee>().Property(b => b.JoinDate).HasColumnType("date");
             modelBuilder.Entity<Employee>().Property(b => b.ResignationDate).HasColumnType("date");
             modelBuilder.Entity<Employee>().Property(b => b.LastUpdated).HasColumnType("date");
@@ -420,8 +428,6 @@ namespace HrmsModel.Data
             modelBuilder.Entity<Employment>().HasOne(b => b.SalaryScaleType).WithMany(b => b.Employments).HasForeignKey(b => b.SalaryScaleTypeId).OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<Employment>().HasOne(b => b.SalaryStep).WithMany(b => b.Employments).HasForeignKey(b => b.SalaryStepId).OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<Employment>().HasOne(b => b.Position).WithMany(b => b.Employments).HasForeignKey(b => b.PositionId).OnDelete(DeleteBehavior.Restrict);
-            modelBuilder.Entity<Employment>().Property(b => b.JobName).HasMaxLength(100);
-            modelBuilder.Entity<Employment>().Property(b => b.OthJobName).HasMaxLength(100);
             modelBuilder.Entity<Employment>().Property(b => b.IsHead).HasDefaultValue(false);
             modelBuilder.Entity<Employment>().Property(b => b.FromDate).HasColumnType("date");
             modelBuilder.Entity<Employment>().Property(b => b.ThruDate).HasColumnType("date");
@@ -465,14 +471,16 @@ namespace HrmsModel.Data
             modelBuilder.Entity<EmployeeQualification>().Property(b => b.IsPlanned).HasDefaultValue(false);
             modelBuilder.Entity<EmployeeQualification>().ToTable("EmployeeQualifications");
 
-            modelBuilder.Entity<EmployeeSalary>().HasKey(b => b.Id);
-            modelBuilder.Entity<EmployeeSalary>().HasOne(b => b.Employee).WithMany(b => b.EmployeeSalaries).HasForeignKey(b => b.EmployeeId).OnDelete(DeleteBehavior.Restrict);
-            modelBuilder.Entity<EmployeeSalary>().Property(b => b.Details).HasMaxLength(256);
-            modelBuilder.Entity<EmployeeSalary>().Property(b => b.FromDate).HasColumnType("date");
-            modelBuilder.Entity<EmployeeSalary>().Property(b => b.IsActive).HasDefaultValue(true);
-            modelBuilder.Entity<EmployeeSalary>().Property(b => b.LastUpdated).HasColumnType("date");
-            modelBuilder.Entity<EmployeeSalary>().Property(b => b.UpdatedBy).HasMaxLength(100);
-            modelBuilder.Entity<EmployeeSalary>().ToTable("EmployeeSalarys");
+            modelBuilder.Entity<Remuneration>().HasKey(b => b.Id);
+            modelBuilder.Entity<Remuneration>().HasOne(b => b.Employee).WithMany(b => b.Remunerations).HasForeignKey(b => b.EmployeeId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Remuneration>().HasOne(b => b.Employment).WithMany(b => b.Remunerations).HasForeignKey(b => b.EmploymentId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Remuneration>().HasOne(b => b.AllowanceType).WithMany(b => b.Remunerations).HasForeignKey(b => b.AllowanceTypeId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Remuneration>().Property(b => b.Narration).HasMaxLength(256);
+            modelBuilder.Entity<Remuneration>().Property(b => b.FromDate).HasColumnType("date");
+            modelBuilder.Entity<Remuneration>().Property(b => b.LastUpdated).HasColumnType("date");
+            modelBuilder.Entity<Remuneration>().Property(b => b.UpdatedBy).IsRequired().HasMaxLength(100);
+            modelBuilder.Entity<Remuneration>().Property(b => b.IsActive).HasDefaultValue(true);
+            modelBuilder.Entity<Remuneration>().ToTable("Remunerations");
 
             modelBuilder.Entity<GenericGroup>().HasKey(b => b.Id);
             modelBuilder.Entity<GenericGroup>().Property(b => b.Name).IsRequired().HasMaxLength(100);
