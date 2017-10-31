@@ -11,9 +11,10 @@ using System;
 namespace HrmsModel.Migrations
 {
     [DbContext(typeof(HrmsDbContext))]
-    partial class HrmsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20171031051918_update25")]
+    partial class update25
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -555,8 +556,6 @@ namespace HrmsModel.Migrations
 
                     b.Property<string>("Address")
                         .HasMaxLength(256);
-
-                    b.Property<string>("AppForm");
 
                     b.Property<int?>("BankId");
 

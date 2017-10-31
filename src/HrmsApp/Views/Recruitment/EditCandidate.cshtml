@@ -6,6 +6,7 @@
 @{
     ViewData["Title"] = "Personnel";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    dynamic json = JsonConvert.DeserializeObject(Model.AppForm);
 }
 
 <div class="container-fluid" style="padding:0px">
@@ -15,8 +16,8 @@
     <div class="row">
         <div class="col-sm-2" style="font-size:small">
             <dl>
-                <dt>Unit:</dt><dd>@ViewBag.orgUnitName</dd>
-                <dt>Job Position:</dt><dd>@ViewBag.positionName</dd>
+                <dt>Unit:</dt><dd>@Model.OrgUnit.Name</dd>
+                <dt>Job Position:</dt><dd>@string.Format("{0}", Model.IsHead ? Model.OrgUnit.HeadPositionName : Model.Position.Name)</dd>
             </dl>
             <hr />
             <ul class="list-unstyled">
@@ -46,10 +47,10 @@
                 <input type="hidden" name="Version" value="1.0" />
                 <input type="hidden" name="SubmitType" id="submitHF" value="save" />
                 <input type="submit" id="submit-form" class="hidden" />
-                <input type="hidden" asp-for="Id" value="0" />
-                <input type="hidden" asp-for="OrgUnitId" value="@ViewBag.orgUnitId" />
-                <input type="hidden" asp-for="PositionId" value="@ViewBag.positionId" />
-                <input type="hidden" asp-for="IsHead" value="@ViewBag.isHead" />
+                <input type="hidden" asp-for="Id" />
+                <input type="hidden" asp-for="OrgUnitId" />
+                <input type="hidden" asp-for="PositionId" />
+                <input type="hidden" asp-for="IsHead" />
 
                 <section id="personalDataSection">
                     <div>
@@ -123,7 +124,7 @@
                     </div>
                     <div class="form-group-sm">
                         <label class="control-label"><small>Family Size</small></label>
-                        <small><input name="FamilySize" class="form-control" /></small>
+                        <small><input name="FamilySize" value="@json.FamilySize" class="form-control" /></small>
                     </div>
                     <div class="input-group-sm">
                         <label class="control-label" asp-for="IsMilitaryExempted">
@@ -199,22 +200,36 @@
                                     <option value="">Select ...</option>
                                     @foreach (SelectListItem item in new SelectList(ViewBag.qualificationTypesList, "Id", "Name"))
                                     {
-                                        <option value="@item.Value">@item.Text</option>
+                                        if (json.QualificationsList[i].type == item.Value)
+                                        {
+                                            <option value="@item.Value" selected>@item.Text</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@item.Value">@item.Text</option>
+                                        }
                                     }
                                 </select>
                             </div>
                             <div class="col-sm-4" style="padding-left:0px;padding-right:0px">
-                                <small><input name="QualificationsList[][name]" class="form-control" placeholder="Name" /></small>
+                                <small><input name="QualificationsList[][name]" value="@json.QualificationsList[i].name" class="form-control" placeholder="Name" /></small>
                             </div>
                             <div class="col-sm-2" style="padding-left:0px;padding-right:0px">
-                                <small><input type="date" name="QualificationsList[][obtainedDate]" class="form-control" placeholder="Obtained Date" /></small>
+                                <small><input type="date" name="QualificationsList[][obtainedDate]" value="@json.QualificationsList[i].obtainedDate" class="form-control" placeholder="Obtained Date" /></small>
                             </div>
                             <div class="col-sm-3" style="padding-left:0px">
                                 <select class="form-control" name="QualificationsList[][competency]" style="font-size:small">
                                     <option value="">Select ...</option>
                                     @foreach (SelectListItem item in new SelectList(ViewBag.competencyAreaTypesList, "Id", "Name"))
                                     {
-                                        <option value="@item.Value">@item.Text</option>
+                                        if (json.QualificationsList[i].competency == item.Value)
+                                        {
+                                            <option value="@item.Value" selected>@item.Text</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@item.Value">@item.Text</option>
+                                        }
                                     }
                                 </select>
                             </div>
@@ -242,15 +257,22 @@
                                     <option value="">Select Type ...</option>
                                     @foreach (SelectListItem item in new SelectList(ViewBag.experienceTypesList, "Id", "Name"))
                                     {
-                                        <option value="@item.Value">@item.Text</option>
+                                        if (json.ExperiencesList[i].type == item.Value)
+                                        {
+                                            <option value="@item.Value" selected>@item.Text</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@item.Value">@item.Text</option>
+                                        }
                                     }
                                 </select>
                             </div>
                             <div class="col-sm-7" style="padding-left:0px;padding-right:0px">
-                                <small><input name="ExperiencesList[][details]" class="form-control fullwidth" placeholder="Details" /></small>
+                                <small><input name="ExperiencesList[][details]" value="@json.ExperiencesList[i].details" class="form-control fullwidth" placeholder="Details" /></small>
                             </div>
                             <div class="col-sm-2" style="padding-left:0px">
-                                <small><input type="number" name="ExperiencesList[][totalYears]" class="form-control" placeholder="Total Years" /></small>
+                                <small><input type="number" name="ExperiencesList[][totalYears]" value="@json.ExperiencesList[i].totalYears" class="form-control" placeholder="Total Years" /></small>
                             </div>
                         </div>
                     }
@@ -267,10 +289,10 @@
                     {
                         <div class="row">
                             <div class="col-sm-4" style="padding-right:0px">
-                                <small><input name="HRInterviewList[][interviewer]" class="form-control fullwidth" placeholder="Interviewer" /></small>
+                                <small><input name="HRInterviewList[][interviewer]" value="@json.HRInterviewList[i].interviewer" class="form-control fullwidth" placeholder="Interviewer" /></small>
                             </div>
                             <div class="col-sm-8" style="padding-left:0px">
-                                <small><input name="HRInterviewList[][feedback]" class="form-control fullwidth" placeholder="Feedback" /></small>
+                                <small><input name="HRInterviewList[][feedback]" value="@json.HRInterviewList[i].feedback" class="form-control fullwidth" placeholder="Feedback" /></small>
                             </div>
                         </div>
                     }
@@ -287,10 +309,10 @@
                     {
                         <div class="row">
                             <div class="col-sm-4" style="padding-right:0px">
-                                <small><input name="TechnicalInterviewList[][interviewer]" class="form-control fullwidth" placeholder="Interviewer" /></small>
+                                <small><input name="TechnicalInterviewList[][interviewer]" value="@json.TechnicalInterviewList[i].interviewer" class="form-control fullwidth" placeholder="Interviewer" /></small>
                             </div>
                             <div class="col-sm-8" style="padding-left:0px">
-                                <small><input name="TechnicalInterviewList[][feedback]" class="form-control fullwidth" placeholder="Feedback" /></small>
+                                <small><input name="TechnicalInterviewList[][feedback]" value="@json.TechnicalInterviewList[i].feedback" class="form-control fullwidth" placeholder="Feedback" /></small>
                             </div>
                         </div>
                     }
@@ -304,10 +326,10 @@
                     </div>
                     <br />
                     <div>
-                        <small><input asp-for="FinalScore" value="0" class="form-control" placeholder="Final Score" /></small>
+                        <small><input asp-for="FinalScore" class="form-control" placeholder="Final Score" /></small>
                     </div>
                     <div>
-                        <small><input name="finalResult" class="form-control fullwidth" placeholder="Final Result" /></small>
+                        <small><input name="finalResult" value="@json.finalResult" class="form-control fullwidth" placeholder="Final Result" /></small>
                     </div>
                 </section>
             </form>
@@ -379,13 +401,8 @@
                 data: JSON.stringify(data),
                 success: function (result) {
                     $('#formResult').html(result);
-                    if ($('#submitHF').val() === "submit")
-                    {
+                    if ($('#submitHF').val() === "submit") {
                         $('#btnSubmit').attr('disabled', 'disabled');
-                        $('#btnSave').attr('disabled', 'disabled');
-                    }
-                    else
-                    {
                         $('#btnSave').attr('disabled', 'disabled');
                     }
                     $(window).scrollTop($('#formHeader').offset().top);

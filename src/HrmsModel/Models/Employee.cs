@@ -40,6 +40,7 @@ namespace HrmsModel.Models
         public byte[] Photo { get; set; }
         public string Brief { get; set; }
         public string OthBrief { get; set; }
+        public string AppForm { get; set; }
         public DateTime JoinDate { get; set; }
         public DateTime? ResignationDate { get; set; }
         public bool IsActive { get; set; }

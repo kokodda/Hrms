@@ -60,7 +60,7 @@ namespace HrmsApp.Controllers
         }
 
         //void to create employee from AddEmployee or HireCandidate actions
-        private async void CreateEmployee(Employee item, long orgUnitId, int employmentTypeId, DateTime? dateInPosition, long? positionId, int? jobGradeId, int? salaryStepId, int? salaryScaleTypeId, int basicSalary = 0, string isHead = "false", bool isProbation = false)
+        private async void CreateEmployee(Employee item, long orgUnitId, int employmentTypeId, DateTime? dateInPosition, long? positionId, int? jobGradeId, int? salaryStepId, int? salaryScaleTypeId, int basicSalary = 0, bool isHead = false, bool isProbation = false)
         {
             if (string.IsNullOrEmpty(item.EmpUid))
                 item.EmpUid = (int.Parse(_context.Employees.Max(b => b.EmpUid)) + 1).ToString();
@@ -69,12 +69,12 @@ namespace HrmsApp.Controllers
             item.UpdatedBy = "user";
             _context.Employees.Add(item);
 
-            var ou = await _context.OrgUnits.SingleOrDefaultAsync(b => b.Id == orgUnitId);
+            
 
             Employment pos = new Employment();
             pos.OrgUnitId = orgUnitId;
             pos.EmployeeId = item.Id;
-            pos.IsHead = isHead == "false" ? false : true;
+            pos.IsHead = isHead;
             pos.PositionId = positionId;
             if (positionId.HasValue)
             {
@@ -129,9 +129,9 @@ namespace HrmsApp.Controllers
             _context.EmployeeLeaveBalances.Add(new EmployeeLeaveBalance { EmployeeId = item.Id, LeaveTypeId = sickTypeId, AnnualEntitlement = entitle });
 
             //update vacancies
-            if (isHead == "true")
-                ou.IsVacant = false;
-            if (positionId.HasValue)
+            if (isHead)
+                _context.OrgUnits.SingleOrDefault(b => b.Id == orgUnitId).IsVacant = false;
+            else
             {
                 var p = await _context.Positions.SingleOrDefaultAsync(b => b.Id == positionId);
                 if (p.TotalVacant > 0)
@@ -194,7 +194,8 @@ namespace HrmsApp.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult AddEmployee(Employee item, long orgUnitId, int employmentTypeId, DateTime? dateInPosition, long? positionId, int? jobGradeId, int? salaryStepId, int? salaryScaleTypeId, int basicSalary = 0, string isHead = "false", bool isProbation = false)
         {
-            CreateEmployee(item, orgUnitId, employmentTypeId,  dateInPosition, positionId,  jobGradeId,  salaryStepId, salaryScaleTypeId, basicSalary, isHead, isProbation);
+            bool isHead1 = isHead == "false" ? false : true;
+            CreateEmployee(item, orgUnitId, employmentTypeId,  dateInPosition, positionId,  jobGradeId,  salaryStepId, salaryScaleTypeId, basicSalary, isHead1, isProbation);
             return Content("Employee Successfully Added.", "text/html");
         }
 
@@ -203,50 +204,32 @@ namespace HrmsApp.Controllers
         {
             var x = await _context.OrgUnits.SingleOrDefaultAsync(b => b.Id == buId);
             ViewBag.orgUnitName = x.Name;
-            ViewBag.isUnassigned = false;
-            if (posId.HasValue && !isHead)
-                ViewBag.positionName = _context.Positions.SingleOrDefault(b => b.Id == posId).Name;
-            else if (!posId.HasValue && isHead)
+            if (isHead)
                 ViewBag.positionName = x.HeadPositionName;
             else
-            {
-                ViewBag.positionName = "Unassigned Position";
-                ViewBag.isUnassigned = true;
-            }
+                ViewBag.positionName = _context.Positions.SingleOrDefault(b => b.Id == posId).Name; 
             ViewBag.positionId = posId;
-            ViewBag.isHead = isHead.ToString();
+            ViewBag.isHead = isHead;
             ViewBag.orgUnitId = buId;
             ViewBag.nationalitiesList = await _context.Nationalities.Where(b => b.IsActive).ToListAsync();
             ViewBag.governoratesList = await _context.Governorates.Where(b => b.IsActive).ToListAsync();
             ViewBag.employmentTypesList = _lookup.GetLookupItems<EmploymentType>();
             ViewBag.qualificationTypesList = _lookup.GetLookupItems<QualificationType>().Where(b => b.SysCode != "DOMAIN_EXPERIENCE" && b.SysCode != "OTHER_EXPERIENCE");
             ViewBag.experienceTypesList = _lookup.GetLookupItems<QualificationType>().Where(b => b.SysCode == "DOMAIN_EXPERIENCE" || b.SysCode == "OTHER_EXPERIENCE");
-            return View("AddCandidate");
+            ViewBag.competencyAreaTypesList = _lookup.GetLookupItems<CompetencyAreaType>();
+            return View();
         }
 
         public async Task<IActionResult> EditCandidate(long id)
         {
             var model = await _context.Candidates.Include(b => b.OrgUnit).Include(b => b.Position).SingleOrDefaultAsync(b => b.Id == id);
-            ViewBag.orgUnitName = model.OrgUnit.Name;
-            ViewBag.isUnassigned = false;
-            if (model.PositionId.HasValue && !model.IsHead)
-                ViewBag.positionName = model.Position.Name;
-            else if (!model.PositionId.HasValue && model.IsHead)
-                ViewBag.positionName = model.OrgUnit.HeadPositionName;
-            else
-            {
-                ViewBag.positionName = "Unassigned Position";
-                ViewBag.isUnassigned = true;
-            }
-            ViewBag.positionId = model.PositionId;
-            ViewBag.isHead = model.IsHead.ToString();
-            ViewBag.orgUnitId = model.OrgUnitId;
             ViewBag.nationalitiesList = await _context.Nationalities.Where(b => b.IsActive).ToListAsync();
             ViewBag.governoratesList = await _context.Governorates.Where(b => b.IsActive).ToListAsync();
             ViewBag.employmentTypesList = _lookup.GetLookupItems<EmploymentType>();
             ViewBag.qualificationTypesList = _lookup.GetLookupItems<QualificationType>().Where(b => b.SysCode != "DOMAIN_EXPERIENCE" && b.SysCode != "OTHER_EXPERIENCE");
             ViewBag.experienceTypesList = _lookup.GetLookupItems<QualificationType>().Where(b => b.SysCode == "DOMAIN_EXPERIENCE" || b.SysCode == "OTHER_EXPERIENCE");
-            return View("AddCandidate", model);
+            ViewBag.competencyAreaTypesList = _lookup.GetLookupItems<CompetencyAreaType>();
+            return View(model);
         }
 
         [HttpPost]
@@ -254,7 +237,9 @@ namespace HrmsApp.Controllers
         {
             string appForm = JsonConvert.SerializeObject(data);
             string submit = data.SubmitType.ToString();
-            if (data.Id != "")
+            string msg = "Failed! Unable to Save Candidate Information. Please Correct ALL Error then re-apply.";
+
+            if (data.Id != "0")
             {
                 long id = long.Parse(data.Id.ToString());
                 var model = await _context.Candidates.SingleOrDefaultAsync(b => b.Id == id);
@@ -308,7 +293,11 @@ namespace HrmsApp.Controllers
             }
 
             await _context.SaveChangesAsync();
-            return Json("Candidate is Successfully Saved.");
+            if (submit == "submit")
+                msg = "Candidate is Successfully Submitted.";
+            else
+                msg = "Candidate is Successfully Saved.";
+            return Json(msg);
         }
 
         public async Task<IActionResult> RemoveCandidate(long id)
@@ -372,42 +361,65 @@ namespace HrmsApp.Controllers
         {
             var model = await _context.Candidates.SingleOrDefaultAsync(b => b.Id == item.Id);
             Employee emp = new Employee();
-            emp.FirstName = item.FirstName;
-            emp.FatherName = item.FatherName;
-            emp.FamilyName = item.FamilyName;
-            emp.MotherName = item.MotherName;
-            emp.OthFirstName = item.OthFirstName;
-            emp.OthFatherName = item.OthFatherName;
-            emp.OthFamilyName = item.OthFamilyName;
-            emp.OthMotherName = item.OthMotherName;
-            emp.IsMale = item.IsMale;
-            emp.MaritalStatus = item.MaritalStatus;
-            emp.IsMilitaryExempted = item.IsMilitaryExempted;
-            emp.BirthDate = item.BirthDate;
-            emp.NationalityId = item.NationalityId;
-            emp.Phone = item.Phone;
-            emp.HomePhone1 = item.HomePhone1;
-            emp.HomePhone2 = item.HomePhone2;
-            emp.GovernorateId = item.GovernorateId;
-            emp.Address = item.Address;
-            emp.PermenantAddress = item.PermenantAddress;
-            emp.Email = item.Email;
+            emp.FirstName = model.FirstName;
+            emp.FatherName = model.FatherName;
+            emp.FamilyName = model.FamilyName;
+            emp.MotherName = model.MotherName;
+            emp.OthFirstName = model.OthFirstName;
+            emp.OthFatherName = model.OthFatherName;
+            emp.OthFamilyName = model.OthFamilyName;
+            emp.OthMotherName = model.OthMotherName;
+            emp.IsMale = model.IsMale;
+            emp.MaritalStatus = model.MaritalStatus;
+            emp.IsMilitaryExempted = model.IsMilitaryExempted;
+            emp.BirthDate = model.BirthDate;
+            emp.NationalityId = model.NationalityId;
+            emp.Phone = model.Phone;
+            emp.HomePhone1 = model.HomePhone1;
+            emp.HomePhone2 = model.HomePhone2;
+            emp.GovernorateId = model.GovernorateId;
+            emp.Address = model.Address;
+            emp.PermenantAddress = model.PermenantAddress;
+            emp.Email = model.Email;
             emp.JoinDate = DateTime.Now.Date;
-            
-            CreateEmployee(emp, model.OrgUnitId, employmentTypeId, null, model.PositionId, jobGradeId, salaryStepId, salaryScaleTypeId, basicSalary, model.IsHead.ToString(), isProbation);
+            emp.AppForm = model.AppForm;
+
+            //CreateEmployee(emp, model.OrgUnitId, employmentTypeId, null, model.PositionId, jobGradeId, salaryStepId, salaryScaleTypeId, basicSalary, model.IsHead, isProbation);
 
             //add qualifications
-            //dynamic json = JsonConvert.DeserializeObject(model.AppForm);
-            //foreach(var x in json.QualificationsList)
-            //{
-            //    if(!string.IsNullOrEmpty(x.Type))
-            //    {
-            //        EmployeeQualification eq = new EmployeeQualification();
-            //        eq.EmployeeId = emp.Id;
-            //        eq.QualificationTypeId = int.Parse(x.Type);
-            //        _context.EmployeeQualifications.Add(eq);
-            //    }
-            //}
+            dynamic json = JsonConvert.DeserializeObject(model.AppForm);
+            foreach(var x in json.QualificationsList)
+            {
+                if (!string.IsNullOrEmpty(x.type.Value))
+                {
+                    EmployeeQualification eq = new EmployeeQualification();
+                    eq.EmployeeId = emp.Id;
+                    eq.QualificationTypeId = int.Parse(x.type.ToString());
+                    eq.CompetencyAreaTypeId = int.Parse(x.competency.ToString());
+                    eq.ObtainedDate = DateTime.Parse(x.obtainedDate.ToString());
+                    eq.Name = x.name.ToString();
+                    _context.EmployeeQualifications.Add(eq);
+                }
+            }
+            int othCompetencyAreaId = _lookup.GetLookupItems<CompetencyAreaType>().SingleOrDefault(b => b.SysCode == "OTHER").Id;
+            int domainCompetencyAreaId = _lookup.GetLookupItems<CompetencyAreaType>().SingleOrDefault(b => b.SysCode == "DOMAIN").Id;
+            foreach (var x in json.ExperiencesList)
+            {
+                if (!string.IsNullOrEmpty(x.type.Value))
+                {
+                    EmployeeQualification eq = new EmployeeQualification();
+                    eq.EmployeeId = emp.Id;
+                    eq.QualificationTypeId = int.Parse(x.type.ToString());
+                    string qualificationCode = _lookup.GetLookupItems<QualificationType>().SingleOrDefault(b => b.Id == eq.QualificationTypeId).SysCode;
+                    if (qualificationCode == "OTHER_EXPERIENCE")
+                        eq.CompetencyAreaTypeId = othCompetencyAreaId;
+                    else
+                        eq.CompetencyAreaTypeId = domainCompetencyAreaId;
+                    eq.Name = x.details.ToString();
+                    eq.TotalYears = int.Parse(x.totalYears.ToString());
+                    _context.EmployeeQualifications.Add(eq);
+                }
+            }
 
             //update candidate
             //item.IsApproved = true;

@@ -362,13 +362,13 @@ namespace HrmsApp.Controllers
         public async Task<IActionResult> QualificationsList(long id)
         {
             var model = _context.EmployeeQualifications.Include(b => b.QualificationType).Include(b => b.CompetencyAreaType).Include(b => b.CompetencySubCategory).ThenInclude(b => b.CompetencyCategory)
-                                            .Where(b => b.EmployeeId == id).OrderBy(b => b.QualificationType.SortOrder);
+                                            .Where(b => b.EmployeeId == id && b.ObtainedDate.HasValue).OrderByDescending(b => b.ObtainedDate);
             return PartialView("_QualificationsList", await model.ToListAsync());
         }
 
         public IActionResult AddQualification()
         {
-            ViewBag.qualificationTypesList = _lookup.GetLookupItems<QualificationType>();
+            ViewBag.qualificationTypesList = _lookup.GetLookupItems<QualificationType>().Where(b => !b.SysCode.Contains("_EXPERIENCE"));
             ViewBag.competencyAreaTypesList = _lookup.GetLookupItems<CompetencyAreaType>();
             ViewBag.competencySubCategoriesList = _context.CompetencySubCategories.Include(b => b.CompetencyCategory)
                                     .Where(b => b.IsActive).OrderBy(b => b.CompetencyCategory.SortOrder).ThenBy(b => b.SortOrder).ToList();
@@ -387,7 +387,7 @@ namespace HrmsApp.Controllers
         public async Task<IActionResult> EditQualification(long id)
         {
             var model = _context.EmployeeQualifications.SingleOrDefaultAsync(b => b.Id == id);
-            ViewBag.qualificationTypesList = _lookup.GetLookupItems<QualificationType>();
+            ViewBag.qualificationTypesList = _lookup.GetLookupItems<QualificationType>().Where(b => !b.SysCode.Contains("_EXPERIENCE"));
             ViewBag.competencyAreaTypesList = _lookup.GetLookupItems<CompetencyAreaType>();
             ViewBag.competencySubCategoriesList = await _context.CompetencySubCategories.Include(b => b.CompetencyCategory)
                                     .Where(b => b.IsActive).OrderBy(b => b.CompetencyCategory.SortOrder).ThenBy(b => b.SortOrder).ToListAsync();
@@ -403,6 +403,53 @@ namespace HrmsApp.Controllers
             await _context.SaveChangesAsync();
 
             return RedirectToAction("QualificationsList", new { id = model.EmployeeId });
+        }
+
+        //experiences
+        public async Task<IActionResult> ExperiencesList(long id)
+        {
+            var model = _context.EmployeeQualifications.Include(b => b.QualificationType).Include(b => b.CompetencyAreaType).Include(b => b.CompetencySubCategory).ThenInclude(b => b.CompetencyCategory)
+                                            .Where(b => b.EmployeeId == id && !b.ObtainedDate.HasValue).OrderByDescending(b => b.TotalYears);
+            return PartialView("_ExperiencesList", await model.ToListAsync());
+        }
+
+        public IActionResult AddExperience()
+        {
+            ViewBag.experienceTypesList = _lookup.GetLookupItems<QualificationType>().Where(b => b.SysCode.Contains("_EXPERIENCE"));
+            ViewBag.competencyAreaTypesList = _lookup.GetLookupItems<CompetencyAreaType>();
+            ViewBag.competencySubCategoriesList = _context.CompetencySubCategories.Include(b => b.CompetencyCategory)
+                                    .Where(b => b.IsActive).OrderBy(b => b.CompetencyCategory.SortOrder).ThenBy(b => b.SortOrder).ToList();
+            return PartialView("_AddExperience");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddExperience(EmployeeQualification item)
+        {
+            _context.EmployeeQualifications.Add(item);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("ExperiencesList", new { id = item.EmployeeId });
+        }
+
+        public async Task<IActionResult> EditExperience(long id)
+        {
+            var model = _context.EmployeeQualifications.SingleOrDefaultAsync(b => b.Id == id);
+            ViewBag.experienceTypesList = _lookup.GetLookupItems<QualificationType>().Where(b => b.SysCode.Contains("_EXPERIENCE"));
+            ViewBag.competencyAreaTypesList = _lookup.GetLookupItems<CompetencyAreaType>();
+            ViewBag.competencySubCategoriesList = await _context.CompetencySubCategories.Include(b => b.CompetencyCategory)
+                                    .Where(b => b.IsActive).OrderBy(b => b.CompetencyCategory.SortOrder).ThenBy(b => b.SortOrder).ToListAsync();
+            return PartialView("_EditExperience", await model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditExperience(EmployeeQualification item)
+        {
+            var model = await _context.EmployeeQualifications.SingleOrDefaultAsync(b => b.Id == item.Id);
+            await TryUpdateModelAsync(model);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("ExperiencesList", new { id = model.EmployeeId });
         }
 
         //languages
@@ -615,11 +662,7 @@ namespace HrmsApp.Controllers
         public async Task<IActionResult> EditEmployment(long id)
         {
             var model = await _context.Employments.SingleOrDefaultAsync(b => b.Id == id);
-            ViewBag.salaryScaleTypesList = _lookup.GetLookupItems<SalaryScaleType>();
             ViewBag.employmentTypesList = _lookup.GetLookupItems<EmploymentType>();
-            ViewBag.positionsList = await _context.Positions.Where(b => b.OrgUnitId == model.OrgUnitId).ToListAsync();
-            ViewBag.jobGradesList = await _context.JobGrades.Where(b => b.IsActive).ToListAsync();
-            ViewBag.salaryStepsList = await _context.SalarySteps.Where(b => b.IsActive).ToListAsync();
             return PartialView("_EditEmployment", model);
         }
 
@@ -629,16 +672,6 @@ namespace HrmsApp.Controllers
         {
             var model = await _context.Employments.SingleOrDefaultAsync(b => b.Id == item.Id);
             await TryUpdateModelAsync(model);
-
-            //update promotion if employment still in initial state
-            int cnt = await _context.EmployeePromotions.Where(b => b.EmploymentId == item.Id).CountAsync();
-            if(cnt == 1)
-            {
-                var promo = await _context.EmployeePromotions.SingleOrDefaultAsync(b => b.EmploymentId == item.Id);
-                promo.JobGradeId = item.JobGradeId;
-                promo.SalaryStepId = item.SalaryStepId;
-                promo.BasicSalary = item.BasicSalary;
-            }
             await _context.SaveChangesAsync();
 
             return RedirectToAction("EmploymentsList", new { id = model.EmployeeId });

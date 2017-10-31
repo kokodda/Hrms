@@ -4,20 +4,19 @@
 <div class="container-fluid" style="padding:0px">
     <div class="panel panel-default">
         <div class="panel-heading">
-            <label><small>Qualifications</small></label>
+            <label><small>Experienes</small></label>
         </div>
         <div class="panel-body">
             <table class="table table-condensed">
                 <thead>
                     <tr>
                         <th><small>Type</small></th>
-                        <th><small>Name</small></th>
+                        <th><small>Details</small></th>
                         <th><small>Competency Area</small></th>
                         <th><small>Competency</small></th>
-                        <th><small>Planned?</small></th>
-                        <th><small>Obtained Date</small></th>
+                        <th><small>Total Years</small></th>
                         <th>
-                            <a href="#" class="btn btn-xs" onclick="addToEmployee('Qualifications')" data-toggle="modal" data-target="#myModal" title="Add Qualification"><span class="glyphicon glyphicon-plus"></span></a>
+                            <a href="#" class="btn btn-xs" onclick="addToEmployee('Experiences')" data-toggle="modal" data-target="#myModal" title="Add Qualification"><span class="glyphicon glyphicon-plus"></span></a>
                         </th>
                     </tr>
                 </thead>
@@ -29,10 +28,9 @@
                             <td><small>@item.Name</small></td>
                             <td><small>@item.CompetencyAreaType.Name</small></td>
                             <td><small>(@item.CompetencySubCategory.CompetencyCategory.Name) @item.CompetencySubCategory.Name</small></td>
-                            <td><input type="checkbox" asp-for="@item.IsPlanned" readonly disabled /></td>
-                            <td><small>@item.ObtainedDate.Value.ToString("dd-MM-yyyy")</small></td>
+                            <td><small>@item.TotalYears</small></td>
                             <td>
-                                <a href="#" class="btn btn-xs" onclick="editListItem('Qualifications', @item.Id)" data-toggle="modal" data-target="#myModal" title="Edit"><span class="glyphicon glyphicon-pencil"></span></a>
+                                <a href="#" class="btn btn-xs" onclick="editListItem('Experiences', @item.Id)" data-toggle="modal" data-target="#myModal" title="Edit"><span class="glyphicon glyphicon-pencil"></span></a>
                             </td>
                         </tr>
                     }

@@ -4,6 +4,7 @@
 <form role="form" id="popupForm" asp-controller="Recruitment" asp-action="HireCandidate" data-ajax="true" data-ajax-method="POST" data-ajax-update="#listSection" data-ajax-success="onSuccess" data-ajax-failure="onFailure">
     <div><label><small>@Model.FirstName @Model.FatherName @Model.FamilyName</small></label></div>
     <div><small><label>Unit:</label>&nbsp; @ViewBag.orgUnitName &mdash; <label>Job Position:</label>&nbsp;@ViewBag.positionName</small></div>
+    <input type="hidden" asp-for="Id" />
     <hr />
     <div><label style="color:silver"><small>Employment Information</small></label></div>
     <div class="form-group-sm">

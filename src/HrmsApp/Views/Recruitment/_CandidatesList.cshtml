@@ -45,11 +45,11 @@
                             <div class="btn-group-xs pull-right">
                                 @if (!item.IsSubmitted && !item.IsApproved)
                                 {
-                                    <a role="button" href="#" class="btn btn-xs" onclick="editCandidate(@item.Id)" data-toggle="modal" data-target="#myModal" title="Edit"><span class="glyphicon glyphicon-pencil"></span></a>
+                                    <a role="button" href="#" class="btn btn-xs" onclick="editCandidate(@item.Id)" title="Edit"><span class="glyphicon glyphicon-pencil"></span></a>
                                 }
                                 @if (!item.IsApproved)
                                 {
-                                    <a role="button" href="#" class="btn btn-xs" onclick="removeCandidate(@item.Id)" data-toggle="modal" data-target="#myModal" title="Remove"><span class="fa fa-trash-o"></span></a>
+                                    <a role="button" href="#" class="btn btn-xs" onclick="removeCandidate(@item.Id)" title="Remove"><span class="fa fa-trash-o"></span></a>
                                 }
                                 <a role="button" href="#" class="btn btn-xs" onclick="hireCandidate(@item.Id)" data-toggle="modal" data-target="#myModal" title="Hire"><span class="fa fa-user"></span></a>
                             </div>

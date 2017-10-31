@@ -14,7 +14,8 @@ namespace HrmsModel.Models
         public string OthName { get; set; }
         public int CompetencyAreaTypeId { get; set; }
         public int? CompetencySubCategoryId { get; set; }
-        public DateTime ObtainedDate { get; set; }
+        public DateTime? ObtainedDate { get; set; }
+        public int? TotalYears { get; set; }
         public bool IsPlanned { get; set; }
 
         public virtual QualificationType QualificationType { get; set; }

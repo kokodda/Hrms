@@ -132,7 +132,8 @@ namespace HrmsModel.Data
                     new CompetencyAreaType { Name = "Quality", OthName = "Quality", SysCode = "QUALITY", SortOrder = 40, IsActive = true },
                     new CompetencyAreaType { Name = "Safety", OthName = "Safety", SysCode = "SAFETY", SortOrder = 50, IsActive = true },
                     new CompetencyAreaType { Name = "ICDL", OthName = "ICDL", SysCode = "ICDL", SortOrder = 60, IsActive = true },
-                    new CompetencyAreaType { Name = "English", OthName = "English", SysCode = "ENGLISH", SortOrder = 70, IsActive = true }
+                    new CompetencyAreaType { Name = "English", OthName = "English", SysCode = "ENGLISH", SortOrder = 70, IsActive = true },
+                    new CompetencyAreaType { Name = "Other", OthName = "Other", SysCode = "OTHER", SortOrder = 80, IsActive = true }
                 };
                 foreach (CompetencyAreaType x in competencyAreaTypes)
                     _context.CompetencyAreaTypes.Add(x);
