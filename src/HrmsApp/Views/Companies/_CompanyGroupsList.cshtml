@@ -1,0 +1,38 @@
+﻿@using HrmsModel.Models;
+@model IEnumerable<CompanyGroup>
+
+<div class="container-fluid" style="padding:0px">
+    @if (Model.Count() != 0)
+    {
+        <div style="text-align:center">
+            <label><small>Groups of Companies</small></label>
+        </div>
+        <br />
+        @foreach (var item in Model)
+        {
+            <div class="panel panel-default" style="font-size:smaller">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-sm-8"><label>@string.Format("{0}", item.MotherOrgUnitId.HasValue ? item.OrgUnit.Name : item.Name)</label></div>
+                        <div class="col-sm-4">
+                            <div class="pull-right">
+                                <a href="#" onclick="addGroupMember(@item.Id)" data-toggle="modal" data-target="#myModal" title="Add Company Member"><span class="fa fa-plus"></span></a>
+                                <a href="#"><span class="fa fa-filter"></span></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div>
+                        <label>Name Translated: </label>
+                        <span>@string.Format("{0}", item.MotherOrgUnitId.HasValue ? item.OrgUnit.OthName : item.OthName)</span>
+                    </div>
+                    <div>
+                        <label>Total Companies: </label>
+                        <span>@item.CompanyGroupMembers.Count()</span>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+</div>

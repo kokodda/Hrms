@@ -30,11 +30,14 @@ namespace HrmsModel.Models
         public string UpdatedBy { get; set; }
         public bool IsActive { get; set; }
 
+        public virtual Company Company { get; set; }
+        public virtual ICollection<CompanyGroup> CompanyGroups { get; set; }
         public virtual OrgUnitType OrgUnitType { get; set; }
         public virtual JobGrade JobGrade { get; set; }
         public virtual StandardTitleType StandardTitleType { get; set; }
         public virtual ICollection<Employment> Employments { get; set; }
         public virtual ICollection<Candidate> Candidates { get; set; }
         public virtual ICollection<Position> Positions { get; set; }
+        public virtual ICollection<CompanyAccount> CompanyAccounts { get; set; }
     }
 }

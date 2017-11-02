@@ -1,0 +1,24 @@
+﻿@using HrmsModel.Models;
+@model CompanyGroupMember
+
+<form role="form" id="popupForm" asp-controller="Companies" asp-action="AddGroupMember" data-ajax="true" data-ajax-method="POST" data-ajax-update="#groupsSection" data-ajax-success="onSuccess" data-ajax-failure="onFailure">
+    <input type="hidden" asp-for="CompanyGroupId" id="companyGroupId" />
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="CompanyId"><small>Company (*)</small></label>
+        <select class="form-control" asp-for="CompanyId" required>
+            <option value="">Select from List ...</option>
+            @foreach (SelectListItem item in new SelectList(ViewBag.companiesList, "Id", "Name"))
+            {
+                <option value="@item.Value">@item.Text</option>
+            }
+        </select>
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="SortOrder"><small>Sort Order (*)</small></label>
+        <input type="number" asp-for="SortOrder" class="form-control" required />
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="JoinDate"><small>Join Date (*)</small></label>
+        <input type="date" asp-for="JoinDate" class="form-control" required />
+    </div>
+</form>

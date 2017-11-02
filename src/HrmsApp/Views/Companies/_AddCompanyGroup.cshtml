@@ -1,0 +1,28 @@
+﻿@using HrmsModel.Models;
+@model CompanyGroup
+
+<form role="form" id="popupForm" asp-controller="Companies" asp-action="AddCompanyGroup" data-ajax="true" data-ajax-method="POST" data-ajax-update="#groupsSection" data-ajax-success="onSuccess" data-ajax-failure="onFailure">
+    <label><small>Either</small></label>
+    <br />
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="MotherOrgUnitId"><small>1) Provide the Mother Company</small></label>
+        <select class="form-control" asp-for="MotherOrgUnitId">
+            <option value="">Select from List ...</option>
+            @foreach (SelectListItem item in new SelectList(ViewBag.companiesList, "Id", "Name"))
+            {
+                <option value="@item.Value">@item.Text</option>
+            }
+        </select>
+    </div>
+    <hr />
+    <label><small>Or</small></label>
+    <br />
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="Name"><small>2) Provide the Group Name</small></label>
+        <input type="text" asp-for="Name" class="form-control" />
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="OthName"><small>Name Translated</small></label>
+        <input type="text" asp-for="OthName" class="form-control" />
+    </div>
+</form>

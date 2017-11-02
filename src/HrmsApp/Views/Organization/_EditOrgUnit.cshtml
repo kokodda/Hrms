@@ -32,7 +32,7 @@
         </select>
     </div>
     <div class="form-group-sm">
-        <label class="control-label" asp-for="OrgUnitTypeId"><small>Unit Level (*)</small></label>
+        <label class="control-label" asp-for="OrgUnitTypeId"><small>Unit Type (*)</small></label>
         <select class="form-control" asp-for="OrgUnitTypeId" required>
             <option value="">Select from List ...</option>
             @foreach (SelectListItem item in new SelectList(ViewBag.orgUnitTypesList, "Id", "Name"))

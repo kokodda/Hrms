@@ -1,0 +1,101 @@
+﻿@{
+    ViewData["Title"] = "Companies";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid" style="padding:0px">
+    <h3>Companies Index</h3>
+    <a href="#" onclick="addCompany()" data-toggle="modal" data-target="#myModal"><small>Create New Company</small></a> &nbsp; | 
+    <a href="#" onclick="addCompanyGroup()" data-toggle="modal" data-target="#myModal"><small>Create New Group of Companies</small></a>
+    <hr />
+    <div class="row">
+        <div class="col-sm-8" id="companiesSection"></div>
+        <div class="col-sm-4" id="groupsSection"></div>
+    </div>
+</div>
+
+@section Scripts
+{
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{ await Html.RenderPartialAsync("_PopupForm"); }
+
+    <script>
+        $(document).on('ready', function () {
+            companiesList();
+            groupsList();
+        });
+
+        function showPopup() {
+            $('#popupResult').html(null).text(null);
+            $('.popupBtns').removeAttr('disabled');
+        }
+        function onPopupSubmit() {
+            $('#popupForm').submit();
+        }
+        function onSuccess() {
+            $('#popupResult').html('Successfully Updated.');
+            $('.popupBtns').attr('disabled', 'disabled');
+        }
+        function onFailure() {
+            $('#formResult').html('Failed to Update! Please Correct All Errors.');
+            $('.popupBtns').removeAttr('disabled');
+        }
+
+        //companies
+        function companiesList() {
+            $.ajax({
+                url: '@Url.Action("CompaniesList", "Companies")',
+                type: 'GET',
+                success: function (result) {
+                    $('#companiesSection').html(result);
+                }
+            });
+        }
+        function addCompany() {
+            $.ajax({
+                url: '@Url.Action("AddCompany", "Companies")',
+                type: 'GET',
+                success: function (result) {
+                    $('#myModal-body').html(result);
+                    $('#myModal-label').html('Create New Company');
+                    showPopup();
+                }
+            });
+        }
+
+        //company groups
+        function groupsList() {
+            $.ajax({
+                url: '@Url.Action("CompanyGroupsList", "Companies")',
+                type: 'GET',
+                success: function (result) {
+                    $('#groupsSection').html(result);
+                }
+            });
+        }
+        function addCompanyGroup() {
+            $.ajax({
+                url: '@Url.Action("AddCompanyGroup", "Companies")',
+                type: 'GET',
+                success: function (result) {
+                    $('#myModal-body').html(result);
+                    $('#myModal-label').html('Create New Group of Companies');
+                    showPopup();
+                }
+            });
+        }
+        function addGroupMember(id) {
+            $.ajax({
+                url: '@Url.Action("AddGroupMember", "Companies")',
+                type: 'GET',
+                data: { id: id },
+                success: function (result) {
+                    $('#myModal-body').html(result);
+                    $('#myModal-label').html('Add Company to Group');
+                    $('#companyGroupId').val(id);
+                    showPopup();
+                }
+            });
+        }
+    </script>
+}

@@ -67,6 +67,11 @@ namespace HrmsModel.Data
         public virtual DbSet<PayrollDeduction> PayrollDeductions { get; set; }
         public virtual DbSet<CarouselItem> CarouselItems { get; set; }
         public virtual DbSet<SiteContent> SiteContents { get; set; }
+        public virtual DbSet<Company> Companies { get; set; }
+        public virtual DbSet<CompanyGroup> CompanyGroups { get; set; }
+        public virtual DbSet<CompanyGroupMember> CompanyGroupMembers { get; set; }
+        public virtual DbSet<CompanyAccount> CompanyAccounts { get; set; }
+        public virtual DbSet<CompanyGroupAccount> CompanyGroupAccounts { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -299,6 +304,7 @@ namespace HrmsModel.Data
             modelBuilder.Entity<Position>().ToTable("Positions");
             
             modelBuilder.Entity<SalaryScale>().HasKey(b => b.Id);
+            modelBuilder.Entity<SalaryScale>().HasOne(b => b.Company).WithMany(b => b.SalaryScales).HasForeignKey(b => b.CompanyId).OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<SalaryScale>().HasOne(b => b.SalaryScaleType).WithMany(b => b.SalaryScales).HasForeignKey(b => b.SalaryScaleTypeId).OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<SalaryScale>().HasOne(b => b.FromJobGrade).WithMany(b => b.FromGradeSalaryScales).HasForeignKey(b => b.FromJobGradeId).OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<SalaryScale>().HasOne(b => b.ThruJobGrade).WithMany(b => b.ThruGradeSalaryScales).HasForeignKey(b => b.ThruJobGradeId).OnDelete(DeleteBehavior.Restrict);
@@ -608,6 +614,38 @@ namespace HrmsModel.Data
             modelBuilder.Entity<SiteContent>().Property(b => b.UpdatedBy).IsRequired().HasMaxLength(100);
             modelBuilder.Entity<SiteContent>().Property(b => b.IsActive).HasDefaultValue(true);
             modelBuilder.Entity<SiteContent>().ToTable("SiteContents");
+
+            modelBuilder.Entity<Company>().HasKey(b => b.Id);
+            modelBuilder.Entity<Company>().HasOne(b => b.OrgUnit).WithOne(b => b.Company).HasForeignKey<Company>(b => b.Id).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Company>().Property(b => b.ShortName).IsRequired().HasMaxLength(10);
+            modelBuilder.Entity<Company>().Property(b => b.OthShortName).HasMaxLength(10);
+            modelBuilder.Entity<Company>().Property(b => b.LegalTypeCode).IsRequired().HasMaxLength(30);
+            modelBuilder.Entity<Company>().Property(b => b.Logo).IsRequired(false);
+            modelBuilder.Entity<Company>().ToTable("Companies");
+
+            modelBuilder.Entity<CompanyGroup>().HasKey(b => b.Id);
+            modelBuilder.Entity<CompanyGroup>().HasOne(b => b.OrgUnit).WithMany(b => b.CompanyGroups).HasForeignKey(b => b.MotherOrgUnitId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<CompanyGroup>().Property(b => b.Name).HasMaxLength(100);
+            modelBuilder.Entity<CompanyGroup>().Property(b => b.OthName).HasMaxLength(100);
+            modelBuilder.Entity<CompanyGroup>().Property(b => b.Logo).IsRequired(false);
+            modelBuilder.Entity<CompanyGroup>().ToTable("CompanyGroups");
+
+            modelBuilder.Entity<CompanyGroupMember>().HasKey(b => b.Id);
+            modelBuilder.Entity<CompanyGroupMember>().HasOne(b => b.CompanyGroup).WithMany(b => b.CompanyGroupMembers).HasForeignKey(b => b.CompanyGroupId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<CompanyGroupMember>().HasOne(b => b.Company).WithMany(b => b.CompanyGroupMembers).HasForeignKey(b => b.CompanyId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<CompanyGroupMember>().Property(b => b.JoinDate).HasColumnType("date");
+            modelBuilder.Entity<CompanyGroupMember>().Property(b => b.IsActive).HasDefaultValue(true);
+            modelBuilder.Entity<CompanyGroupMember>().ToTable("CompanyGroupMembers");
+
+            modelBuilder.Entity<CompanyAccount>().HasKey(b => b.Id);
+            modelBuilder.Entity<CompanyAccount>().HasOne(b => b.OrgUnit).WithMany(b => b.CompanyAccounts).HasForeignKey(b => b.OrgUnitId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<CompanyAccount>().Property(b => b.AccountId).IsRequired();
+            modelBuilder.Entity<CompanyAccount>().ToTable("CompanyAccounts");
+
+            modelBuilder.Entity<CompanyGroupAccount>().HasKey(b => b.Id);
+            modelBuilder.Entity<CompanyGroupAccount>().HasOne(b => b.CompanyGroup).WithMany(b => b.CompanyGroupAccounts).HasForeignKey(b => b.CompanyGroupId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<CompanyGroupAccount>().HasOne(b => b.CompanyAccount).WithMany(b => b.CompanyGroupAccounts).HasForeignKey(b => b.CompanyAccountId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<CompanyGroupAccount>().ToTable("CompanyGroupAccounts");
         }
     }
 }

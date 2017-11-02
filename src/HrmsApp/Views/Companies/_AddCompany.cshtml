@@ -1,0 +1,38 @@
+﻿@using HrmsModel.Models;
+@model OrgUnit
+
+<form role="form" id="popupForm" asp-controller="Companies" asp-action="AddCompany" data-ajax="true" data-ajax-method="POST" data-ajax-update="#companiesSection" data-ajax-success="onSuccess" data-ajax-failure="onFailure">
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="Name"><small>Company Name (*)</small></label>
+        <input type="text" asp-for="Name" class="form-control" required />
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="OthName"><small>Name Translated (*)</small></label>
+        <input type="text" asp-for="OthName" class="form-control" required />
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label"><small>Company Short Name (*)</small></label>
+        <input type="text" name="ShortName" class="form-control" required />
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label"><small>Company Short Name Translated (*)</small></label>
+        <input type="text" name="OthShortName" class="form-control" />
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label"><small>Legal Type (*)</small></label>
+        <select class="form-control" name="LegalTypeCode" required>
+            <option value="">Select from List ...</option>
+            <option value="LLC">LLC</option>
+            <option value="HOLDING">Holding</option>
+            <option value="NA">Has No Legal Status</option>
+        </select>
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="HeadPositionName"><small>Company Head Position Name (*)</small></label>
+        <input type="text" asp-for="HeadPositionName" class="form-control" required />
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="OthHeadPositionName"><small>Company Head Position Name Translated (*)</small></label>
+        <input type="text" asp-for="OthHeadPositionName" class="form-control" required />
+    </div>
+</form>
