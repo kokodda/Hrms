@@ -2,23 +2,52 @@
     ViewData["Title"] = "Companies";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<link href="~/lib/bootstrap-fileinput/css/fileinput.css" media="all" rel="stylesheet" type="text/css" />
 
 <div class="container-fluid" style="padding:0px">
     <h3>Companies Index</h3>
     <a href="#" onclick="addCompany()" data-toggle="modal" data-target="#myModal"><small>Create New Company</small></a> &nbsp; | 
-    <a href="#" onclick="addCompanyGroup()" data-toggle="modal" data-target="#myModal"><small>Create New Group of Companies</small></a>
+    <a href="#" onclick="addGroup()" data-toggle="modal" data-target="#myModal"><small>Create New Group of Companies</small></a>
     <hr />
     <div class="row">
-        <div class="col-sm-8" id="companiesSection"></div>
+        <div class="col-sm-8">
+            <div style="color:silver;font-size:smaller">
+                <label>Applied Filter: </label>&nbsp;<span id="filter">None</span>&nbsp;
+                <a href="javascript:removeFilter();" title="Remove Filter"><span class="fa fa-refresh"></span></a>
+            </div>
+            <br />
+            <div id="companiesSection"></div>
+        </div>
         <div class="col-sm-4" id="groupsSection"></div>
     </div>
 </div>
 
+<div class="modal fade" id="photoModal" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" id="modalClose" data-dismiss="modal">&times;</button>
+                <div class="modal-title">Logo Upload</div>
+            </div>
+            <div class="modal-body" id="popupFormBody">
+                <label class="control-label">Select Icon</label>
+                <input type="file" name="files" accept="image/*" class="file-loading" id="inputPhotos" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default btn-xs pull-right" onclick="onFileInputClearClick('inputPhotos')" data-dismiss="modal">Cancel</button> &nbsp; &nbsp;
+                <small><span class="pull-left" id="popupResult1"></span></small>
+            </div>
+        </div>
+    </div>
+</div>
+
+@Html.Hidden("SelectedGroupIdHF")
 @section Scripts
 {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     @{ await Html.RenderPartialAsync("_PopupForm"); }
-
+    @{ await Html.RenderPartialAsync("_FileUploadPopup"); }
+    <script src="~/lib/bootstrap-fileinput/js/fileinput.min.js"></script>
     <script>
         $(document).on('ready', function () {
             companiesList();
@@ -39,6 +68,37 @@
         function onFailure() {
             $('#formResult').html('Failed to Update! Please Correct All Errors.');
             $('.popupBtns').removeAttr('disabled');
+        }
+        function onFileInputClearClick(ed) {
+            $('#' + ed).fileinput('clear');
+        }
+        function editPhoto(id, owner) {
+            $("#inputPhotos").fileinput({
+                uploadAsync: false,
+                showUpload: true,
+                showRemove: true,
+                multiple: false,
+                previewFileType: "image",
+                browseClass: "btn btn-success",
+                browseLabel: "Browse",
+                browseIcon: "<i class=\"glyphicon glyphicon-file\"></i> ",
+                removeClass: "btn btn-danger",
+                removeLabel: "Remove",
+                removeIcon: "<i class=\"glyphicon glyphicon-trash\"></i> ",
+                uploadClass: "btn btn-info",
+                uploadLabel: "Upload",
+                uploadIcon: "<i class=\"glyphicon glyphicon-upload\"></i> ",
+                uploadUrl: '@Url.Action("PhotoUpload", "Companies")',
+                uploadExtraData: { id: id, owner: owner }
+            });
+            $('#inputPhotos').on('filebatchuploadsuccess', function (event, data, previewId, index) {
+                if (owner === 'GROUP') {
+                    groupsList();
+                } else {
+                    companiesList();
+                }
+                $('#popupResult1').html('Logo Successfully Updated.');
+            });
         }
 
         //companies
@@ -62,24 +122,66 @@
                 }
             });
         }
+        function editCompany(id) {
+            $.ajax({
+                url: '@Url.Action("EditCompany", "Companies")',
+                type: 'GET',
+                data: { id: id },
+                success: function (result) {
+                    $('#myModal-body').html(result);
+                    $('#myModal-label').html('Edit Company');
+                    showPopup();
+                }
+            });
+        }
+        function removeFromGroup(id, grpCnt) {
+            if (grpCnt > 1) {
+                alert('Company is Member in More than One Group. Please Use Filter to Select a Specific Group.');
+                return;
+            } else {
+                $.ajax({
+                    url: '@Url.Action("RemoveFromGroup", "Companies")',
+                    type: 'GET',
+                    data: { id: id, groupId: $('#SelectedGroupIdHF').val() },
+                    success: function (result) {
+                        $('#companiesSection').html(result);
+                        $('#SelectedGroupIdHF').val(null);
+                        groupsList();
+                        alert("Company Removed Successfully from Group.");
+                    }
+                });
+            }
+        }
 
         //company groups
         function groupsList() {
             $.ajax({
-                url: '@Url.Action("CompanyGroupsList", "Companies")',
+                url: '@Url.Action("GroupsList", "Companies")',
                 type: 'GET',
                 success: function (result) {
                     $('#groupsSection').html(result);
                 }
             });
         }
-        function addCompanyGroup() {
+        function addGroup() {
             $.ajax({
-                url: '@Url.Action("AddCompanyGroup", "Companies")',
+                url: '@Url.Action("AddGroup", "Companies")',
                 type: 'GET',
                 success: function (result) {
                     $('#myModal-body').html(result);
                     $('#myModal-label').html('Create New Group of Companies');
+                    showPopup();
+                }
+            });
+        }
+        function editGroup(id) {
+            $.ajax({
+                url: '@Url.Action("EditGroup", "Companies")',
+                type: 'GET',
+                data: { id: id },
+                success: function (result) {
+                    $('#myModal-body').html(result);
+                    $('#myModal-label').html('Edit Group of Companies');
                     showPopup();
                 }
             });
@@ -96,6 +198,18 @@
                     showPopup();
                 }
             });
+        }
+        function filterByGroup(id, filter) {
+            $('#SelectedGroupIdHF').val(id);
+            $('#filter').text(filter)
+            companiesList(id);
+        }
+        function removeFilter() {
+            if ($('#SelectedGroupIdHF').val()) {
+                companiesList();
+            }
+            $('#SelectedGroupIdHF').val(null);
+            $('#filter').text("None")
         }
     </script>
 }

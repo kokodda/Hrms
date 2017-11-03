@@ -1,7 +1,8 @@
 ﻿@using HrmsModel.Models;
 @model CompanyGroup
 
-<form role="form" id="popupForm" asp-controller="Companies" asp-action="AddCompanyGroup" data-ajax="true" data-ajax-method="POST" data-ajax-update="#groupsSection" data-ajax-success="onSuccess" data-ajax-failure="onFailure">
+<form role="form" id="popupForm" asp-controller="Companies" asp-action="EditGroup" data-ajax="true" data-ajax-method="POST" data-ajax-update="#groupsSection" data-ajax-success="onSuccess" data-ajax-failure="onFailure">
+    <input type="hidden" asp-for="Id" />
     <label><small>Either</small></label>
     <br />
     <div class="form-group-sm">

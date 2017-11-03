@@ -10,17 +10,35 @@
                 <th>Abreviation</th>
                 <th>Legal Type</th>
                 <th>Since</th>
+                <th>Groups</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
             @foreach(var item in Model)
             {
+                string photo;
+                if (item.Logo != null) { photo = "data:image/png;base64," + Convert.ToBase64String(item.Logo); }
+                else { photo = string.Format("{0}/windows.jpg", "/images"); }
+                
                 <tr>
-                    <td></td>
+                    <td>
+                        <a href="#" onclick="editPhoto(@item.Id, 'COMPANY')" data-toggle="modal" data-target="#photoModal" title="Edit Logo"><img class="img" width="20" height="20" src="@photo" /></a>
+                    </td>
                     <td>@item.OrgUnit.Name (@item.OrgUnit.OthName)</td>
                     <td>@item.ShortName (@item.OthShortName)</td>
                     <td>@item.LegalTypeCode</td>
                     <td>@item.OrgUnit.CreatedDate.ToShortDateString()</td>
+                    <td>@item.CompanyGroupMembers.Count()</td>
+                    <td>
+                        <div class="btn-group-xs pull-right">
+                            <a href="#" class="btn btn-xs" onclick="editCompany(@item.Id)" data-toggle="modal" data-target="#myModal" title="Edit Company"><span class="glyphicon glyphicon-pencil"></span></a>
+                            @if (item.CompanyGroupMembers.Count() > 0)
+                            {
+                                <a href="#" class="btn btn-xs" onclick="removeFromGroup(@item.Id, @item.CompanyGroupMembers.Count())" title="Remove From Group"><span class="fa fa-remove"></span></a>
+                            }
+                        </div>
+                    </td>
                 </tr>
             }
         </tbody>

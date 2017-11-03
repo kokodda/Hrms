@@ -1,0 +1,50 @@
+﻿@using HrmsModel.Models;
+@model IEnumerable<CompanyGroup>
+
+<div class="container-fluid" style="padding:0px">
+    @if (Model.Count() != 0)
+    {
+        <div style="text-align:center">
+            <label><small>Groups of Companies</small></label>
+        </div>
+        <br />
+        @foreach (var item in Model)
+        {
+            string gName = item.MotherOrgUnitId.HasValue ? item.OrgUnit.Name : item.Name;
+            <div class="panel panel-default" style="font-size:smaller">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-sm-8"><label>@gName</label></div>
+                        <div class="col-sm-4">
+                            <div class="btn-group-xs pull-right">
+                                <a href="#" class="btn btn-xs" onclick="editGroup(@item.Id)" data-toggle="modal" data-target="#myModal" title="Edit Group"><span class="glyphicon glyphicon-pencil"></span></a>
+                                <a href="#" class="btn btn-xs" onclick="addGroupMember(@item.Id)" data-toggle="modal" data-target="#myModal" title="Add Company Member"><span class="fa fa-plus"></span></a>
+                                <a href="#" class="btn btn-xs" onclick="filterByGroup(@item.Id, '@gName')" title="Filter"><span class="fa fa-filter"></span></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    @{ 
+                        string photo;
+                        if (item.Logo != null) { photo = "data:image/png;base64," + Convert.ToBase64String(item.Logo); }
+                        else { photo = string.Format("{0}/windows.jpg", "/images"); }
+                    }
+                    <div class="col-sm-2">
+                        <a href="#" onclick="editPhoto(@item.Id, 'GROUP')" data-toggle="modal" data-target="#photoModal" title="Edit Logo"><img class="img" width="30" height="30" src="@photo" /></a>
+                    </div>
+                    <div class="col-sm-10">
+                        <div>
+                            <label>Name Translated: </label>
+                            <span>@string.Format("{0}", item.MotherOrgUnitId.HasValue ? item.OrgUnit.OthName : item.OthName)</span>
+                        </div>
+                        <div>
+                            <label>Total Companies: </label>
+                            <span>@item.CompanyGroupMembers.Count()</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+</div>

@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 using HrmsModel.Models;
 using HrmsModel.Data;
 using Microsoft.EntityFrameworkCore;
+using System.IO;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Hosting;
 
 namespace HrmsApp.Controllers
 {
@@ -13,11 +16,13 @@ namespace HrmsApp.Controllers
     {
         private readonly HrmsDbContext _context;
         private readonly ILookupServices _lookup;
+        private readonly IHostingEnvironment _environment;
 
-        public CompaniesController(HrmsDbContext context, ILookupServices lookup)
+        public CompaniesController(HrmsDbContext context, ILookupServices lookup, IHostingEnvironment environment)
         {
             _context = context;
             _lookup = lookup;
+            _environment = environment;
         }
 
         public IActionResult Index()
@@ -26,9 +31,10 @@ namespace HrmsApp.Controllers
         }
 
         //companies
-        public async Task<IActionResult> CompaniesList()
+        public async Task<IActionResult> CompaniesList(long? id)
         {
-            var model = _context.Companies.Include(b => b.OrgUnit);
+            var model = _context.Companies.Include(b => b.OrgUnit).Include(b => b.CompanyGroupMembers)
+                                .Where(b => !id.HasValue || b.CompanyGroupMembers.Any(c => c.CompanyGroupId == id));
             return PartialView("_CompaniesList", await model.ToListAsync());
         }
 
@@ -68,27 +74,79 @@ namespace HrmsApp.Controllers
             return RedirectToAction("CompaniesList");
         }
 
-        //company groups
-        public async Task<IActionResult> CompanyGroupsList()
+        public async Task<IActionResult> EditCompany(long id)
         {
-            var model = _context.CompanyGroups.Include(b => b.OrgUnit).Include(b => b.CompanyGroupMembers);
-            return PartialView("_CompanyGroupsList", await model.ToListAsync());
-        }
-
-        public async Task<IActionResult> AddCompanyGroup()
-        {
-            int orgUnitTypeId = _lookup.GetLookupItems<OrgUnitType>().SingleOrDefault(b => b.SysCode == "COMPANY").Id;
-            ViewBag.companiesList = await _context.OrgUnits.Where(b => b.OrgUnitTypeId == orgUnitTypeId).ToListAsync();
-            return PartialView("_AddCompanyGroup");
+            var model = await _context.Companies.Include(b => b.OrgUnit).SingleOrDefaultAsync(b => b.Id == id);
+            return PartialView("_EditCompany", model);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddCompanyGroup(CompanyGroup item)
+        public async Task<IActionResult> EditCompany(Company item)
         {
+            var model = await _context.Companies.SingleOrDefaultAsync(b => b.Id == item.Id);
+            await TryUpdateModelAsync(model);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("CompaniesList");
+        }
+
+        public async Task<IActionResult> RemoveFromGroup(long id, long? groupId)
+        {
+            var model = await _context.CompanyGroupMembers.FirstOrDefaultAsync(b => b.CompanyId == id && (!groupId.HasValue || b.CompanyGroupId == groupId));
+            _context.CompanyGroupMembers.Remove(model);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("CompaniesList");
+        }
+
+        //company groups
+        public async Task<IActionResult> GroupsList()
+        {
+            var model = _context.CompanyGroups.Include(b => b.OrgUnit).Include(b => b.CompanyGroupMembers);
+            return PartialView("_GroupsList", await model.ToListAsync());
+        }
+
+        public async Task<IActionResult> AddGroup()
+        {
+            int orgUnitTypeId = _lookup.GetLookupItems<OrgUnitType>().SingleOrDefault(b => b.SysCode == "COMPANY").Id;
+            ViewBag.companiesList = await _context.OrgUnits.Where(b => b.OrgUnitTypeId == orgUnitTypeId).ToListAsync();
+            return PartialView("_AddGroup");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddGroup(CompanyGroup item)
+        {
+            if (item.MotherOrgUnitId.HasValue)
+            {
+                item.Name = null;
+                item.OthName = null;
+            }
             await _context.CompanyGroups.AddAsync(item);
             await _context.SaveChangesAsync();
-            return RedirectToAction("CompanyGroupsList");
+            return RedirectToAction("GroupsList");
+        }
+
+        public async Task<IActionResult> EditGroup(long id)
+        {
+            var model = await _context.CompanyGroups.Include(b => b.OrgUnit).SingleOrDefaultAsync(b => b.Id == id);
+            int orgUnitTypeId = _lookup.GetLookupItems<OrgUnitType>().SingleOrDefault(b => b.SysCode == "COMPANY").Id;
+            ViewBag.companiesList = await _context.OrgUnits.Where(b => b.OrgUnitTypeId == orgUnitTypeId).ToListAsync();
+            return PartialView("_EditGroup", model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditGroup(CompanyGroup item)
+        {
+            var model = await _context.CompanyGroups.SingleOrDefaultAsync(b => b.Id == item.Id);
+            await TryUpdateModelAsync(model);
+            if(item.MotherOrgUnitId.HasValue)
+            {
+                model.Name = null;
+                model.OthName = null;
+            }
+            await _context.SaveChangesAsync();
+            return RedirectToAction("GroupsList");
         }
 
         public async Task<IActionResult> AddGroupMember(long id)
@@ -109,6 +167,46 @@ namespace HrmsApp.Controllers
             await _context.SaveChangesAsync();
 
             return RedirectToAction("CompanyGroupsList");
+        }
+
+
+
+
+        //uploads
+        [HttpPost]
+        public async Task<IActionResult> photoUpload(ICollection<IFormFile> files, long id, string owner)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var file = files.FirstOrDefault();
+                    string photoName = file.FileName;
+                    byte[] photoFile;
+                    using (MemoryStream str = new MemoryStream())
+                    {
+                        await file.OpenReadStream().CopyToAsync(str);
+                        photoFile = str.ToArray();
+                    }
+                    if(owner == "GROUP")
+                    {
+                        var grp = await _context.CompanyGroups.SingleOrDefaultAsync(b => b.Id == id);
+                        grp.Logo = photoFile;
+                    }
+                    else
+                    {
+                        var comp = await _context.Companies.SingleOrDefaultAsync(b => b.Id == id);
+                        comp.Logo = photoFile;
+                    }
+                    await _context.SaveChangesAsync();
+                    return Json("Successfull");
+                }
+                catch
+                {
+                    return Json("Failed to Upload Photo! Please try again.");
+                }
+            }
+            return Json("Failed to Upload Photo! Please try again.");
         }
     }
 }

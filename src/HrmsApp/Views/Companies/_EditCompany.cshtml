@@ -1,0 +1,43 @@
+﻿@using HrmsModel.Models;
+@model Company
+
+<form role="form" id="popupForm" asp-controller="Companies" asp-action="EditCompany" data-ajax="true" data-ajax-method="POST" data-ajax-update="#companiesSection" data-ajax-success="onSuccess" data-ajax-failure="onFailure">
+    <input type="hidden" asp-for="Id" />
+    <div class="form-group-sm">
+        <label class="control-label"><small>Company Name</small></label>
+        <input type="text" asp-for="@Model.OrgUnit.Name" class="form-control" disabled readonly />
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label"><small>Name Translated</small></label>
+        <input type="text" asp-for="@Model.OrgUnit.OthName" class="form-control" disabled readonly />
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="ShortName"><small>Company Short Name (*)</small></label>
+        <input type="text" asp-for="ShortName" class="form-control" required />
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="OthShortName"><small>Company Short Name Translated (*)</small></label>
+        <input type="text" asp-for="OthShortName" class="form-control" />
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="LegalTypeCode"><small>Legal Type (*)</small></label>
+        <select class="form-control" asp-for="LegalTypeCode" required>
+            <option value="">Select from List ...</option>
+            <option value="LLC">LLC</option>
+            <option value="HOLDING">Holding</option>
+            <option value="NA">Has No Legal Status</option>
+        </select>
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label"><small>Company Head Position Name</small></label>
+        <input type="text" asp-for="@Model.OrgUnit.HeadPositionName" class="form-control" readonly disabled />
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label"><small>Company Head Position Name Translated</small></label>
+        <input type="text" asp-for="@Model.OrgUnit.OthHeadPositionName" class="form-control" readonly disabled />
+    </div>
+    <br />
+    <div style="font-style:italic">
+        <small>N.B. To Edit Disabled Features, it should be done in the Organization Chart.</small>
+    </div>
+</form>

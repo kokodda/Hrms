@@ -1,7 +1,7 @@
 ﻿@using HrmsModel.Models;
 @model CompanyGroupMember
 
-<form role="form" id="popupForm" asp-controller="Companies" asp-action="AddGroupMember" data-ajax="true" data-ajax-method="POST" data-ajax-update="#groupsSection" data-ajax-success="onSuccess" data-ajax-failure="onFailure">
+<form role="form" id="popupForm" asp-controller="Companies" asp-action="AddGroupMember" data-ajax="true" data-ajax-method="POST" data-ajax-update="#groupsSection" data-ajax-success="onSuccess;companiesList();" data-ajax-failure="onFailure">
     <input type="hidden" asp-for="CompanyGroupId" id="companyGroupId" />
     <div class="form-group-sm">
         <label class="control-label" asp-for="CompanyId"><small>Company (*)</small></label>
