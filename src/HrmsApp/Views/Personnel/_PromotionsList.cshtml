@@ -13,7 +13,7 @@
             <div class="panel panel-danger">
                 <div class="panel-heading">
                     <label><small>Unit:</small></label> &nbsp; <small>@pos.OrgUnit.Name</small> &mdash; <label><small>Position:</small></label> &nbsp;
-                    <small>@string.Format("{0}", pos.IsHead ? pos.OrgUnit.HeadPositionName : (pos.PositionId.HasValue ? pos.Position.Name : pos.JobName))</small>
+                    <small>@string.Format("{0}", pos.IsHead ? pos.OrgUnit.HeadPositionName : pos.Position.Name)</small>
                 </div>
                 <div class="panel-body">
                     <table class="table table-condensed">

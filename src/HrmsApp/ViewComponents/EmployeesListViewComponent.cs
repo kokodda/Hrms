@@ -18,13 +18,13 @@ namespace HrmsApp.ViewComponents
             _context = context;
         }
 
-        public async Task<IViewComponentResult> InvokeAsync(string orgUnitTypeCode, string employeeUid, string employeeName, int? jobGradeId, int? gradeGroupId, int? titleId, int? governorateId = null, string assigned = "all", bool isHead = false, bool isActive = true, bool isProbation = false, bool isActing = false, bool isBirthday = false, long? orgUnitId = null, int? nationalityId = null)
+        public async Task<IViewComponentResult> InvokeAsync(string orgUnitTypeCode, string filter, string key, int? jobGradeId, int? gradeGroupId, int? titleId, int? governorateId = null, bool inProcess = false, bool isHead = false, bool isActive = true, bool inProbation = false, bool isActing = false, bool isBirthday = false, long? orgUnitId = null, int? nationalityId = null)
         {
             List<EmployeeViewModel> model = new List<EmployeeViewModel>();
             var empList = await _context.Employments.Include(b => b.EmploymentType).Include(b => b.Employee).Include(b => b.Position)
-                                        .Include(b => b.OrgUnit).ThenInclude(b => b.OrgUnitType)
+                                        .Include(b => b.OrgUnit).ThenInclude(b => b.OrgUnitType).Include(b => b.EmployeePromotions)
                                         .Include(b => b.JobGrade).Include(b => b.SalaryStep).Include(b => b.SalaryScaleType)
-                                        .Where(b => b.IsActive == isActive
+                                        .Where(b => b.Employee.IsActive == isActive && b.IsActive
                                             && (string.IsNullOrEmpty(orgUnitTypeCode) || b.OrgUnit.OrgUnitType.SysCode == orgUnitTypeCode)
                                             && (!orgUnitId.HasValue || b.OrgUnitId == orgUnitId)
                                             && (!nationalityId.HasValue || b.Employee.NationalityId == nationalityId)
@@ -32,11 +32,11 @@ namespace HrmsApp.ViewComponents
                                             && (!gradeGroupId.HasValue || b.JobGrade.GradeGroupId == gradeGroupId)
                                             && (!jobGradeId.HasValue || b.JobGrade.Id == jobGradeId)
                                             && (!titleId.HasValue || b.PositionId.HasValue || b.IsHead)
-                                            && (!isHead || b.IsHead) && (!isProbation || b.IsProbation) && (!isActing || b.IsActing)
-                                            && (assigned == "all" || (assigned == "assigned" && (b.PositionId.HasValue || b.IsHead)) || (assigned == "unassigned" && (!b.PositionId.HasValue && !b.IsHead)))
+                                            && (!isHead || b.IsHead) && (!inProbation || b.IsProbation) && (!isActing || b.IsActing)
+                                            && (!inProcess || b.EmployeePromotions.Where(c => !c.IsApproved && c.IsActive).Count() != 0)
                                             && (!isBirthday || (b.Employee.BirthDate.DayOfYear == DateTime.Today.Date.DayOfYear))
-                                            && (string.IsNullOrEmpty(employeeName) || b.Employee.FirstName.Contains(employeeName) || b.Employee.FamilyName.Contains(employeeName) || b.Employee.OthFirstName.Contains(employeeName) || b.Employee.OthFamilyName.Contains(employeeName))
-                                            && (string.IsNullOrEmpty(employeeUid) || b.Employee.EmpUid == employeeUid)
+                                            && (string.IsNullOrEmpty(filter) || (filter == "ByName" && (b.Employee.FirstName.Contains(key) || b.Employee.FamilyName.Contains(key) || b.Employee.OthFirstName.Contains(key) || b.Employee.OthFamilyName.Contains(key)))
+                                            || (filter == "ByUid" && b.Employee.EmpUid == key))
                                             )
                                         .OrderBy(b => b.OrgUnit.OrgUnitType.SortOrder)
                                         .ToListAsync();

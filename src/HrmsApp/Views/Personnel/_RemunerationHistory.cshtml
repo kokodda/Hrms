@@ -23,7 +23,7 @@
             {
                 <tr>
                     <td>@item.FromDate.ToShortDateString()</td>
-                    <td>@string.Format("{0}", item.Employment.IsHead ? item.Employment.OrgUnit.HeadPositionName : (item.Employment.PositionId.HasValue ? item.Employment.Position.Name : item.Employment.JobName))</td>
+                    <td>@string.Format("{0}", item.Employment.IsHead ? item.Employment.OrgUnit.HeadPositionName : item.Employment.Position.Name)</td>
                     <td>@item.Employment.BasicSalary</td>
                     <td>@item.AllowanceType.Name</td>
                     <td>@item.AllowanceValue</td>

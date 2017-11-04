@@ -23,7 +23,7 @@
                     <td><small>@item.PromotionType.Name</small></td>
                     <td><small>@item.EffectiveFromDate.ToString("dd-MM-yyyy")</small></td>
                     <td><small>@item.Employment.OrgUnit.Name</small></td>
-                    <td><small>@string.Format("{0}", item.Employment.IsHead ? item.Employment.OrgUnit.HeadPositionName : (item.Employment.PositionId.HasValue ? item.Employment.Position.Name : item.Employment.JobName))</small></td>
+                    <td><small>@string.Format("{0}", item.Employment.IsHead ? item.Employment.OrgUnit.HeadPositionName : item.Employment.Position.Name)</small></td>
                     <td><small>@string.Format("{0}", item.JobGrade != null ? item.JobGrade.Name : null)</small></td>
                 </tr>
             }

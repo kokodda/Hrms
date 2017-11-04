@@ -90,10 +90,9 @@ namespace HrmsApp.Controllers
 
             var emp = _context.Employments.Where(b => b.IsActive);
             ViewBag.headsCnt = await emp.Where(b => b.IsHead).CountAsync();
-            ViewBag.assignedCnt = await emp.Where(b => b.IsHead || b.PositionId.HasValue).CountAsync();
-            ViewBag.unassignedCnt = await emp.Where(b => !b.IsHead && !b.PositionId.HasValue).CountAsync();
+            ViewBag.inProcessCnt = await _context.EmployeePromotions.Where(b => !b.IsApproved && b.IsActive).CountAsync();
             ViewBag.actingCnt = await emp.Where(b => b.IsActing).CountAsync();
-            ViewBag.probationCnt = await emp.Where(b => b.IsProbation).CountAsync();
+            ViewBag.inProbationCnt = await emp.Where(b => b.IsProbation).CountAsync();
             ViewBag.birthdayCnt = await _context.Employees.Where(b => b.BirthDate.DayOfYear == DateTime.Today.Date.DayOfYear).CountAsync();
             ViewBag.archiveCnt = await _context.Employees.Where(b => !b.IsActive).CountAsync();
             return View();
@@ -126,13 +125,11 @@ namespace HrmsApp.Controllers
                     x = (int)id;
                     return ViewComponent("EmployeesList", new { jobGradeId = x });
                 case "Probation":
-                    return ViewComponent("EmployeesList", new { isProbation = true });
+                    return ViewComponent("EmployeesList", new { inProbation = true });
                 case "Acting":
                     return ViewComponent("EmployeesList", new { isActing = true });
-                case "Assigned":
-                    return ViewComponent("EmployeesList", new { assigned = "assigned" });
-                case "Unassigned":
-                    return ViewComponent("EmployeesList", new { assigned = "unassigned" });
+                case "Process":
+                    return ViewComponent("EmployeesList", new { inProcess = true });
                 case "Archive":
                     return ViewComponent("EmployeesList", new { isActive = false });
                 case "Birthday":
@@ -142,9 +139,9 @@ namespace HrmsApp.Controllers
             }
         }
 
-        public IActionResult FindEmployee(string employeeUid, string employeeName)
+        public IActionResult FindEmployee(string filter, string key)
         {
-            return ViewComponent("EmployeesList", new { employeeUid = employeeUid, employeeName = employeeName });
+            return ViewComponent("EmployeesList", new { filter = filter, key = key });
         }
 
         public async Task<IActionResult> EmployeeIndex(long id)
@@ -682,7 +679,7 @@ namespace HrmsApp.Controllers
             var model = _context.EmployeePromotions.Include(b => b.PromotionType).Include(b => b.Employment).ThenInclude(b => b.OrgUnit)
                                             .Include(b => b.Employment).ThenInclude(b => b.Position)
                                             .Include(b => b.JobGrade).Include(b => b.SalaryStep)
-                                            .Where(b => b.Employment.EmployeeId == id && !b.IsCancelled && !b.IsApproved).OrderByDescending(b => b.EffectiveFromDate);
+                                            .Where(b => b.Employment.EmployeeId == id && b.IsActive).OrderByDescending(b => b.EffectiveFromDate);
             return PartialView("_PromotionsList", await model.ToListAsync());
         }
 
@@ -710,7 +707,7 @@ namespace HrmsApp.Controllers
             item.CreatedDate = DateTime.Now.Date;
             item.LastUpdated = DateTime.Now.Date;
             item.UpdatedBy = "user";
-            item.IsApproved = false;
+            item.IsActive = true;
             _context.EmployeePromotions.Add(item);
             await _context.SaveChangesAsync();
 
@@ -721,6 +718,7 @@ namespace HrmsApp.Controllers
         {
             var model = await _context.EmployeePromotions.Include(b => b.Employment).SingleOrDefaultAsync(b => b.Id == id);
             model.IsApproved = true;
+            model.IsActive = false;
             
             //update employment by the approved promotion
             model.Employment.JobGradeId = model.JobGradeId;
@@ -735,6 +733,7 @@ namespace HrmsApp.Controllers
         {
             var model = await _context.EmployeePromotions.Include(b => b.Employment).SingleOrDefaultAsync(b => b.Id == id);
             model.IsCancelled = true;
+            model.IsActive = false;
             await _context.SaveChangesAsync();
 
             return RedirectToAction("PromotionsList", new { id = model.Employment.EmployeeId });
