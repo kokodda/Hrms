@@ -20,11 +20,11 @@
         <div class="col-sm-2">
             <ul class="list-unstyled">
                 <li><small><a href="#" onclick="filterByType()">Heads of Units</a>&nbsp;<span class="badge alert-info">@ViewBag.headsCnt</span></small></li>
-                <li><small><a href="#" onclick="filterByType('Process')">In Process</a>&nbsp;<span class="badge alert-info">@ViewBag.inProcessCnt</span></small></li>
-                <li><small><a href="#" onclick="filterByType('Probation')">In Probation</a>&nbsp;<span class="badge alert-info">@ViewBag.inProbationCnt</span></small></li>
-                <li><small><a href="#" onclick="filterByType('Acting')">Acting</a>&nbsp;<span class="badge alert-info">@ViewBag.actingCnt</span></small></li>
-                <li><small><a href="#" onclick="filterByType('Archive')">Archive</a>&nbsp;<span class="badge alert-info">@ViewBag.archiveCnt</span></small></li>
-                <li><small><a href="#" onclick="filterByType('Birthday')">Birthday List</a>&nbsp;<span class="badge alert-info">@ViewBag.birthdayCnt</span></small></li>
+                <li><small><a href="#" onclick="filterByType('Process', 'In Process')">In Process</a>&nbsp;<span class="badge alert-info">@ViewBag.inProcessCnt</span></small></li>
+                <li><small><a href="#" onclick="filterByType('Probation', 'In Probation')">In Probation</a>&nbsp;<span class="badge alert-info">@ViewBag.inProbationCnt</span></small></li>
+                <li><small><a href="#" onclick="filterByType('Acting', 'Acting Positions')">Acting</a>&nbsp;<span class="badge alert-info">@ViewBag.actingCnt</span></small></li>
+                <li><small><a href="#" onclick="filterByType('Archive', 'Resigned')">Archive</a>&nbsp;<span class="badge alert-info">@ViewBag.archiveCnt</span></small></li>
+                <li><small><a href="#" onclick="filterByType('Birthday', 'Today Birthay')">Birthday List</a>&nbsp;<span class="badge alert-info">@ViewBag.birthdayCnt</span></small></li>
             </ul>
             <hr />
             <label><small>Find ...</small></label>
@@ -182,9 +182,9 @@
             $('#listName').html($('#' + filterType).find('option:selected').text() + " Employees List");
             employeesList(fType, $('#' + filterType).val());
         }
-        function filterByType(filterType) {
+        function filterByType(filterType, filterTitle) {
             if (filterType) {
-                $('#listName').html(filterType + " Employees List");
+                $('#listName').html(filterTitle + " Employees List");
             } else {
                 $('#listName').html("Heads of Units");
                 $('.myfilter').val(null);

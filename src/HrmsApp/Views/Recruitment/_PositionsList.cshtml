@@ -39,6 +39,7 @@
                     <td><input type="checkbox" asp-for="@item.IsAttendRequired" readonly disabled /></td>
                     <td><input type="checkbox" asp-for="@item.IsOverTimeAllowed" readonly disabled /></td>
                     <td>
+                        <a role="button" href="#" class="btn btn-xs" onclick="positionDetails(@item.Id)" data-toggle="modal" data-target="#myModal" title="More"><span class="fa fa-ellipsis-h"></span></a>
                         <a role="button" href="#" class="btn btn-xs" onclick="addEmployee(@item.OrgUnit.Id, @item.Id, false)" data-toggle="modal" data-target="#myModal" title="Add Employee"><span class="fa fa-user-plus"></span></a>
                         <a role="button" href="#" class="btn btn-xs" onclick="addCandidate(@item.OrgUnit.Id, @item.Id, false)" title="Add Candidate"><span class="fa fa-user-o"></span></a>
                     </td>

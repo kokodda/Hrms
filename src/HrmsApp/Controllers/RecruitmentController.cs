@@ -52,6 +52,11 @@ namespace HrmsApp.Controllers
             return PartialView("_PositionsList", await model.ToListAsync());
         }
 
+        public IActionResult PositionDetails(long id, bool isHead)
+        {
+            return ViewComponent("PositionDetails", new { id = id, isHead = isHead });
+        }
+
         public async Task<IActionResult> CandidatesList()
         {
             var model = _context.Candidates.Include(b => b.OrgUnit).ThenInclude(b => b.OrgUnitType).Where(b => !b.IsApproved)

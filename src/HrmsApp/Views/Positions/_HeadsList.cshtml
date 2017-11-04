@@ -36,8 +36,8 @@
                     <td><input type="checkbox" asp-for="@item.IsVacant" readonly disabled /></td>
                     <td><input type="checkbox" asp-for="@item.IsActive" readonly disabled /></td>
                     <td>
+                        <a role="button" href="#" class="btn btn-xs" onclick="headDetails(@item.Id)" title="More"><span class="fa fa-ellipsis-h"></span></a>
                         <a role="button" href="#" class="btn btn-xs" onclick="editHead(@item.Id)" data-toggle="modal" data-target="#myModal" title="Edit"><span class="fa fa-pencil"></span></a>
-                        <a role="button" href="#" class="btn btn-xs" onclick="headDetails(@item.Id)" title="More"><span class="fa fa-ellipsis-v"></span></a>
                     </td>
                 </tr>
             }

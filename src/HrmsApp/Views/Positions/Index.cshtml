@@ -146,9 +146,9 @@
         }
         function headDetails(id) {
             $.ajax({
-                url: '@Url.Action("HeadDetails", "Positions")',
+                url: '@Url.Action("PositionDetails", "Positions")',
                 type: 'GET',
-                data: { id: id },
+                data: { id: id, isHead: true },
                 success: function (result) {
                     $('#detailsSection').html(result);
                 }
@@ -166,6 +166,7 @@
         //positions
         function positionsList(id, typeName) {
             $('#orgUnitTypeIdHF').val(id);
+            $('#detailsSection').html(null);
             if (id) { $('#ouTypeName').text(typeName + ' Level Positions'); }
             else { $('#ouTypeName').text(typeName); }
             $.ajax({
@@ -215,7 +216,7 @@
             $.ajax({
                 url: '@Url.Action("PositionDetails", "Positions")',
                 type: 'GET',
-                data: { id: id },
+                data: { id: id, isHead: false },
                 success: function (result) {
                     $('#detailsSection').html(result);
                 }

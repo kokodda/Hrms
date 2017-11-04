@@ -35,6 +35,7 @@
         function showPopup() {
             $('#popupResult').html(null).text(null);
             $('.popupBtns').removeAttr('disabled');
+            $('.popupBtns').show();
         }
         function onPopupSubmit() {
             $('#popupForm').submit();
@@ -117,6 +118,33 @@
                     $('#myModal-body').html(result);
                     $('#myModal-label').html('Finalize Hiring Information');
                     showPopup();
+                }
+            });
+        }
+
+        function headDetails(id) {
+            $.ajax({
+                url: '@Url.Action("PositionDetails", "Positions")',
+                type: 'GET',
+                data: { id: id, isHead: true },
+                success: function (result) {
+                    $('#myModal-body').html(result);
+                    $('#myModal-label').html('Position Details');
+                    showPopup();
+                    $('.popupBtns').hide();
+                }
+            });
+        }
+        function positionDetails(id) {
+            $.ajax({
+                url: '@Url.Action("PositionDetails", "Positions")',
+                type: 'GET',
+                data: { id: id, isHead: false },
+                success: function (result) {
+                    $('#myModal-body').html(result);
+                    $('#myModal-label').html('Position Details');
+                    showPopup();
+                    $('.popupBtns').hide();
                 }
             });
         }

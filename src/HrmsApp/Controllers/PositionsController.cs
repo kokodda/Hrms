@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Hosting;
 using System.IO;
 using Microsoft.AspNetCore.Http;
+using HrmsApp.Utils;
 
 namespace HrmsApp.Controllers
 {
@@ -63,43 +64,7 @@ namespace HrmsApp.Controllers
 
             return RedirectToAction("HeadsList", new { id = ouTypeId });
         }
-
-        public async Task<IActionResult> HeadDetails(long id)
-        {
-            List<string> model = new List<string>();
-            var ou = await _context.OrgUnits.SingleOrDefaultAsync(b => b.Id == id);
-
-            //direct subordinates
-            int cnt1 = await _context.OrgUnits.Where(b => b.Code.StartsWith(ou.Code) && b.Code.Length == ou.Code.Length + 3 && b.IsActive).CountAsync();
-            int cnt2 = await _context.Positions.Include(b => b.OrgUnit).Where(b => b.OrgUnit.Code == ou.Code && b.IsActive).SumAsync(b => b.Capacity);
-            model.Add("Direct Subordidates|" + (cnt1 + cnt2).ToString());
-            //indirect subordinates
-            int cnt3 = await _context.OrgUnits.Where(b => b.Code.StartsWith(ou.Code) && b.Code.Length > ou.Code.Length + 3 && b.IsActive).CountAsync();
-            int cnt4 = await _context.Positions.Include(b => b.OrgUnit).Where(b => b.OrgUnit.Code.StartsWith(ou.Code) && b.OrgUnit.Code.Length > ou.Code.Length && b.IsActive).SumAsync(b => b.Capacity);
-            model.Add("Indirect Subordidates|" + (cnt3 + cnt4).ToString());
-
-            string reportingTo = "NA";
-            string lineManager = "NA";
-            if (ou.Code.Length > 3)
-            {
-                string parentCode = ou.Code.Substring(0, ou.Code.Length - 3);
-                reportingTo = _context.OrgUnits.SingleOrDefault(b => b.Code == parentCode).HeadPositionName;
-                if (ou.LineManagerOrgUnitId.HasValue)
-                    lineManager = _context.OrgUnits.SingleOrDefault(b => b.Id == ou.LineManagerOrgUnitId.Value).HeadPositionName;
-            }
-            model.Add("Reporting To|" + reportingTo);
-            model.Add("Line Manager|" + lineManager);
-            model.Add("Job Weight|" + (ou.JobWeight.HasValue ? ou.JobWeight.Value.ToString() : "NG"));
-            model.Add("Attendance|" + (ou.IsAttendRequired ? "Required" : "Not Required"));
-            model.Add("Overtime|" + (ou.IsOverTimeAllowed ? "Allowed" : "Not Allowed"));
-            model.Add("Created On|" + ou.CreatedDate.ToString("dd-MM-yyyy"));
-            model.Add("Last Updated|" + ou.LastUpdated.ToString("dd-MM-yyyy"));
-            model.Add("Updated By|" + ou.UpdatedBy);
-
-            ViewBag.positionName = ou.HeadPositionName;
-            return PartialView("_Details", model);
-        }
-
+        
         public async Task<IActionResult> UpdateHeadJD(long id, string fileName, int? ouTypeId)
         {
             var model = await _context.OrgUnits.SingleOrDefaultAsync(b => b.Id == id);
@@ -163,28 +128,9 @@ namespace HrmsApp.Controllers
             return RedirectToAction("PositionsList", new { id = ouTypeId });
         }
 
-        public async Task<IActionResult> PositionDetails(long id)
+        public IActionResult PositionDetails(long id, bool isHead)
         {
-            List<string> model = new List<string>();
-            var pos = await _context.Positions.Include(b => b.OrgUnit).SingleOrDefaultAsync(b => b.Id == id);
-            
-            string reportingTo = pos.OrgUnit.HeadPositionName;
-            string lineManager = "NA";
-            if (pos.ReportingToOrgUnitId.HasValue)
-                reportingTo = _context.OrgUnits.SingleOrDefault(b => b.Id == pos.ReportingToOrgUnitId).HeadPositionName;
-            if(pos.LineManagerOrgUnitId.HasValue)
-                lineManager = _context.OrgUnits.SingleOrDefault(b => b.Id == pos.LineManagerOrgUnitId).HeadPositionName;
-            model.Add("Reporting To|" + reportingTo);
-            model.Add("Line Manager|" + lineManager);
-            model.Add("Job Weight|" + (pos.JobWeight.HasValue ? pos.JobWeight.Value.ToString() : "NG"));
-            model.Add("Attendance|" + (pos.IsAttendRequired ? "Required" : "Not Required"));
-            model.Add("Overtime|" + (pos.IsOverTimeAllowed ? "Allowed" : "Not Allowed"));
-            model.Add("Created On|" + pos.CreatedDate.ToString("dd-MM-yyyy"));
-            model.Add("Last Updated|" + pos.LastUpdated.ToString("dd-MM-yyyy"));
-            model.Add("Updated By|" + pos.UpdatedBy);
-
-            ViewBag.positionName = pos.Name;
-            return PartialView("_Details", model);
+            return ViewComponent("PositionDetails", new { id = id, isHead = isHead });
         }
 
         public async Task<IActionResult> UpdatePositionJD(long id, string fileName, int? ouTypeId)

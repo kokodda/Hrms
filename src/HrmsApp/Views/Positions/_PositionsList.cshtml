@@ -38,8 +38,8 @@
                     <td><small>@item.TotalVacant</small></td>
                     <td><input type="checkbox" asp-for="@item.IsActive" readonly disabled /></td>
                     <td>
+                        <a role="button" href="#" class="btn btn-xs" onclick="positionDetails(@item.Id)" title="More"><span class="fa fa-ellipsis-h"></span></a>
                         <a role="button" href="#" class="btn btn-xs" onclick="editPosition(@item.Id)" data-toggle="modal" data-target="#myModal" title="Edit"><span class="fa fa-pencil"></span></a>
-                        <a role="button" href="#" class="btn btn-xs" onclick="positionDetails(@item.Id)" title="More"><span class="fa fa-ellipsis-v"></span></a>
                     </td>
                 </tr>
             }
