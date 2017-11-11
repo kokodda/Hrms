@@ -9,6 +9,7 @@
                 <th>Company Name</th>
                 <th>Abreviation</th>
                 <th>Legal Type</th>
+                <th>Calendar</th>
                 <th>Since</th>
                 <th>Groups</th>
                 <th></th>
@@ -28,6 +29,7 @@
                     <td>@item.OrgUnit.Name (@item.OrgUnit.OthName)</td>
                     <td>@item.ShortName (@item.OthShortName)</td>
                     <td>@item.LegalTypeCode</td>
+                    <td>@string.Format("{0}", item.CalendarId.HasValue ? item.Calendar.Name : "Default")</td>
                     <td>@item.OrgUnit.CreatedDate.ToShortDateString()</td>
                     <td>@item.CompanyGroupMembers.Count()</td>
                     <td>

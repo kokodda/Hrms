@@ -119,5 +119,63 @@ namespace HrmsApp.Controllers
 
             return RedirectToAction("MembersList", new { id = subGroupId });
         }
+
+        //shifts and rotations
+        public async Task<IActionResult> ShiftsList()
+        {
+            var model = _context.ShiftRotations.Include(b => b.GenericSubGroup).OrderBy(b => b.SortOrder);
+            return PartialView("_ShiftsList", await model.ToListAsync());
+        }
+
+        public async Task<IActionResult> RotationsList(long id, string groupName)
+        {
+            var model = _context.ShiftRotations.Include(b => b.Shift).Where(b => b.GenericSubGroupId == id).OrderBy(b => b.SortOrder);
+            ViewBag.groupName = groupName;
+            return PartialView("_RotationsList", await model.ToListAsync());
+        }
+
+        public async Task<IActionResult> AddRotation()
+        {
+            ViewBag.subGroupsList = await _context.GenericSubGroups.Where(b => b.IsActive).OrderBy(b => b.SortOrder).ToListAsync();
+            ViewBag.shiftsList = await _context.Shifts.OrderBy(b => b.SortOrder).ToListAsync();
+            return PartialView("_AddRotation");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddRotation(ShiftRotation item)
+        {
+            var grp = await _context.GenericSubGroups.SingleOrDefaultAsync(b => b.Id == item.GenericSubGroupId);
+            await _context.ShiftRotations.AddAsync(item);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("RotationsList", new { id = item.GenericSubGroupId, groupName = grp.Name });
+        }
+
+        public async Task<IActionResult> EditRotation(long id)
+        {
+            var model = await _context.ShiftRotations.Include(b => b.GenericSubGroup).SingleOrDefaultAsync(b => b.Id == id);
+            ViewBag.shiftsList = await _context.Shifts.OrderBy(b => b.SortOrder).ToListAsync();
+            return PartialView("_EditRotation", model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditRotation(ShiftRotation item)
+        {
+            var model = await _context.ShiftRotations.Include(b => b.GenericSubGroup).SingleOrDefaultAsync(b => b.Id == item.Id);
+            await TryUpdateModelAsync(model);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("RotationsList", new { id = model.GenericSubGroupId, groupName = model.GenericSubGroup.Name });
+        }
+
+        public async Task<IActionResult> RemoveRotation(long id)
+        {
+            var item = await _context.ShiftRotations.Include(b => b.GenericSubGroup).SingleOrDefaultAsync(b => b.Id == id);
+            long id1 = item.GenericSubGroupId;
+            string gName = item.GenericSubGroup.Name; 
+            _context.ShiftRotations.Remove(item);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("RotationsList", new { id = id1, groupName = gName });
+        }
     }
 }

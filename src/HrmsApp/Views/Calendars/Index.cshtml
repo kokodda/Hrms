@@ -9,10 +9,12 @@
     <hr />
     <div class="row">
         <div class="col-sm-3" id="calendarsSection"></div>
-        <div class="col-sm-9">
+        <div class="col-sm-7">
             <div id="holidaysSection"></div>
             <div id="variationsSection"></div>
+            <div id="shiftsSection"></div>
         </div>
+        <div class="col-sm-2" id="companiesSection"></div>
     </div>
 </div>
 
@@ -26,6 +28,8 @@
             calendarsList();
             holidaysList();
             variationsList();
+            shiftsList();
+            companiesList();
         });
 
         function showPopup() {
@@ -76,6 +80,11 @@
                     showPopup();
                 }
             });
+        }
+        function selectCalendar(id) {
+            variationsList(id);
+            shiftsList(id);
+            companiesList(id);
         }
 
         //holidays
@@ -164,6 +173,68 @@
                 data: { id: id },
                 success: function (result) {
                     $('#variationsSection').html(result);
+                }
+            });
+        }
+
+        //shifts
+        function shiftsList(id) {
+            $.ajax({
+                url: '@Url.Action("ShiftsList", "Calendars")',
+                type: 'GET',
+                data: { id: id },
+                success: function (result) {
+                    $('#shiftsSection').html(result);
+                }
+            });
+        }
+        function addShift(id) {
+            $.ajax({
+                url: '@Url.Action("AddShift", "Calendars")',
+                type: 'GET',
+                data: { id: id },
+                success: function (result) {
+                    $('#myModal-body').html(result);
+                    $('#myModal-label').html('Add New Shift');
+                    $('#calendarId').val(id);
+                    showPopup();
+                }
+            });
+        }
+        function editShift(id) {
+            $.ajax({
+                url: '@Url.Action("EditShift", "Calendars")',
+                type: 'GET',
+                data: { id: id },
+                success: function (result) {
+                    $('#myModal-body').html(result);
+                    $('#myModal-label').html('Edit Shift');
+                    showPopup();
+                }
+            });
+        }
+        function removeShift(id) {
+            if (!confirm('Please Confirm! About to Permenantly Delete Shift?')) {
+                return;
+            }
+            $.ajax({
+                url: '@Url.Action("RemoveShift", "Calendars")',
+                type: 'GET',
+                data: { id: id },
+                success: function (result) {
+                    $('#shiftsSection').html(result);
+                }
+            });
+        }
+
+        //companies
+        function companiesList(id) {
+            $.ajax({
+                url: '@Url.Action("CompaniesList", "Calendars")',
+                type: 'GET',
+                data: { id: id },
+                success: function (result) {
+                    $('#companiesSection').html(result);
                 }
             });
         }

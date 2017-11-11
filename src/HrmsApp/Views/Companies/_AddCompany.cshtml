@@ -35,4 +35,14 @@
         <label class="control-label" asp-for="OthHeadPositionName"><small>Company Head Position Name Translated (*)</small></label>
         <input type="text" asp-for="OthHeadPositionName" class="form-control" required />
     </div>
+    <div class="form-group-sm">
+        <label class="control-label"><small>Calendar</small></label>
+        <select name="CalendarId" class="form-control">
+            <option value="">Select from List ...</option>
+            @foreach (SelectListItem x in new SelectList(ViewBag.calendarsList, "Id", "Name"))
+            {
+                <option value="@x.Value">@x.Text</option>
+            }
+        </select>
+    </div>
 </form>

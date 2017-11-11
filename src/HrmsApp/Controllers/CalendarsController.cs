@@ -97,12 +97,18 @@ namespace HrmsApp.Controllers
         }
 
         //holiday variations
-        public async Task<IActionResult> VariationsList(int? id)
+        public async Task<IActionResult> VariationsList(long? id)
         {
             //id is the calendar id (for filtering)
             var model = _context.HolidayVariations.Include(b => b.Calendar).Include(b => b.Holiday)
                                         .Where(b => (!id.HasValue || b.CalendarId == id) && b.FromDate.Year == DateTime.Now.Year && b.Calendar.IsActive && b.Holiday.IsActive && b.IsActive)
                                         .OrderBy(b => b.FromDate);
+            var x = await _context.Calendars.SingleOrDefaultAsync(b => b.IsActive && ((!id.HasValue && b.IsDefault) || b.Id == id));
+            if (x != null)
+                ViewBag.calendarName = x.Name;
+            else
+                ViewBag.calendarName = "Calendar is Not Defined Yet.";
+
             return PartialView("_VariationsList", await model.ToListAsync());
         }
 
@@ -161,6 +167,66 @@ namespace HrmsApp.Controllers
             x.IsComponsated = true;
             await _context.SaveChangesAsync();
             return RedirectToAction("VariationsList");
+        }
+
+        //shifts
+        public async Task<IActionResult> ShiftsList(long? id)
+        {
+            var model = _context.Shifts.Where(b => !id.HasValue || b.CalendarId == id);
+            var x = await _context.Calendars.SingleOrDefaultAsync(b => b.IsActive && ((!id.HasValue && b.IsDefault) || b.Id == id));
+            ViewBag.calendarId = x.Id;
+            return PartialView("_ShiftsList", await model.ToListAsync());
+        }
+
+        public IActionResult AddShift()
+        {
+            return PartialView("_AddShift");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddShift(Shift item)
+        {
+            await _context.Shifts.AddAsync(item);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("ShiftsList", new { id = item.CalendarId });
+        }
+
+        public async Task<IActionResult> EditShift(long id)
+        {
+            var model = await _context.Shifts.SingleOrDefaultAsync(b => b.Id == id);
+            return PartialView("_EditShift", model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditShift(Shift item)
+        {
+            var model = await _context.Shifts.SingleOrDefaultAsync(b => b.Id == item.Id);
+            await TryUpdateModelAsync(model);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("ShiftsList", new { id = model.CalendarId });
+        }
+
+        public async Task<IActionResult> RemoveShift(long id)
+        {
+            var item = await _context.Shifts.SingleOrDefaultAsync(b => b.Id == id);
+            long calendarId = item.CalendarId;
+            _context.Shifts.Remove(item);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("ShiftsList", new { id = calendarId });
+        }
+
+        //companies
+        public async Task<IActionResult> CompaniesList(long? id)
+        {
+            var model = _context.Companies.Include(b => b.OrgUnit);
+            var defaultCalendar = await _context.Calendars.SingleOrDefaultAsync(b => b.IsDefault);
+            if (!id.HasValue || id == defaultCalendar.Id)
+                model.Where(b => !b.CalendarId.HasValue);
+            else
+                model.Where(b => b.CalendarId == id);
+            return PartialView("_CompaniesList", await model.ToListAsync());
         }
     }
 }

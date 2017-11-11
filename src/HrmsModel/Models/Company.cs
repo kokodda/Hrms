@@ -12,8 +12,10 @@ namespace HrmsModel.Models
         public string ShortName { get; set; }
         public string OthShortName { get; set; }
         public byte[] Logo { get; set; }
+        public long? CalendarId { get; set; }
 
         public virtual OrgUnit OrgUnit { get; set; }
+        public virtual Calendar Calendar { get; set; }
         public virtual ICollection<CompanyGroupMember> CompanyGroupMembers { get; set; }
         public virtual ICollection<SalaryScale> SalaryScales { get; set; }
     }

@@ -36,6 +36,16 @@
         <label class="control-label"><small>Company Head Position Name Translated</small></label>
         <input type="text" asp-for="@Model.OrgUnit.OthHeadPositionName" class="form-control" readonly disabled />
     </div>
+    <div class="form-group-sm">
+        <label asp-for="CalendarId" class="control-label"><small>Calendar</small></label>
+        <select asp-for="CalendarId" class="form-control">
+            <option value="">Select from List ...</option>
+            @foreach (SelectListItem x in new SelectList(ViewBag.calendarsList, "Id", "Name"))
+            {
+                <option value="@x.Value">@x.Text</option>
+            }
+        </select>
+    </div>
     <br />
     <div style="font-style:italic">
         <small>N.B. To Edit Disabled Features, it should be done in the Organization Chart.</small>

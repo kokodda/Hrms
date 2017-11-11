@@ -1,0 +1,34 @@
+﻿@using HrmsModel.Models;
+@model ShiftRotation
+
+<form role="form" id="popupForm" asp-controller="Groups" asp-action="AddRotation" data-ajax="true" data-ajax-method="POST" data-ajax-update="#listSection" data-ajax-success="onSuccess();shiftsList();" data-ajax-failure="onFailure">
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="GenericSubGroupId"><small>Employee Group (*)</small></label>
+        <select class="form-control" asp-for="GenericSubGroupId" required>
+            <option value="">Select from List ...</option>
+            @foreach (SelectListItem item in new SelectList(ViewBag.subGroupsList, "Id", "Name"))
+            {
+                <option value="@item.Value">@item.Text</option>
+            }
+        </select>
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="ShiftId"><small>Shift (*)</small></label>
+        <select class="form-control" asp-for="ShiftId" required>
+            <option value="">Select from List ...</option>
+            @foreach (SelectListItem item in new SelectList(ViewBag.shiftsList, "Id", "Name"))
+            {
+                <option value="@item.Value">@item.Text</option>
+            }
+        </select>
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="NbrDays"><small>Number of Days in Shift (*)</small></label>
+        <input type="number" asp-for="NbrDays" class="form-control" required />
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="SortOrder"><small>Sequence (*)</small></label>
+        <input type="number" asp-for="SortOrder" class="form-control" required />
+    </div>
+</form>
+    

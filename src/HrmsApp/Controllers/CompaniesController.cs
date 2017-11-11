@@ -33,19 +33,20 @@ namespace HrmsApp.Controllers
         //companies
         public async Task<IActionResult> CompaniesList(long? id)
         {
-            var model = _context.Companies.Include(b => b.OrgUnit).Include(b => b.CompanyGroupMembers)
+            var model = _context.Companies.Include(b => b.OrgUnit).Include(b => b.CompanyGroupMembers).Include(b => b.Calendar)
                                 .Where(b => !id.HasValue || b.CompanyGroupMembers.Any(c => c.CompanyGroupId == id));
             return PartialView("_CompaniesList", await model.ToListAsync());
         }
 
-        public IActionResult AddCompany()
+        public async Task<IActionResult> AddCompany()
         {
+            ViewBag.calendarsList = await _context.Calendars.Where(b => b.IsActive).ToListAsync();
             return PartialView("_AddCompany");
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddCompany(OrgUnit item, string ShortName, string OthShortName, string LegalTypeCode)
+        public async Task<IActionResult> AddCompany(OrgUnit item, string ShortName, string OthShortName, string LegalTypeCode, long? CalendarId)
         {
             int orgUnitTypeId = _lookup.GetLookupItems<OrgUnitType>().SingleOrDefault(b => b.SysCode == "COMPANY").Id;
             int cnt = await _context.OrgUnits.Where(b => b.OrgUnitTypeId == orgUnitTypeId).CountAsync() + 1;
@@ -68,6 +69,7 @@ namespace HrmsApp.Controllers
             comp.LegalTypeCode = LegalTypeCode;
             comp.ShortName = ShortName;
             comp.OthShortName = OthShortName;
+            comp.CalendarId = CalendarId;
             await _context.Companies.AddAsync(comp);
 
             await _context.SaveChangesAsync();
@@ -77,6 +79,7 @@ namespace HrmsApp.Controllers
         public async Task<IActionResult> EditCompany(long id)
         {
             var model = await _context.Companies.Include(b => b.OrgUnit).SingleOrDefaultAsync(b => b.Id == id);
+            ViewBag.calendarsList = await _context.Calendars.Where(b => b.IsActive).ToListAsync();
             return PartialView("_EditCompany", model);
         }
 

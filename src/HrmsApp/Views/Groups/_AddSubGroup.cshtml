@@ -1,7 +1,7 @@
 ﻿@using HrmsModel.Models;
 @model GenericSubGroup
 
-<form role="form" id="popupForm" asp-controller="Groups" asp-action="AddSubGroup" data-ajax="true" data-ajax-method="POST" data-ajax-update="#subGroupsSection" data-ajax-success="onSuccess" data-ajax-failure="onFailure">
+<form role="form" id="popupForm" asp-controller="Groups" asp-action="AddSubGroup" data-ajax="true" data-ajax-method="POST" data-ajax-update="#listSection" data-ajax-success="onSuccess" data-ajax-failure="onFailure">
     <input type="hidden" asp-for="GenericGroupId" id="groupId" />
     <div class="form-group-sm">
         <label class="control-label" asp-for="Name"><small>Name (*)</small></label>

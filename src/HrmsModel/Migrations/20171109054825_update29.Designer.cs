@@ -11,9 +11,10 @@ using System;
 namespace HrmsModel.Migrations
 {
     [DbContext(typeof(HrmsDbContext))]
-    partial class HrmsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20171109054825_update29")]
+    partial class update29
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -2226,10 +2227,10 @@ namespace HrmsModel.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<long>("CalendarId");
+                    b.Property<long?>("CalendarId");
 
                     b.Property<DateTime?>("FromTime")
-                        .HasColumnType("datetime");
+                        .HasColumnType("date");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -2242,7 +2243,7 @@ namespace HrmsModel.Migrations
                     b.Property<int>("SortOrder");
 
                     b.Property<DateTime?>("ThruTime")
-                        .HasColumnType("datetime");
+                        .HasColumnType("date");
 
                     b.HasKey("Id");
 

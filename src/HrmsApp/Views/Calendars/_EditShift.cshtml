@@ -1,0 +1,33 @@
+﻿@using HrmsModel.Models;
+@model Shift
+
+<form role="form" id="popupForm" asp-controller="Calendars" asp-action="EditShift" data-ajax="true" data-ajax-method="POST" data-ajax-update="#shiftsSection" data-ajax-success="onSuccess" data-ajax-failure="onFailure">
+    <input type="hidden" asp-for="Id" />
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="ShiftTypeCode"><small>Interval (*)</small></label>
+        <select class="form-control" asp-for="ShiftTypeCode" required>
+            <option value="">Select from List ...</option>
+            <option value="Morning">Morning Shift</option>
+            <option value="Afternoon">Afternoon Shift</option>
+            <option value="Night">Night Shift</option>
+            <option value="Off">Off</option>
+        </select>
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="Name"><small>Shift Name (*)</small></label>
+        <input type="text" asp-for="Name" class="form-control" required />
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="SortOrder"><small>Sequence (*)</small></label>
+        <input type="number" asp-for="SortOrder" class="form-control" required />
+    </div>
+    <hr />
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="FromTime"><small>From Time (*)</small></label>
+        <input type="time" asp-for="FromTime" class="form-control" required />
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="ThruTime"><small>Through Time (*)</small></label>
+        <input type="time" asp-for="ThruTime" class="form-control" required />
+    </div>
+</form>

@@ -47,8 +47,26 @@
         <input type="number" asp-for="BreakMinutes" class="form-control" required />
     </div>
     <div class="form-group-sm">
+        <label class="control-label" asp-for="OverTime1Multiplier"><small>OverTime1 Multiplier % (*)</small></label>
+        <input type="number" asp-for="OverTime1Multiplier" class="form-control" required />
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="OverTime2Multiplier"><small>OverTime2 Multiplier % (*)</small></label>
+        <input type="number" asp-for="OverTime2Multiplier" class="form-control" required />
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="HolidaysMultiplier"><small>Holidays Multiplier % (*)</small></label>
+        <input type="number" asp-for="HolidaysMultiplier" class="form-control" required />
+    </div>
+    <div class="form-group-sm">
         <label class="control-label" asp-for="EffectiveFromDate"><small>Effective From Date (*)</small></label>
         <input type="date" asp-for="EffectiveFromDate" class="form-control" required />
+    </div>
+    <div class="input-group-sm">
+        <label class="control-label" asp-for="IsDefault">
+            <input type="checkbox" asp-for="IsDefault" />
+            <span><small>Is Default?</small></span>
+        </label>
     </div>
     <div class="input-group-sm">
         <label class="control-label" asp-for="IsActive">

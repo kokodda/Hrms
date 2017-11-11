@@ -5,9 +5,16 @@
 
 <div class="container-fluid" style="padding:0px">
     <br />
+    <h3 style="color:silver">Employees Grouping</h3>
+    <label>General Purpose Groups and Shifts</label>
+    <hr />
     <div class="row">
-        <div class="col-sm-2" id="groupsSection"></div>
-        <div class="col-sm-6" id="subGroupsSection"></div>
+        <div class="col-sm-2">
+            <div id="groupsSection"></div>
+            <hr />
+            <div id="shiftsSection"></div>
+        </div>
+        <div class="col-sm-6" id="listSection"></div>
         <div class="col-sm-4" id="membersSection"></div>
     </div>
 </div>
@@ -19,6 +26,7 @@
     <script>
         $(document).on('ready', function () {
             groupsList();
+            shiftsList();
         });
 
         function showPopup() {
@@ -67,7 +75,7 @@
                 data: { id: id },
                 success: function (result) {
                     $('#membersSection').html(null);
-                    $('#subGroupsSection').html(result);
+                    $('#listSection').html(result);
                 }
             });
         }
@@ -130,6 +138,69 @@
                 data: { id: id },
                 success: function (result) {
                     $('#membersSection').html(result);
+                }
+            });
+        }
+
+        //shifts
+        function shiftsList() {
+            $.ajax({
+                url: '@Url.Action("ShiftsList", "Groups")',
+                type: 'GET',
+                success: function (result) {
+                    $('#shiftsSection').html(result);
+                }
+            });
+        }
+        function rotationsList(id, gName) {
+            $.ajax({
+                url: '@Url.Action("RotationsList", "Groups")',
+                type: 'GET',
+                data: { id: id, groupName: gName },
+                success: function (result) {
+                    $('#listSection').html(result);
+                    $('#membersSection').html(null);
+                }
+            });
+        }
+        function addRotation() {
+            $.ajax({
+                url: '@Url.Action("AddRotation", "Groups")',
+                type: 'GET',
+                success: function (result) {
+                    $('#myModal-body').html(result);
+                    $('#myModal-label').html('Add Rotation');
+                    showPopup();
+                }
+            });
+        }
+        function editRotation(id) {
+            $.ajax({
+                url: '@Url.Action("EditRotation", "Groups")',
+                type: 'GET',
+                data: { id: id },
+                success: function (result) {
+                    $('#myModal-body').html(result);
+                    $('#myModal-label').html('Edit Rotation');
+                    showPopup();
+                }
+            });
+        }
+        function removeRotation(id) {
+            if (!confirm('Please Confirm! About to Permenantly Delete Rotations?')) {
+                return;
+            }
+            $.ajax({
+                url: '@Url.Action("RemoveRotation", "Groups")',
+                type: 'GET',
+                data: { id: id },
+                success: function (result) {
+                    $('#listSection').html(result);
+                    if ($('#rotationsCountHF').val() === '0') {
+                        alert($('#rotationsCountHF').val());
+                        $('#listSection').html(null);
+                        shiftsList();
+                    }
                 }
             });
         }

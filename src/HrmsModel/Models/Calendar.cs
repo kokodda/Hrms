@@ -17,8 +17,14 @@ namespace HrmsModel.Models
         public DateTime ThruTime { get; set; }
         public int BreakMinutes { get; set; }
         public int FlexStartMinutes { get; set; }
+        public int OverTime1Multiplier { get; set; }
+        public int OverTime2Multiplier { get; set; }
+        public int HolidaysMultiplier { get; set; }
+        public bool IsDefault { get; set; }
         public bool IsActive { get; set; }
 
         public virtual ICollection<HolidayVariation> HolidayVariations { get; set; }
+        public virtual ICollection<Company> Companies { get; set; }
+        public virtual ICollection<Shift> Shifts { get; set; }
     }
 }

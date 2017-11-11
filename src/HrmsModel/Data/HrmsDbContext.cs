@@ -72,6 +72,8 @@ namespace HrmsModel.Data
         public virtual DbSet<CompanyGroupMember> CompanyGroupMembers { get; set; }
         public virtual DbSet<CompanyAccount> CompanyAccounts { get; set; }
         public virtual DbSet<CompanyGroupAccount> CompanyGroupAccounts { get; set; }
+        public virtual DbSet<Shift> Shifts { get; set; }
+        public virtual DbSet<ShiftRotation> ShiftRotations { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -516,7 +518,11 @@ namespace HrmsModel.Data
             modelBuilder.Entity<Calendar>().Property(b => b.ThruTime).HasColumnType("datetime");
             modelBuilder.Entity<Calendar>().Property(b => b.BreakMinutes).HasDefaultValue(0);
             modelBuilder.Entity<Calendar>().Property(b => b.FlexStartMinutes).HasDefaultValue(0);
+            modelBuilder.Entity<Calendar>().Property(b => b.OverTime1Multiplier).HasDefaultValue(0);
+            modelBuilder.Entity<Calendar>().Property(b => b.OverTime2Multiplier).HasDefaultValue(0);
+            modelBuilder.Entity<Calendar>().Property(b => b.HolidaysMultiplier).HasDefaultValue(0);
             modelBuilder.Entity<Calendar>().Property(b => b.EffectiveFromDate).HasColumnType("date");
+            modelBuilder.Entity<Calendar>().Property(b => b.IsDefault).HasDefaultValue(false);
             modelBuilder.Entity<Calendar>().Property(b => b.IsActive).HasDefaultValue(true);
             modelBuilder.Entity<Calendar>().ToTable("Calendars");
 
@@ -617,6 +623,7 @@ namespace HrmsModel.Data
 
             modelBuilder.Entity<Company>().HasKey(b => b.Id);
             modelBuilder.Entity<Company>().HasOne(b => b.OrgUnit).WithOne(b => b.Company).HasForeignKey<Company>(b => b.Id).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Company>().HasOne(b => b.Calendar).WithMany(b => b.Companies).HasForeignKey(b => b.CalendarId).OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<Company>().Property(b => b.ShortName).IsRequired().HasMaxLength(10);
             modelBuilder.Entity<Company>().Property(b => b.OthShortName).HasMaxLength(10);
             modelBuilder.Entity<Company>().Property(b => b.LegalTypeCode).IsRequired().HasMaxLength(30);
@@ -646,6 +653,19 @@ namespace HrmsModel.Data
             modelBuilder.Entity<CompanyGroupAccount>().HasOne(b => b.CompanyGroup).WithMany(b => b.CompanyGroupAccounts).HasForeignKey(b => b.CompanyGroupId).OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<CompanyGroupAccount>().HasOne(b => b.CompanyAccount).WithMany(b => b.CompanyGroupAccounts).HasForeignKey(b => b.CompanyAccountId).OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<CompanyGroupAccount>().ToTable("CompanyGroupAccounts");
+
+            modelBuilder.Entity<Shift>().HasKey(b => b.Id);
+            modelBuilder.Entity<Shift>().HasOne(b => b.Calendar).WithMany(b => b.Shifts).HasForeignKey(b => b.CalendarId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Shift>().Property(b => b.Name).IsRequired().HasMaxLength(100);
+            modelBuilder.Entity<Shift>().Property(b => b.ShiftTypeCode).IsRequired().HasMaxLength(20);
+            modelBuilder.Entity<Shift>().Property(b => b.FromTime).HasColumnType("datetime");
+            modelBuilder.Entity<Shift>().Property(b => b.ThruTime).HasColumnType("datetime");
+            modelBuilder.Entity<Shift>().ToTable("Shifts");
+
+            modelBuilder.Entity<ShiftRotation>().HasKey(b => b.Id);
+            modelBuilder.Entity<ShiftRotation>().HasOne(b => b.GenericSubGroup).WithMany(b => b.ShiftRotations).HasForeignKey(b => b.GenericSubGroupId).OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<ShiftRotation>().HasOne(b => b.Shift).WithMany(b => b.ShiftRotations).HasForeignKey(b => b.ShiftId).OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<ShiftRotation>().ToTable("ShiftRotations");
         }
     }
 }

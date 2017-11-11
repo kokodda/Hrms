@@ -19,8 +19,8 @@
             {
                 var x = item.Employee.Employments.FirstOrDefault(b => b.IsActive);
                 <tr>
-                    <td><small>@item.Employee.FirstName &nbsp; @item.Employee.FamilyName</small></td>
-                    <td><small>@string.Format("{0}", x.IsHead ? x.OrgUnit.HeadPositionName : (x.PositionId.HasValue ? x.Position.Name : x.JobName))</small></td>
+                    <td><small>@item.Employee.FirstName&nbsp;@item.Employee.FamilyName</small></td>
+                    <td><small>@string.Format("{0}", x.IsHead ? x.OrgUnit.HeadPositionName : x.Position.Name)</small></td>
                     <td>
                         <a role="button" href="#" class="btn btn-xs" onclick="removeMember(@item.Id)" style="color:red" title="Remove"><span class="glyphicon glyphicon-remove"></span></a>
                     </td>

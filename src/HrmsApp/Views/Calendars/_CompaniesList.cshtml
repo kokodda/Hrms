@@ -1,0 +1,13 @@
+﻿@using  HrmsModel.Models
+@model IEnumerable<Company>
+
+<div class="container-fluid" style="padding:0px;font-size:smaller">
+    <div><label style="color:silver">Subscriber Companies</label></div>
+    <br />
+    <ul style="padding:0px">
+        @foreach (var item in Model)
+        {
+            <li><label>@item.OrgUnit.Name</label></li>
+        }
+    </ul>
+</div>

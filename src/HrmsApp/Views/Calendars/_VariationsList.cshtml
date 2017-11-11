@@ -2,16 +2,15 @@
 @model IEnumerable<HolidayVariation>
 
 <div class="container-fluid" style="padding:0px">
+    <p style="color:silver;font-size:smaller"><label>@ViewBag.calendarName</label></p>
     <div class="panel panel-default">
         <div class="panel-heading">
-            <label><small>Holidays Variations for &nbsp; @DateTime.Today.Year</small></label>
-            <span class="pull-right"><a href="#" onclick="variationsList()" title="All Variations"><span class="fa fa-refresh"></span></a></span>
+            <label><small>Holidays Variations for &nbsp;@DateTime.Today.Year</small></label>
         </div>
         <div class="panel-body">
             <table class="table table-hover table-condensed" style="font-size:smaller">
                 <thead>
                     <tr>
-                        <th>Calendar</th>
                         <th>Occasion</th>
                         <th>Occaison Day</th>
                         <th>Total Days</th>
@@ -24,7 +23,6 @@
                     @foreach (var item in Model)
                     {
                         <tr>
-                            <td>@item.Calendar.Name</td>
                             <td>@item.Holiday.Name</td>
                             <td>@item.FromDate.Day &nbsp; @string.Format("{0}", System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(item.FromDate.Month))</td>
                             <td>@item.NbrDays</td>
