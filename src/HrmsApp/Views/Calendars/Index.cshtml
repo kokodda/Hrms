@@ -12,9 +12,13 @@
         <div class="col-sm-7">
             <div id="holidaysSection"></div>
             <div id="variationsSection"></div>
+            <div id="rotationsSection"></div>
+        </div>
+        <div class="col-sm-2">
+            <div id="companiesSection"></div>
+            <hr />
             <div id="shiftsSection"></div>
         </div>
-        <div class="col-sm-2" id="companiesSection"></div>
     </div>
 </div>
 
@@ -27,9 +31,6 @@
         $(document).on('ready', function () {
             calendarsList();
             holidaysList();
-            variationsList();
-            shiftsList();
-            companiesList();
         });
 
         function showPopup() {
@@ -223,6 +224,58 @@
                 data: { id: id },
                 success: function (result) {
                     $('#shiftsSection').html(result);
+                }
+            });
+        }
+        function rotationsList(id, sName) {
+            $.ajax({
+                url: '@Url.Action("RotationsList", "Calendars")',
+                type: 'GET',
+                data: { id: id, shiftName: sName },
+                success: function (result) {
+                    $('#rotationsSection').html(result);
+                }
+            });
+        }
+        function addRotation(id) {
+            $.ajax({
+                url: '@Url.Action("AddRotation", "Calendars")',
+                type: 'GET',
+                success: function (result) {
+                    $('#myModal-body').html(result);
+                    $('#myModal-label').html('Add Rotation');
+                    $('#shiftId').val(id);
+                    showPopup();
+                }
+            });
+        }
+        function editRotation(id) {
+            $.ajax({
+                url: '@Url.Action("EditRotation", "Calendars")',
+                type: 'GET',
+                data: { id: id },
+                success: function (result) {
+                    $('#myModal-body').html(result);
+                    $('#myModal-label').html('Edit Rotation');
+                    showPopup();
+                }
+            });
+        }
+        function removeRotation(id) {
+            if (!confirm('Please Confirm! About to Permenantly Delete Rotations?')) {
+                return;
+            }
+            $.ajax({
+                url: '@Url.Action("RemoveRotation", "Calendars")',
+                type: 'GET',
+                data: { id: id },
+                success: function (result) {
+                    $('#listSection').html(result);
+                    if ($('#rotationsCountHF').val() === '0') {
+                        alert($('#rotationsCountHF').val());
+                        $('#listSection').html(null);
+                        shiftsList();
+                    }
                 }
             });
         }

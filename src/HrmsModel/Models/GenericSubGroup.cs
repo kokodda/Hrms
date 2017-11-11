@@ -17,6 +17,6 @@ namespace HrmsModel.Models
 
         public virtual GenericGroup GenericGroup { get; set; }
         public virtual ICollection<EmployeeGroup> EmployeeGroups { get; set; }
-        public virtual ICollection<ShiftRotation> ShiftRotations { get; set; }
+        public virtual ICollection<ShiftGroup> ShiftGroups { get; set; }
     }
 }

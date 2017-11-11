@@ -170,7 +170,7 @@ namespace HrmsApp.Controllers
         }
 
         //shifts
-        public async Task<IActionResult> ShiftsList(long? id)
+        public async Task<IActionResult> ShiftsList(int? id)
         {
             var model = _context.Shifts.Where(b => !id.HasValue || b.CalendarId == id);
             var x = await _context.Calendars.SingleOrDefaultAsync(b => b.IsActive && ((!id.HasValue && b.IsDefault) || b.Id == id));
@@ -192,7 +192,7 @@ namespace HrmsApp.Controllers
             return RedirectToAction("ShiftsList", new { id = item.CalendarId });
         }
 
-        public async Task<IActionResult> EditShift(long id)
+        public async Task<IActionResult> EditShift(int id)
         {
             var model = await _context.Shifts.SingleOrDefaultAsync(b => b.Id == id);
             return PartialView("_EditShift", model);
@@ -208,13 +208,63 @@ namespace HrmsApp.Controllers
             return RedirectToAction("ShiftsList", new { id = model.CalendarId });
         }
 
-        public async Task<IActionResult> RemoveShift(long id)
+        public async Task<IActionResult> RemoveShift(int id)
         {
             var item = await _context.Shifts.SingleOrDefaultAsync(b => b.Id == id);
             long calendarId = item.CalendarId;
             _context.Shifts.Remove(item);
             await _context.SaveChangesAsync();
             return RedirectToAction("ShiftsList", new { id = calendarId });
+        }
+
+        //rotations
+        public async Task<IActionResult> RotationsList(int id, string shiftName)
+        {
+            var model = _context.ShiftRotations.Where(b => b.ShiftId == id).OrderBy(b => b.SortOrder);
+            ViewBag.shiftId = id;
+            ViewBag.shiftName = shiftName;
+            return PartialView("_RotationsList", await model.ToListAsync());
+        }
+
+        public IActionResult AddRotation()
+        {
+            return PartialView("_AddRotation");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddRotation(ShiftRotation item)
+        {
+            var s = await _context.Shifts.SingleOrDefaultAsync(b => b.Id == item.ShiftId);
+            await _context.ShiftRotations.AddAsync(item);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("RotationsList", new { id = item.ShiftId, shiftName = s.Name });
+        }
+
+        public async Task<IActionResult> EditRotation(int id)
+        {
+            var model = await _context.ShiftRotations.Include(b => b.Shift).SingleOrDefaultAsync(b => b.Id == id);
+            return PartialView("_EditRotation", model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditRotation(ShiftRotation item)
+        {
+            var model = await _context.ShiftRotations.Include(b => b.Shift).SingleOrDefaultAsync(b => b.Id == item.Id);
+            await TryUpdateModelAsync(model);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("RotationsList", new { id = model.ShiftId, shiftName = model.Shift.Name });
+        }
+
+        public async Task<IActionResult> RemoveRotation(int id)
+        {
+            var item = await _context.ShiftRotations.Include(b => b.Shift).SingleOrDefaultAsync(b => b.Id == id);
+            long id1 = item.ShiftId;
+            string sName = item.Shift.Name;
+            _context.ShiftRotations.Remove(item);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("RotationsList", new { id = id1, shiftName = sName });
         }
 
         //companies

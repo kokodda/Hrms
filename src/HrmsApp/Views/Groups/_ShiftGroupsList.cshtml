@@ -1,0 +1,33 @@
+﻿@using HrmsModel.Models;
+@model IEnumerable<ShiftGroup>
+
+<div class="container-fluid" style="padding:0px">
+    <div class="panel panel-default" style="font-size:smaller">
+        <div class="panel-heading">
+            <label>@ViewBag.shiftName</label>
+            <span><a href="#" class="btn btn-xs pull-right" onclick="addShiftGroup(@ViewBag.shiftId)" data-toggle="modal" data-target="#myModal" title="Add Group"><span class="fa fa-plus"></span></a></span>
+        </div>
+        <div class="panel-body">
+            <table class="table table-hover table-condensed">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Group</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach(var item in Model)
+                    {
+                        <tr>
+                            <td>@item.SortOrder</td>
+                            <td>@item.GenericSubGroup.Name</td>
+                            <td>
+                                <a role="button" href="#" class="btn btn-xs pull-right" onclick="removeShiftGroup(@item.Id)" style="color:red" title="Remove"><span class="fa fa-remove"></span></a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

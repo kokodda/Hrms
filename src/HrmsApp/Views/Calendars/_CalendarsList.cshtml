@@ -9,31 +9,31 @@
             <label><small>@item.Name</small></label>
         </div>
         <div><a href="#" onclick="editCalendar(@item.Id)" data-toggle="modal" data-target="#myModal"><small>Edit Calendar ...</small></a></div>
-                <hr />
-                <dl class="dl-horizontal" style="font-size:smaller">
-                    <dt>Effective From</dt>
-                    <dd>@item.EffectiveFromDate.ToString("dd-MM-yyyy")</dd>
-                    <dt>First Day of the Week</dt>
-                    <dd>@item.FirstWeekDay</dd>
-                    <dt>Number of Working Days</dt>
-                    <dd>@item.NbrWorkingDays</dd>
-                    <dt>Start Time</dt>
-                    <dd>@item.FromTime.ToString("HH:mm")</dd>
-                    <dt>Through Time</dt>
-                    <dd>@item.ThruTime.ToString("HH:mm")</dd>
-                    <dt>Flexible Start Minutes</dt>
-                    <dd>@item.FlexStartMinutes</dd>
-                    <dt>Break Minutes</dt>
-                    <dd>@item.BreakMinutes</dd>
-                    <dt>OverTime1 Multiplier</dt>
-                    <dd>@item.OverTime1Multiplier</dd>
-                    <dt>OverTime2 Multiplier</dt>
-                    <dd>@item.OverTime2Multiplier</dd>
-                    <dt>Holidays Multiplier</dt>
-                    <dd>@item.HolidaysMultiplier</dd>
-                    <dt>Default Calendar</dt>
-                    <dd>@string.Format("{0}", item.IsDefault ? "Yes" : "No")</dd>
-                </dl>
+        <hr />
+        <dl class="dl-horizontal" style="font-size:smaller">
+            <dt>Effective From</dt>
+            <dd>@item.EffectiveFromDate.ToString("dd-MM-yyyy")</dd>
+            <dt>First Day of the Week</dt>
+            <dd>@item.FirstWeekDay</dd>
+            <dt>Number of Working Days</dt>
+            <dd>@item.NbrWorkingDays</dd>
+            <dt>Start Time</dt>
+            <dd>@item.FromTime.ToString("HH:mm")</dd>
+            <dt>Through Time</dt>
+            <dd>@item.ThruTime.ToString("HH:mm")</dd>
+            <dt>Flexible Start Minutes</dt>
+            <dd>@item.FlexStartMinutes</dd>
+            <dt>Break Minutes</dt>
+            <dd>@item.BreakMinutes</dd>
+            <dt>OverTime1 Multiplier</dt>
+            <dd>@item.OverTime1Multiplier</dd>
+            <dt>OverTime2 Multiplier</dt>
+            <dd>@item.OverTime2Multiplier</dd>
+            <dt>Holidays Multiplier</dt>
+            <dd>@item.HolidaysMultiplier</dd>
+            <dt>Default Calendar</dt>
+            <dd>@string.Format("{0}", item.IsDefault ? "Yes" : "No")</dd>
+        </dl>
         <hr />
     }
 </div>

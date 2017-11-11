@@ -1,0 +1,42 @@
+﻿@using  HrmsModel.Models
+@model IEnumerable<ShiftRotation>
+
+<div class="container-fluid" style="padding:0px">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <label><small>@ViewBag.shiftName</small></label>
+            <div class="btn-group-xs pull-right">
+                <a href="#" class="btn btn-xs" onclick="editShift(@ViewBag.shiftId)" data-toggle="modal" data-target="#myModal" title="Edit Shift"><span class="fa fa-pencil"></span></a>
+                <a href="#" class="btn btn-xs" onclick="addRotation(@ViewBag.shiftId)" data-toggle="modal" data-target="#myModal" title="Add Interval"><span class="fa fa-plus"></span></a>
+            </div>
+        </div>
+        <div class="panel-body">
+            <table class="table table-hover table-condensed" style="font-size:smaller">
+                <thead>
+                    <tr>
+                        <th>Sequence</th>
+                        <th>Interval</th>
+                        <th>Start Time</th>
+                        <th>Thru Time</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.SortOrder</td>
+                            <td>@item.ShiftTypeCode&nbsp;Shift</td>
+                            <td>@string.Format("{0}", item.FromTime.HasValue ? item.FromTime.Value.ToString("HH:mm") : null)</td>
+                            <td>@string.Format("{0}", item.ThruTime.HasValue ? item.ThruTime.Value.ToString("HH:mm") : null)</td>
+                            <td>
+                                <a href="#" class="btn btn-xs pull-right" onclick="removeRotation(@item.Id)" title="Delete"><span class="fa fa-remove"></span></a>
+                                <a href="#" class="btn btn-xs pull-right" onclick="editRotation(@item.Id)" data-toggle="modal" data-target="#myModal" title="Edit"><span class="fa fa-pencil"></span></a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

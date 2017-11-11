@@ -120,62 +120,43 @@ namespace HrmsApp.Controllers
             return RedirectToAction("MembersList", new { id = subGroupId });
         }
 
-        //shifts and rotations
+        //shifts and groups
         public async Task<IActionResult> ShiftsList()
         {
-            var model = _context.ShiftRotations.Include(b => b.GenericSubGroup).OrderBy(b => b.SortOrder);
+            var model = _context.Shifts;
             return PartialView("_ShiftsList", await model.ToListAsync());
         }
 
-        public async Task<IActionResult> RotationsList(long id, string groupName)
+        public async Task<IActionResult> ShiftGroupsList(int id)
         {
-            var model = _context.ShiftRotations.Include(b => b.Shift).Where(b => b.GenericSubGroupId == id).OrderBy(b => b.SortOrder);
-            ViewBag.groupName = groupName;
-            return PartialView("_RotationsList", await model.ToListAsync());
+            var model = _context.ShiftGroups.Include(b => b.GenericSubGroup).Where(b => b.ShiftId == id).OrderBy(b => b.SortOrder);
+            ViewBag.shiftId = id;
+            ViewBag.shiftName = _context.Shifts.SingleOrDefault(b => b.Id == id).Name;
+            return PartialView("_ShiftGroupsList", await model.ToListAsync());
         }
 
-        public async Task<IActionResult> AddRotation()
+        public async Task<IActionResult> AddShiftGroup()
         {
-            ViewBag.subGroupsList = await _context.GenericSubGroups.Where(b => b.IsActive).OrderBy(b => b.SortOrder).ToListAsync();
-            ViewBag.shiftsList = await _context.Shifts.OrderBy(b => b.SortOrder).ToListAsync();
-            return PartialView("_AddRotation");
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddRotation(ShiftRotation item)
-        {
-            var grp = await _context.GenericSubGroups.SingleOrDefaultAsync(b => b.Id == item.GenericSubGroupId);
-            await _context.ShiftRotations.AddAsync(item);
-            await _context.SaveChangesAsync();
-            return RedirectToAction("RotationsList", new { id = item.GenericSubGroupId, groupName = grp.Name });
-        }
-
-        public async Task<IActionResult> EditRotation(long id)
-        {
-            var model = await _context.ShiftRotations.Include(b => b.GenericSubGroup).SingleOrDefaultAsync(b => b.Id == id);
-            ViewBag.shiftsList = await _context.Shifts.OrderBy(b => b.SortOrder).ToListAsync();
-            return PartialView("_EditRotation", model);
+            ViewBag.subGroupsList = await _context.GenericSubGroups.Where(b => b.IsActive).ToListAsync();
+            return PartialView("_AddShiftGroup");
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditRotation(ShiftRotation item)
+        public async Task<IActionResult> AddShiftGroup(ShiftGroup item)
         {
-            var model = await _context.ShiftRotations.Include(b => b.GenericSubGroup).SingleOrDefaultAsync(b => b.Id == item.Id);
-            await TryUpdateModelAsync(model);
+            await _context.ShiftGroups.AddAsync(item);
             await _context.SaveChangesAsync();
-            return RedirectToAction("RotationsList", new { id = model.GenericSubGroupId, groupName = model.GenericSubGroup.Name });
+            return RedirectToAction("ShiftGroupsList", new { id = item.ShiftId });
         }
 
-        public async Task<IActionResult> RemoveRotation(long id)
+        public async Task<IActionResult> RemoveShiftGroup(int id)
         {
-            var item = await _context.ShiftRotations.Include(b => b.GenericSubGroup).SingleOrDefaultAsync(b => b.Id == id);
-            long id1 = item.GenericSubGroupId;
-            string gName = item.GenericSubGroup.Name; 
-            _context.ShiftRotations.Remove(item);
+            var item = await _context.ShiftGroups.SingleOrDefaultAsync(b => b.Id == id);
+            int shiftId = item.ShiftId;
+            _context.ShiftGroups.Remove(item);
             await _context.SaveChangesAsync();
-            return RedirectToAction("RotationsList", new { id = id1, groupName = gName });
+            return RedirectToAction("ShiftGroupsList", new { id = shiftId });
         }
     }
 }

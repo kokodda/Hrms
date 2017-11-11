@@ -152,55 +152,38 @@
                 }
             });
         }
-        function rotationsList(id, gName) {
+        function shiftGroupsList(id) {
             $.ajax({
-                url: '@Url.Action("RotationsList", "Groups")',
-                type: 'GET',
-                data: { id: id, groupName: gName },
-                success: function (result) {
-                    $('#listSection').html(result);
-                    $('#membersSection').html(null);
-                }
-            });
-        }
-        function addRotation() {
-            $.ajax({
-                url: '@Url.Action("AddRotation", "Groups")',
-                type: 'GET',
-                success: function (result) {
-                    $('#myModal-body').html(result);
-                    $('#myModal-label').html('Add Rotation');
-                    showPopup();
-                }
-            });
-        }
-        function editRotation(id) {
-            $.ajax({
-                url: '@Url.Action("EditRotation", "Groups")',
+                url: '@Url.Action("ShiftGroupsList", "Groups")',
                 type: 'GET',
                 data: { id: id },
                 success: function (result) {
+                    $('#listSection').html(result);
+                }
+            });
+        }
+        function addShiftGroup(id) {
+            $.ajax({
+                url: '@Url.Action("AddShiftGroup", "Groups")',
+                type: 'GET',
+                success: function (result) {
                     $('#myModal-body').html(result);
-                    $('#myModal-label').html('Edit Rotation');
+                    $('#myModal-label').html('Add Group to Shift');
+                    $('#shiftId').val(id);
                     showPopup();
                 }
             });
         }
-        function removeRotation(id) {
-            if (!confirm('Please Confirm! About to Permenantly Delete Rotations?')) {
+        function removeShiftGroup(id) {
+            if (!confirm('Please Confirm! About to Remove Group from Shift?')) {
                 return;
             }
             $.ajax({
-                url: '@Url.Action("RemoveRotation", "Groups")',
+                url: '@Url.Action("RemoveShiftGroup", "Groups")',
                 type: 'GET',
                 data: { id: id },
                 success: function (result) {
                     $('#listSection').html(result);
-                    if ($('#rotationsCountHF').val() === '0') {
-                        alert($('#rotationsCountHF').val());
-                        $('#listSection').html(null);
-                        shiftsList();
-                    }
                 }
             });
         }

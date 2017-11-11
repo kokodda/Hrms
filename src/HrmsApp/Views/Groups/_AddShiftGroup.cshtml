@@ -1,0 +1,20 @@
+﻿@using HrmsModel.Models;
+@model ShiftGroup
+<form role="form" id="popupForm" asp-controller="Groups" asp-action="AddShiftGroup" data-ajax="true" data-ajax-method="POST" data-ajax-update="#listSection" data-ajax-success="onSuccess();shiftsList();" data-ajax-failure="onFailure">
+    <input type="hidden" asp-for="ShiftId" id="shiftId" />
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="GenericSubGroupId"><small>Employee Group (*)</small></label>
+        <select class="form-control" asp-for="GenericSubGroupId" required>
+            <option value="">Select from List ...</option>
+            @foreach (SelectListItem item in new SelectList(ViewBag.subGroupsList, "Id", "Name"))
+            {
+                <option value="@item.Value">@item.Text</option>
+            }
+        </select>
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="SortOrder"><small>Sort Order (*)</small></label>
+        <input type="number" asp-for="SortOrder" class="form-control" required />
+    </div>
+</form>
+    

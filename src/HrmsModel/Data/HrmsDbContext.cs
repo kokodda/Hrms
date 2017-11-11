@@ -74,6 +74,7 @@ namespace HrmsModel.Data
         public virtual DbSet<CompanyGroupAccount> CompanyGroupAccounts { get; set; }
         public virtual DbSet<Shift> Shifts { get; set; }
         public virtual DbSet<ShiftRotation> ShiftRotations { get; set; }
+        public virtual DbSet<ShiftGroup> ShiftGroups { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -657,15 +658,20 @@ namespace HrmsModel.Data
             modelBuilder.Entity<Shift>().HasKey(b => b.Id);
             modelBuilder.Entity<Shift>().HasOne(b => b.Calendar).WithMany(b => b.Shifts).HasForeignKey(b => b.CalendarId).OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<Shift>().Property(b => b.Name).IsRequired().HasMaxLength(100);
-            modelBuilder.Entity<Shift>().Property(b => b.ShiftTypeCode).IsRequired().HasMaxLength(20);
-            modelBuilder.Entity<Shift>().Property(b => b.FromTime).HasColumnType("datetime");
-            modelBuilder.Entity<Shift>().Property(b => b.ThruTime).HasColumnType("datetime");
+            modelBuilder.Entity<Shift>().Property(b => b.Name).HasMaxLength(100);
             modelBuilder.Entity<Shift>().ToTable("Shifts");
 
             modelBuilder.Entity<ShiftRotation>().HasKey(b => b.Id);
-            modelBuilder.Entity<ShiftRotation>().HasOne(b => b.GenericSubGroup).WithMany(b => b.ShiftRotations).HasForeignKey(b => b.GenericSubGroupId).OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<ShiftRotation>().HasOne(b => b.Shift).WithMany(b => b.ShiftRotations).HasForeignKey(b => b.ShiftId).OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<ShiftRotation>().Property(b => b.ShiftTypeCode).IsRequired().HasMaxLength(20);
+            modelBuilder.Entity<ShiftRotation>().Property(b => b.FromTime).HasColumnType("datetime");
+            modelBuilder.Entity<ShiftRotation>().Property(b => b.ThruTime).HasColumnType("datetime");
             modelBuilder.Entity<ShiftRotation>().ToTable("ShiftRotations");
+
+            modelBuilder.Entity<ShiftGroup>().HasKey(b => b.Id);
+            modelBuilder.Entity<ShiftGroup>().HasOne(b => b.GenericSubGroup).WithMany(b => b.ShiftGroups).HasForeignKey(b => b.GenericSubGroupId).OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<ShiftGroup>().HasOne(b => b.Shift).WithMany(b => b.ShiftGroups).HasForeignKey(b => b.ShiftId).OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<ShiftGroup>().ToTable("ShiftGroups");
         }
     }
 }
