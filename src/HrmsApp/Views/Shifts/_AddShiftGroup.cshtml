@@ -1,6 +1,6 @@
 ﻿@using HrmsModel.Models;
 @model ShiftGroup
-<form role="form" id="popupForm" asp-controller="Groups" asp-action="AddShiftGroup" data-ajax="true" data-ajax-method="POST" data-ajax-update="#listSection" data-ajax-success="onSuccess();shiftsList();" data-ajax-failure="onFailure">
+<form role="form" id="popupForm" asp-controller="Shifts" asp-action="AddShiftGroup" data-ajax="true" data-ajax-method="POST" data-ajax-update="#groupsSection" data-ajax-success="onSuccess();shiftsList();" data-ajax-failure="onFailure">
     <input type="hidden" asp-for="ShiftId" id="shiftId" />
     <div class="form-group-sm">
         <label class="control-label" asp-for="GenericSubGroupId"><small>Employee Group (*)</small></label>

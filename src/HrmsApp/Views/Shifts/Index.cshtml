@@ -1,0 +1,215 @@
+﻿@{
+    ViewData["Title"] = "Shifts";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid" style="padding:0px">
+    <h3>Shifts Index</h3>
+    <a href="#" onclick="addShift()" data-toggle="modal" data-target="#myModal"><small>Add New Shift ...</small></a>
+    <hr />
+    <div class="row">
+        <div class="col-sm-3" id="shiftsSection"></div>
+        <div class="col-sm-7">
+            <div style="font-size:small;color:silver" id="shiftName"></div>
+            <br />
+            <div id="rotationsSection"></div>
+            <div id="groupsSection"></div>
+        </div>
+        <div class="col-sm-2" id="detailsSection"></div>
+    </div>
+</div>
+
+@section Scripts
+    {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{ await Html.RenderPartialAsync("_PopupForm"); }
+
+    <script>
+        $(document).on('ready', function () {
+            shiftsList();
+            $('#shiftEdit').hide();
+        });
+
+        function showPopup() {
+            $('#popupResult').html(null).text(null);
+            $('.popupBtns').removeAttr('disabled');
+        }
+        function onPopupSubmit() {
+            $('#popupForm').submit();
+        }
+        function onSuccess() {
+            $('#popupResult').html('Successfully Updated.');
+            $('.popupBtns').attr('disabled', 'disabled');
+        }
+        function onFailure() {
+            $('#formResult').html('Failed to Update! Please Correct All Errors.');
+            $('.popupBtns').removeAttr('disabled');
+        }
+
+        function getCalendar(id) {
+            $.ajax({
+                url: '@Url.Action("GetCalendar", "Shifts")',
+                type: 'GET',
+                data: { id: id },
+                success: function (result) {
+                    $('#detailsSection').html(result);
+                }
+            });
+        }
+
+        //shifts
+        function shiftsList(id) {
+            $.ajax({
+                url: '@Url.Action("ShiftsList", "Shifts")',
+                type: 'GET',
+                data: { id: id },
+                success: function (result) {
+                    $('#shiftsSection').html(result);
+                }
+            });
+        }
+        function showHeader(id, sName) {
+            var h = '<label>' + sName + '</label>' + '&nbsp;&nbsp;<span><a href="#" onclick="editShift(_id1)" data-toggle="modal" data-target="#myModal">Rename</a>&nbsp;|<a href="#" onclick="removeShift(_id2)">Delete</a>&nbsp;|<a href="#">Generate</a></span>';
+            $('#shiftName').html(h.replace('_id1', id).replace('_id2', id));
+            $('#shiftEdit').show();
+        }
+        function updateHeader() {
+            showHeader($('#shiftId').val(), $('#newShiftName').val());
+        }
+        function selectShift(id, sName) {
+            showHeader(id, sName);
+            rotationsList(id);
+            shiftGroupsList(id);
+        }
+        function addShift() {
+            $.ajax({
+                url: '@Url.Action("AddShift", "Shifts")',
+                type: 'GET',
+                success: function (result) {
+                    $('#myModal-body').html(result);
+                    $('#myModal-label').html('Add New Shift');
+                    showPopup();
+                }
+            });
+        }
+        function editShift(id) {
+            $.ajax({
+                url: '@Url.Action("EditShift", "Shifts")',
+                type: 'GET',
+                data: { id: id },
+                success: function (result) {
+                    $('#myModal-body').html(result);
+                    $('#myModal-label').html('Edit Shift');
+                    showPopup();
+                }
+            });
+        }
+        function removeShift(id) {
+            if (!confirm('Please Confirm! About to Permenantly Delete Shift?')) {
+                return;
+            }
+            $.ajax({
+                url: '@Url.Action("RemoveShift", "Shifts")',
+                type: 'GET',
+                data: { id: id },
+                success: function (result) {
+                    $('#shiftsSection').html(result);
+                    $('#rotationsSection').html(null);
+                    $('#groupsSection').html(null);
+                    $('#shiftName').html(null);
+                }
+            });
+        }
+
+        //rotations
+        function rotationsList(id) {
+            $.ajax({
+                url: '@Url.Action("RotationsList", "Shifts")',
+                type: 'GET',
+                data: { id: id },
+                success: function (result) {
+                    $('#rotationsSection').html(result);
+                }
+            });
+        }
+        function addRotation(id) {
+            $.ajax({
+                url: '@Url.Action("AddRotation", "Shifts")',
+                type: 'GET',
+                success: function (result) {
+                    $('#myModal-body').html(result);
+                    $('#myModal-label').html('Add Rotation');
+                    $('#shiftId').val(id);
+                    showPopup();
+                }
+            });
+        }
+        function editRotation(id) {
+            $.ajax({
+                url: '@Url.Action("EditRotation", "Shifts")',
+                type: 'GET',
+                data: { id: id },
+                success: function (result) {
+                    $('#myModal-body').html(result);
+                    $('#myModal-label').html('Edit Rotation');
+                    showPopup();
+                }
+            });
+        }
+        function removeRotation(id) {
+            if (!confirm('Please Confirm! About to Permenantly Delete Rotations?')) {
+                return;
+            }
+            $.ajax({
+                url: '@Url.Action("RemoveRotation", "Shifts")',
+                type: 'GET',
+                data: { id: id },
+                success: function (result) {
+                    $('#listSection').html(result);
+                    if ($('#rotationsCountHF').val() === '0') {
+                        alert($('#rotationsCountHF').val());
+                        $('#listSection').html(null);
+                        shiftsList();
+                    }
+                }
+            });
+        }
+
+        //groups
+        function shiftGroupsList(id) {
+            $.ajax({
+                url: '@Url.Action("ShiftGroupsList", "Shifts")',
+                type: 'GET',
+                data: { id: id },
+                success: function (result) {
+                    $('#groupsSection').html(result);
+                }
+            });
+        }
+        function addShiftGroup(id) {
+            $.ajax({
+                url: '@Url.Action("AddShiftGroup", "Shifts")',
+                type: 'GET',
+                success: function (result) {
+                    $('#myModal-body').html(result);
+                    $('#myModal-label').html('Add Group to Shift');
+                    $('#shiftId').val(id);
+                    showPopup();
+                }
+            });
+        }
+        function removeShiftGroup(id) {
+            if (!confirm('Please Confirm! About to Remove Group from Shift?')) {
+                return;
+            }
+            $.ajax({
+                url: '@Url.Action("RemoveShiftGroup", "Shifts")',
+                type: 'GET',
+                data: { id: id },
+                success: function (result) {
+                    $('#groupsSection').html(result);
+                }
+            });
+        }
+    </script>
+}

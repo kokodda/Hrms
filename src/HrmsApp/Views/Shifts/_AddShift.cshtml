@@ -1,0 +1,23 @@
+﻿@using HrmsModel.Models;
+@model Shift
+
+<form role="form" id="popupForm" asp-controller="Shifts" asp-action="AddShift" data-ajax="true" data-ajax-method="POST" data-ajax-update="#shiftsSection" data-ajax-success="onSuccess" data-ajax-failure="onFailure">
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="CalendarId"><small>Calendar (*)</small></label>
+        <select class="form-control" asp-for="CalendarId" required>
+            <option value="">Select from List ...</option>
+            @foreach (SelectListItem item in new SelectList(ViewBag.calendarsList, "Id", "Name"))
+            {
+                <option value="@item.Value">@item.Text</option>
+            }
+        </select>
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="Name"><small>Shift Name (*)</small></label>
+        <input type="text" asp-for="Name" class="form-control" required />
+    </div>
+    <div class="form-group-sm">
+        <label class="control-label" asp-for="OthName"><small>Name Translated</small></label>
+        <input type="text" asp-for="OthName" class="form-control" />
+    </div>
+</form>

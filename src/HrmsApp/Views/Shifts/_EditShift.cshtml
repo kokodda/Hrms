@@ -1,11 +1,11 @@
 ﻿@using HrmsModel.Models;
 @model Shift
 
-<form role="form" id="popupForm" asp-controller="Calendars" asp-action="AddShift" data-ajax="true" data-ajax-method="POST" data-ajax-update="#shiftsSection" data-ajax-success="onSuccess" data-ajax-failure="onFailure">
-    <input type="hidden" asp-for="CalendarId" id="calendarId" />
+<form role="form" id="popupForm" asp-controller="Shifts" asp-action="EditShift" data-ajax="true" data-ajax-method="POST" data-ajax-update="#shiftsSection" data-ajax-success="onSuccess();updateHeader();" data-ajax-failure="onFailure">
+    <input type="hidden" asp-for="Id" id="shiftId" />
     <div class="form-group-sm">
         <label class="control-label" asp-for="Name"><small>Shift Name (*)</small></label>
-        <input type="text" asp-for="Name" class="form-control" required />
+        <input type="text" asp-for="Name" class="form-control" id="newShiftName" required />
     </div>
     <div class="form-group-sm">
         <label class="control-label" asp-for="OthName"><small>Name Translated</small></label>

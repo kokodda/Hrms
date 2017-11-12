@@ -119,44 +119,5 @@ namespace HrmsApp.Controllers
 
             return RedirectToAction("MembersList", new { id = subGroupId });
         }
-
-        //shifts and groups
-        public async Task<IActionResult> ShiftsList()
-        {
-            var model = _context.Shifts;
-            return PartialView("_ShiftsList", await model.ToListAsync());
-        }
-
-        public async Task<IActionResult> ShiftGroupsList(int id)
-        {
-            var model = _context.ShiftGroups.Include(b => b.GenericSubGroup).Where(b => b.ShiftId == id).OrderBy(b => b.SortOrder);
-            ViewBag.shiftId = id;
-            ViewBag.shiftName = _context.Shifts.SingleOrDefault(b => b.Id == id).Name;
-            return PartialView("_ShiftGroupsList", await model.ToListAsync());
-        }
-
-        public async Task<IActionResult> AddShiftGroup()
-        {
-            ViewBag.subGroupsList = await _context.GenericSubGroups.Where(b => b.IsActive).ToListAsync();
-            return PartialView("_AddShiftGroup");
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddShiftGroup(ShiftGroup item)
-        {
-            await _context.ShiftGroups.AddAsync(item);
-            await _context.SaveChangesAsync();
-            return RedirectToAction("ShiftGroupsList", new { id = item.ShiftId });
-        }
-
-        public async Task<IActionResult> RemoveShiftGroup(int id)
-        {
-            var item = await _context.ShiftGroups.SingleOrDefaultAsync(b => b.Id == id);
-            int shiftId = item.ShiftId;
-            _context.ShiftGroups.Remove(item);
-            await _context.SaveChangesAsync();
-            return RedirectToAction("ShiftGroupsList", new { id = shiftId });
-        }
     }
 }

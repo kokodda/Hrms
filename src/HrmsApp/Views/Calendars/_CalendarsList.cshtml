@@ -5,7 +5,7 @@
     @foreach (var item in Model)
     {
         <div>
-            <a href="#" onclick="selectCalendar(@item.Id)" title="Select"><span class="fa fa-calendar"></span></a>&nbsp;
+            <a href="#" onclick="selectCalendar(@item.Id)" title="Settings"><span class="fa fa-calendar"></span></a>&nbsp;
             <label><small>@item.Name</small></label>
         </div>
         <div><a href="#" onclick="editCalendar(@item.Id)" data-toggle="modal" data-target="#myModal"><small>Edit Calendar ...</small></a></div>

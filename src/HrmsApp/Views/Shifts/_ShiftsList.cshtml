@@ -1,0 +1,18 @@
+﻿@using  HrmsModel.Models
+@model IEnumerable<Shift>
+
+<div class="container-fluid" style="padding:0px">
+    @foreach (var cal in Model.Select(b => b.Calendar).Distinct())
+    {
+        <div>
+            <a href="#" onclick="getCalendar(@cal.Id)" title="Info"><span class="fa fa-calendar"></span></a>&nbsp;
+            <label><small>@cal.Name @string.Format("{0}", cal.IsDefault ? "(Default)" : null)</small></label>
+        </div>
+        <ul style="font-size:small">
+            @foreach (var item in Model.Where(b => b.CalendarId == cal.Id))
+            {
+                <li><a href="#" onclick="selectShift(@item.Id, '@item.Name')">@item.Name</a></li>
+            }
+        </ul>
+    }
+</div>

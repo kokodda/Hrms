@@ -2,13 +2,13 @@
 @model IEnumerable<ShiftRotation>
 
 <div class="container-fluid" style="padding:0px">
+    
     <div class="panel panel-default">
         <div class="panel-heading">
-            <label><small>@ViewBag.shiftName</small></label>
-            <div class="btn-group-xs pull-right">
-                <a href="#" class="btn btn-xs" onclick="editShift(@ViewBag.shiftId)" data-toggle="modal" data-target="#myModal" title="Edit Shift"><span class="fa fa-pencil"></span></a>
-                <a href="#" class="btn btn-xs" onclick="addRotation(@ViewBag.shiftId)" data-toggle="modal" data-target="#myModal" title="Add Interval"><span class="fa fa-plus"></span></a>
-            </div>
+            <label><small>Shift Rotation Rules</small></label>
+            <span>
+                <a href="#" class="btn btn-xs pull-right" onclick="addRotation(@ViewBag.shiftId)" data-toggle="modal" data-target="#myModal" title="Add Rotation"><span class="fa fa-plus"></span></a>
+            </span>
         </div>
         <div class="panel-body">
             <table class="table table-hover table-condensed" style="font-size:smaller">
@@ -18,6 +18,7 @@
                         <th>Interval</th>
                         <th>Start Time</th>
                         <th>Thru Time</th>
+                        <th>Days</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -29,8 +30,9 @@
                             <td>@item.ShiftTypeCode&nbsp;Shift</td>
                             <td>@string.Format("{0}", item.FromTime.HasValue ? item.FromTime.Value.ToString("HH:mm") : null)</td>
                             <td>@string.Format("{0}", item.ThruTime.HasValue ? item.ThruTime.Value.ToString("HH:mm") : null)</td>
+                            <td>@item.NbrDays</td>
                             <td>
-                                <a href="#" class="btn btn-xs pull-right" onclick="removeRotation(@item.Id)" title="Delete"><span class="fa fa-remove"></span></a>
+                                <a href="#" class="btn btn-xs pull-right" onclick="removeRotation(@item.Id)" title="Delete"><span class="fa fa-remove" style="color:red"></span></a>
                                 <a href="#" class="btn btn-xs pull-right" onclick="editRotation(@item.Id)" data-toggle="modal" data-target="#myModal" title="Edit"><span class="fa fa-pencil"></span></a>
                             </td>
                         </tr>

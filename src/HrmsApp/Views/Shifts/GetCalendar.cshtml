@@ -1,0 +1,27 @@
+﻿@using  HrmsModel.Models;
+@model Calendar
+
+<div class="container-fluid" style="padding:0px">
+    <dl style="font-size:small">
+        <dt>Effective From</dt>
+        <dd>@Model.EffectiveFromDate.ToString("dd-MM-yyyy")</dd>
+        <dt>First Day of the Week</dt>
+        <dd>@Model.FirstWeekDay</dd>
+        <dt>Number of Working Days</dt>
+        <dd>@Model.NbrWorkingDays</dd>
+        <dt>Start Time</dt>
+        <dd>@Model.FromTime.ToString("HH:mm")</dd>
+        <dt>Through Time</dt>
+        <dd>@Model.ThruTime.ToString("HH:mm")</dd>
+        <dt>Flexible Start Minutes</dt>
+        <dd>@Model.FlexStartMinutes</dd>
+        <dt>Break Minutes</dt>
+        <dd>@Model.BreakMinutes</dd>
+        <dt>OverTime1 Multiplier</dt>
+        <dd>@Model.OverTime1Multiplier</dd>
+        <dt>OverTime2 Multiplier</dt>
+        <dd>@Model.OverTime2Multiplier</dd>
+        <dt>Holidays Multiplier</dt>
+        <dd>@Model.HolidaysMultiplier</dd>
+    </dl>
+</div>

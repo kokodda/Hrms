@@ -1,8 +1,10 @@
 ﻿@using HrmsModel.Models;
 @model ShiftRotation
 
-<form role="form" id="popupForm" asp-controller="Calendars" asp-action="AddRotation" data-ajax="true" data-ajax-method="POST" data-ajax-update="#rotationsSection" data-ajax-success="onSuccess" data-ajax-failure="onFailure">
-    <input type="hidden" asp-for="ShiftId" id="shiftId" />
+<form role="form" id="popupForm" asp-controller="Shifts" asp-action="EditRotation" data-ajax="true" data-ajax-method="POST" data-ajax-update="#rotationsSection" data-ajax-success="onSuccess" data-ajax-failure="onFailure">
+    <input type="hidden" asp-for="Id" />
+    <p><small><label>Shift: @Model.Shift.Name</label></small></p>
+    <hr />
     <div class="form-group-sm">
         <label class="control-label" asp-for="ShiftTypeCode"><small>Interval (*)</small></label>
         <select class="form-control" asp-for="ShiftTypeCode" required>

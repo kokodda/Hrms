@@ -6,13 +6,11 @@
 <div class="container-fluid" style="padding:0px">
     <br />
     <h3 style="color:silver">Employees Grouping</h3>
-    <label>General Purpose Groups and Shifts</label>
+    <label>Committees, Shifts, Programs and Others</label>
     <hr />
     <div class="row">
         <div class="col-sm-2">
             <div id="groupsSection"></div>
-            <hr />
-            <div id="shiftsSection"></div>
         </div>
         <div class="col-sm-6" id="listSection"></div>
         <div class="col-sm-4" id="membersSection"></div>
@@ -26,7 +24,6 @@
     <script>
         $(document).on('ready', function () {
             groupsList();
-            shiftsList();
         });
 
         function showPopup() {
@@ -138,52 +135,6 @@
                 data: { id: id },
                 success: function (result) {
                     $('#membersSection').html(result);
-                }
-            });
-        }
-
-        //shifts
-        function shiftsList() {
-            $.ajax({
-                url: '@Url.Action("ShiftsList", "Groups")',
-                type: 'GET',
-                success: function (result) {
-                    $('#shiftsSection').html(result);
-                }
-            });
-        }
-        function shiftGroupsList(id) {
-            $.ajax({
-                url: '@Url.Action("ShiftGroupsList", "Groups")',
-                type: 'GET',
-                data: { id: id },
-                success: function (result) {
-                    $('#listSection').html(result);
-                }
-            });
-        }
-        function addShiftGroup(id) {
-            $.ajax({
-                url: '@Url.Action("AddShiftGroup", "Groups")',
-                type: 'GET',
-                success: function (result) {
-                    $('#myModal-body').html(result);
-                    $('#myModal-label').html('Add Group to Shift');
-                    $('#shiftId').val(id);
-                    showPopup();
-                }
-            });
-        }
-        function removeShiftGroup(id) {
-            if (!confirm('Please Confirm! About to Remove Group from Shift?')) {
-                return;
-            }
-            $.ajax({
-                url: '@Url.Action("RemoveShiftGroup", "Groups")',
-                type: 'GET',
-                data: { id: id },
-                success: function (result) {
-                    $('#listSection').html(result);
                 }
             });
         }
